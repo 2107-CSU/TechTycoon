@@ -59,14 +59,14 @@ async function buildTables() {
 
       CREATE TABLE orders(
         id SERIAL PRIMARY KEY,
-        "userId" REFERENCES users(id),
+        "userId" INTEGER REFERENCES users(id),
         date DATE NOT NULL DEFAULT CURRENT_DATE,
         status VARCHAR(255) NOT NULL
       );
       CREATE TABLE order_products(
         id SERIAL PRIMARY KEY,
         "orderId" INTEGER REFERENCES orders(id),
-        
+        "productId" INTEGER REFERENCES products(id),
         quantity INTEGER,
         "isOrdered" BOOLEAN DEFAULT false
       );
