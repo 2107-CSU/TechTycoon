@@ -5,6 +5,13 @@ const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME
 const client = new Client(DB_URL);
 
 // database methods
+async function addProduct({ name, description, price, photo, availability, quantity }){
+  const {rows} = await client.query(`
+    INSERT INTO products(name, description, price, photo, availability, quantity)
+    VALUES($1, $2, $3, $4, $5, $6)
+    RETURNING *,
+  `, [name, description, price, photo, availability, quantity])
+}
 
 async function getAllProducts()
 {
@@ -18,5 +25,7 @@ async function getAllProducts()
 // export
 module.exports = {
   client,
+  getAllProducts,
+  addProduct
   // db methods
 }
