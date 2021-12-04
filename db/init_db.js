@@ -1,13 +1,8 @@
 // code to build and initialize DB goes here
 const {
   client,
-<<<<<<< HEAD
-  addProduct
-  // other db methods 
-=======
-  // other db methods
+  addProduct,
    createUser,
->>>>>>> 4c82871c0c0b6a59eee308483ddbe3c179e9544f
 } = require('./index');
 
 async function buildTables() {
