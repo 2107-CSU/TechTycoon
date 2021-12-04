@@ -28,8 +28,7 @@ async function createUser({username, password}) {
   }
 }
 
-
-
+// ===== get all products ================
 
 async function getAllProducts()
 {
@@ -41,6 +40,23 @@ async function getAllProducts()
     return rows;
 }
 
+// =========== destroy product from order =========
+
+// check with matt, rebecca, amadeo? which id, po id or p id
+async function destroyProductFromOrder(id){ // takes product id?
+  try{
+      const {rows:[deletedResult]}= await client.query(`
+      DELETE FROM order_products
+      WHERE id = $1
+      RETURNING *`, [id]);
+
+      return deletedResult;   // populate the order_products that we deleted
+  }
+  catch(error) {
+      throw error;
+  }
+}
+
 
 // export
 module.exports = {
@@ -48,4 +64,5 @@ module.exports = {
   createUser,
   // db methods
   getAllProducts,
+  destroyProductFromOrder,
 }
