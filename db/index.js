@@ -24,10 +24,6 @@ async function createUser({username, password}) {
   }
 }
 
-
-
-
->>>>>>> 4c82871c0c0b6a59eee308483ddbe3c179e9544f
 async function getAllProducts()
 {
     try {const {rows} = await client.query(
