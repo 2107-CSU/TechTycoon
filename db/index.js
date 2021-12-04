@@ -8,10 +8,11 @@ const client = new Client(DB_URL);
 
 async function getAllProducts()
 {
-  const {rows} = await client.query(
-    `SELECT *
-    FROM products;`)
-
+    try {const {rows} = await client.query(
+      `SELECT *
+      WHERE availabilty = $1
+      FROM products;`, [true])
+    } catch(error){throw error;}
     return rows;
 }
 
@@ -19,4 +20,5 @@ async function getAllProducts()
 module.exports = {
   client,
   // db methods
+  getAllProducts,
 }
