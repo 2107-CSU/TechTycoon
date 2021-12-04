@@ -1,8 +1,13 @@
 // code to build and initialize DB goes here
 const {
   client,
+<<<<<<< HEAD
   addProduct
   // other db methods 
+=======
+  // other db methods
+   createUser,
+>>>>>>> 4c82871c0c0b6a59eee308483ddbe3c179e9544f
 } = require('./index');
 
 async function buildTables() {
@@ -83,6 +88,38 @@ async function populateInitialData() {
 
   } catch (error) {
     console.error("Error initializing tables!")
+    throw error;
+  }
+}
+
+
+async function createInitialUsers() {
+  console.log('Starting to create users...');
+  try {
+    const usersToCreate = [
+      { username: 'albert', password: 'bertie99' },
+      { username: 'sandra', password: 'sandra123' },
+      { username: 'glamgal', password: 'glamgal123' },
+    ]
+    const users = await Promise.all(usersToCreate.map(createUser));   // promise.all waits for everything in the array to reurn
+      console.log('Users created:');
+      console.log(users);
+      console.log('Finished creating users!');
+  } catch (error) {
+      console.error('Error creating users!');
+    throw error;
+  }
+}
+
+async function rebuildDB() {
+  try {
+    client.connect();
+    await dropTables();
+    await createTables();
+    await createInitialUsers();
+    
+  } catch (error) {
+    console.log('Error during rebuildDB')
     throw error;
   }
 }

@@ -3,15 +3,38 @@ const { Client } = require('pg');
 const DB_NAME = 'tech-tycoons-dev'
 const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME }`;
 const client = new Client(DB_URL);
+const bcrypt = require('bcrypt'); // import bcrypt
 
-// database methods
-//-----------------PRODUCT METHODS-----------------------//
+//====================== Create Users ==================
+async function createUser({username, password}) {
+  const SALT_COUNT = 10;   // salt makes encryption more complex
+  const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+  try {
+      const {rows: [user]} = await client.query(`
+          INSERT INTO users (username, password)
+          VALUES ($1, $2)
+          ON CONFLICT (username) DO NOTHING
+          RETURNING *;
+      `, [username, hashedPassword]);
+      delete user.password;
+      return user;
+  }
+  catch (error) {
+      throw error;
+  }
+}
+
+
+
+
+>>>>>>> 4c82871c0c0b6a59eee308483ddbe3c179e9544f
 async function getAllProducts()
 {
-  const {rows} = await client.query(
-    `SELECT *
-    FROM products;`)
-
+    try {const {rows} = await client.query(
+      `SELECT *
+      WHERE availabilty = $1
+      FROM products;`, [true])
+    } catch(error){throw error;}
     return rows;
 }
 
@@ -34,5 +57,4 @@ module.exports = {
   client,
   getAllProducts,
   addProduct
-  // db methods
 }
