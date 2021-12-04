@@ -6,6 +6,7 @@ const client = new Client(DB_URL);
 
 // database methods
 
+
 const bcrypt = require('bcrypt'); // import bcrypt
 
 //====================== Create Users ==================
@@ -29,9 +30,22 @@ async function createUser({username, password}) {
 
 
 
+
+async function getAllProducts()
+{
+    try {const {rows} = await client.query(
+      `SELECT *
+      WHERE availabilty = $1
+      FROM products;`, [true])
+    } catch(error){throw error;}
+    return rows;
+}
+
+
 // export
 module.exports = {
   client,
   createUser,
   // db methods
+  getAllProducts,
 }
