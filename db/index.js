@@ -3,10 +3,6 @@ const { Client } = require('pg');
 const DB_NAME = 'tech-tycoons-dev'
 const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME }`;
 const client = new Client(DB_URL);
-
-// database methods
-
-
 const bcrypt = require('bcrypt'); // import bcrypt
 
 //====================== Create Users ==================
@@ -28,7 +24,10 @@ async function createUser({username, password}) {
   }
 }
 
+
+
 // ===== get all products ================
+
 
 async function getAllProducts()
 {
@@ -38,6 +37,21 @@ async function getAllProducts()
       FROM products;`, [true])
     } catch(error){throw error;}
     return rows;
+}
+
+
+async function addProduct({ name, description, price, photo, availability, quantity }){
+  try {
+    const {rows} = await client.query(`
+      INSERT INTO products(name, description, price, photo, availability, quantity)
+      VALUES($1, $2, $3, $4, $5, $6)
+      RETURNING *,
+    `, [name, description, price, photo, availability, quantity])
+  
+    return rows;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // =========== destroy product from order =========
@@ -61,8 +75,7 @@ async function destroyProductFromOrder(id){ // takes product id?
 // export
 module.exports = {
   client,
-  createUser,
-  // db methods
   getAllProducts,
+  addProduct,
   destroyProductFromOrder,
 }

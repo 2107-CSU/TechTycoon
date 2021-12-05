@@ -1,7 +1,7 @@
 // code to build and initialize DB goes here
 const {
   client,
-  // other db methods
+  addProduct,
    createUser,
 } = require('./index');
 
