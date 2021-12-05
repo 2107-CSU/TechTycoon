@@ -24,6 +24,11 @@ async function createUser({username, password}) {
   }
 }
 
+
+
+// ===== get all products ================
+
+
 async function getAllProducts()
 {
     try {const {rows} = await client.query(
@@ -33,6 +38,7 @@ async function getAllProducts()
     } catch(error){throw error;}
     return rows;
 }
+
 
 async function addProduct({ name, description, price, photo, availability, quantity }){
   try {
@@ -48,9 +54,28 @@ async function addProduct({ name, description, price, photo, availability, quant
   }
 }
 
+// =========== destroy product from order =========
+
+// check with matt, rebecca, amadeo? which id, po id or p id
+async function destroyProductFromOrder(id){ // takes product id?
+  try{
+      const {rows:[deletedResult]}= await client.query(`
+      DELETE FROM order_products
+      WHERE id = $1
+      RETURNING *`, [id]);
+
+      return deletedResult;   // populate the order_products that we deleted
+  }
+  catch(error) {
+      throw error;
+  }
+}
+
+
 // export
 module.exports = {
   client,
   getAllProducts,
-  addProduct
+  addProduct,
+  destroyProductFromOrder,
 }
