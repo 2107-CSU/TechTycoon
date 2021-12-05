@@ -75,6 +75,7 @@ async function destroyProductFromOrder(id){ // takes product id?
 // export
 module.exports = {
   client,
+  createUser,
   getAllProducts,
   addProduct,
   destroyProductFromOrder,
