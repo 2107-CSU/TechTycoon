@@ -70,6 +70,7 @@ async function buildTables() {
         "productId" INTEGER REFERENCES products(id),
         quantity INTEGER,
         "isOrdered" BOOLEAN DEFAULT false
+        UNIQUE("orderId", "productId")
       );
     `)
   } catch (error) {

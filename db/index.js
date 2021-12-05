@@ -41,11 +41,20 @@ async function getAllProducts()
     return rows;
 }
 
+async function addProductToOrder(orderId, productId, quantity = 1)
+{
+  try{ const {rows} = await client.query(
+    `INSERT INTO order_products("orderId", "productId", quantity)
+    VALUES($1, $2, $3)
+    ON CONFLICT ("orderId", "productId") DO NOTHING`, [orderId, productId, quantity]
+  );} catch (error) {throw error;}
+}
+
 
 // export
 module.exports = {
   client,
   createUser,
-  // db methods
   getAllProducts,
+  addProductToOrder,
 }
