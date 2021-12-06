@@ -44,7 +44,7 @@ async function addProductToOrder(orderId, productId, quantity = 1)
   try{ const {rows} = await client.query(
     `INSERT INTO order_products("orderId", "productId", quantity)
     VALUES($1, $2, $3)
-    ON CONFLICT ("orderId", "productId") DO NOTHING`, [orderId, productId, quantity]
+    ON CONFLICT ("orderId", "productId") DO NOTHING;`, [orderId, productId, quantity]
   );} catch (error) {throw error;}
 }
 
@@ -96,6 +96,7 @@ async function updateOrderProductQuantity({ id, quantity }){
   catch(error){
       throw error;
   }
+}
 
 async function getProductsbyCategoryId(id)
 {
@@ -122,7 +123,7 @@ async function getProductById(id){
 
     return rows;
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
@@ -135,10 +136,24 @@ async function getReviewsByProductId(productId){
 
     return rows
   } catch (error) {
-    throw (error)
+    throw error;
   }
 }
 
+
+async function getAllProductsByOrderId(orderId){
+  try{
+    const {rows} = await client.query(`
+    SELECT *
+    FROM order_products
+    JOIN products ON order_products."productId" = product.id
+    WHERE order_products."orderId" = $1;`, [orderId]);
+    return rows;
+
+  } catch(error) {
+    throw error;
+  }
+}
 
 // export
 module.exports = {
@@ -151,5 +166,6 @@ module.exports = {
   updateOrderProductQuantity,
   getProductsbyCategoryId,
   getProductById,
-  getReviewsByProductId
+  getReviewsByProductId,
+  getAllProductsByOrderId,
 }
