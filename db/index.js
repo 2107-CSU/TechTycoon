@@ -24,7 +24,19 @@ async function createUser({username, password}) {
   }
 }
 
+async function makeUserAdmin({id}){
+  try {
+    const {rows} = await client.query(`
+      UPDATE users
+      SET isAdmin=true
+      WHERE id=$1;
+    `, [id])
 
+    return rows
+  } catch (error) {
+    throw error;
+  }
+}
 
 // ===== get all products ================
 
@@ -144,6 +156,7 @@ async function getReviewsByProductId(productId){
 module.exports = {
   client,
   createUser,
+  makeUserAdmin,
   getAllProducts,
   addProductToOrder,
   addProduct,
