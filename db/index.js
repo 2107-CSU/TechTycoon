@@ -61,15 +61,17 @@ async function addProductToOrder(orderId, productId, quantity = 1)
 }
 
 
-async function addProduct({ name, description, price, photo, availability, quantity }){
+async function addProduct({ name, description, price, photo, availability, quantity, categories = [] }){
   try {
-    const {rows} = await client.query(`
+    const { rows: [product] } = await client.query(`
       INSERT INTO products(name, description, price, photo, availability, quantity)
       VALUES($1, $2, $3, $4, $5, $6)
       RETURNING *;,
     `, [name, description, price, photo, availability, quantity])
   
-    return rows;
+    const categoryList = await createCategories(categories);
+
+    return await addCategoriesToProduct(product.id, tagList)
   } catch (error) {
     throw error;
   }
