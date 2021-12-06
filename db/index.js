@@ -71,7 +71,7 @@ async function addProduct({ name, description, price, photo, availability, quant
   
     const categoryList = await createCategories(categories);
 
-    return await addCategoriesToProduct(product.id, tagList)
+    return await addCategoriesToProduct(product.id, categoryList)
   } catch (error) {
     throw error;
   }
@@ -126,7 +126,7 @@ async function getProductsbyCategoryId(id)
   } catch(error) {throw error;}
 }
 
-async function createNewCategory(categoryList){
+async function createCategories(categoryList){
   if (categoryList.length === 0) return;
 
   const valuesStringInsert = categoryList.map(
@@ -151,6 +151,30 @@ async function createNewCategory(categoryList){
     `, categoryList)
 
     return rows
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createProductCategory(productId, categoryId){
+  try {
+    await client.query(`
+      INSERT INTO product_categories("productId", "categoryId")
+      VALUES ($1, $2)
+      ON CONFLICT ("productId", "categoryId") DO NOTHING;
+    `, [productId, categoryId]);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function addCategoriesToProduct(productId, categoryList){
+  try {
+    const createProductCategoryPromises = categoryList.map(category => createProductCategory(productId, category.id));
+
+    await Promise.all(createProductCategoryPromises);
+
+    return await getProductById(productId);
   } catch (error) {
     throw error;
   }
@@ -220,7 +244,7 @@ module.exports = {
   destroyProductFromOrder,
   updateOrderProductQuantity,
   getProductsbyCategoryId,
-  createNewCategory,
+  createCategories,
   getProductById,
   getReviewsByProductId,
   getOrderByOrderId,

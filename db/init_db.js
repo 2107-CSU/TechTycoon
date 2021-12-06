@@ -3,7 +3,7 @@ const {
   client,
   addProduct,
   createUser,
-  createNewCategory,
+  createCategories,
 } = require('./index');
 
 async function buildTables() {
@@ -107,7 +107,7 @@ async function createInitialCategories() {
       {name: 'gaming'}  
     ]
 
-    const categories = await Promise.all(categoriesToCreate.map(createNewCategory));
+    const categories = await Promise.all(categoriesToCreate.map(createCategories));
 
     console.log('Categories created: ', categories)
   } catch (error) {
