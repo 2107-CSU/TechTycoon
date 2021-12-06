@@ -39,6 +39,15 @@ async function getAllProducts()
     return rows;
 }
 
+async function addProductToOrder(orderId, productId, quantity = 1)
+{
+  try{ const {rows} = await client.query(
+    `INSERT INTO order_products("orderId", "productId", quantity)
+    VALUES($1, $2, $3)
+    ON CONFLICT ("orderId", "productId") DO NOTHING`, [orderId, productId, quantity]
+  );} catch (error) {throw error;}
+}
+
 
 async function addProduct({ name, description, price, photo, availability, quantity }){
   try {
@@ -75,7 +84,9 @@ async function destroyProductFromOrder(id){ // takes product id?
 // export
 module.exports = {
   client,
+  createUser,
   getAllProducts,
+  addProductToOrder,
   addProduct,
   destroyProductFromOrder,
 }
