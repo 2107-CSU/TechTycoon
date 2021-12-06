@@ -1,8 +1,12 @@
 const express= require('express');
 const usersRouter = express.Router();
 
-const {createUser} = require('../db/index');
+const {createUser, makeUserAdmin} = require('../db/index');
 
+const requireAdmin = (req, res, next) => {
+    if(req.isAdmin) next()
+    else next(error)
+}
 
 // POST REQUESTS
 
@@ -29,6 +33,16 @@ usersRouter.post('/register', async(req, res, next)=>{
 
 // GET REQUESTS
 
+// PATCH REQUESTS
+
+usersRouter.patch('/admin/:userId', requireAdmin, async(req, res, next) => {
+    try {
+        const patchedUser = await makeUserAdmin(id);
+        res.send(patchedUser)
+    } catch (error) {
+        next(error)
+    }
+})
 
 module.exports = usersRouter;
 
