@@ -139,6 +139,7 @@ async function getProductById(id){
   }
 }
 
+
 async function getReviewsByProductId(productId){
   try {
     const {rows} = await client.query(`
@@ -152,6 +153,16 @@ async function getReviewsByProductId(productId){
   }
 }
 
+async function getOrderByOrderId(orderId){
+  try{
+    const {rows} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE id = $1;`, [orderId])
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function getAllProductsByOrderId(orderId){
   try{
@@ -180,5 +191,6 @@ module.exports = {
   getProductsbyCategoryId,
   getProductById,
   getReviewsByProductId,
+  getOrderByOrderId,
   getAllProductsByOrderId,
 }
