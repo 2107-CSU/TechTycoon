@@ -124,6 +124,19 @@ async function getProductsbyCategoryId(id)
   } catch(error) {throw error;}
 }
 
+async function createNewCategory(categoryName){
+  try {
+    const {rows} = await client.query(`
+      INSERT INTO categories (name)
+      VALUES ($1)
+      RETURNING *;
+    `, [categoryName])
+
+    return rows
+  } catch (error) {
+    throw error;
+  }
+}
 //---------------Single Product endpoints----------------
 
 async function getProductById(id){
@@ -189,6 +202,7 @@ module.exports = {
   destroyProductFromOrder,
   updateOrderProductQuantity,
   getProductsbyCategoryId,
+  createNewCategory,
   getProductById,
   getReviewsByProductId,
   getOrderByOrderId,

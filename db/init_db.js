@@ -106,6 +106,20 @@ async function createInitialUsers() {
   }
 }
 
+async function createCategories() {
+  console.log("Starting to create categories...");
+  try {
+    const categoriesToCreate = [
+      {name: 'software'},
+      {name: 'computers'},
+      {name: 'accessories'},
+      {name: 'gaming'}  
+    ]
+  } catch (error) {
+    console.error("Error creating categories!");
+  }
+}
+
 async function rebuildDB() {
   try {
     client.connect();
