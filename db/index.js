@@ -126,16 +126,16 @@ async function getProductById(id){
   }
 }
 
-async function getReviewsByProductId(){
+async function getReviewsByProductId(productId){
   try {
     const {rows} = await client.query(`
       SELECT * FROM reviews
       WHERE "productId"=$1;
-    `)
+    `, [productId])
 
     return rows
   } catch (error) {
-    
+    throw (error)
   }
 }
 
