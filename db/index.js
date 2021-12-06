@@ -111,6 +111,19 @@ async function getProductsbyCategoryId(id)
   } catch(error) {throw error;}
 }
 
+async function getProductById(id){
+  try {
+    const {rows} = await client.query(`
+      SELECT * FROM products
+      WHERE id=$1;
+    `, [id]);
+
+    return rows;
+  } catch (error) {
+    throw error
+  }
+}
+
 
 // export
 module.exports = {
@@ -121,5 +134,6 @@ module.exports = {
   addProduct,
   destroyProductFromOrder,
   updateOrderProductQuantity,
-  getProductsbyCategoryId
+  getProductsbyCategoryId,
+  getProductById
 }

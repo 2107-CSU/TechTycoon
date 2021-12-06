@@ -68,9 +68,7 @@ async function buildTables() {
         id SERIAL PRIMARY KEY,
         "orderId" INTEGER REFERENCES orders(id),
         "productId" INTEGER REFERENCES products(id),
-        quantity INTEGER,
-        "isOrdered" BOOLEAN DEFAULT false
-        UNIQUE("orderId", "productId")
+        quantity INTEGER
       );
     `)
   } catch (error) {
