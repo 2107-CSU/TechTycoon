@@ -1,14 +1,14 @@
 // Connect to DB
-const { Client } = require('pg');
+import { Client } from 'pg';
 const DB_NAME = 'tech-tycoons-dev'
 const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME }`;
 const client = new Client(DB_URL);
-const bcrypt = require('bcrypt'); // import bcrypt
+import { hash } from 'bcrypt'; // import bcrypt
 
 //====================== Create Users ==================
 async function createUser({username, password}) {
   const SALT_COUNT = 10;   // salt makes encryption more complex
-  const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+  const hashedPassword = await hash(password, SALT_COUNT);
   try {
       const {rows: [user]} = await client.query(`
           INSERT INTO users (username, password)
@@ -111,6 +111,8 @@ async function getProductsbyCategoryId(id)
   } catch(error) {throw error;}
 }
 
+//---------------Single Product endpoints----------------
+
 async function getProductById(id){
   try {
     const {rows} = await client.query(`
@@ -121,6 +123,19 @@ async function getProductById(id){
     return rows;
   } catch (error) {
     throw error
+  }
+}
+
+async function getReviewsByProductId(){
+  try {
+    const {rows} = await client.query(`
+      SELECT * FROM reviews
+      WHERE "productId"=$1;
+    `)
+
+    return rows
+  } catch (error) {
+    
   }
 }
 
@@ -135,5 +150,6 @@ module.exports = {
   destroyProductFromOrder,
   updateOrderProductQuantity,
   getProductsbyCategoryId,
-  getProductById
+  getProductById,
+  getReviewsByProductId
 }
