@@ -1,6 +1,6 @@
 const express = require('express');
 const order_productsRouter = express.Router();
-const{destroyProductFromOrder, updateOrderProductQuantity, getAllProductsByOrderId} = require('../db');
+const{destroyProductFromOrder, addProductToOrder, updateOrderProductQuantity, getAllProductsByOrderId} = require('../db');
 
 order_productsRouter.delete('/:orderproductid', async (req, res, next) => {    // req.user just seees if you are logged in
     const orderProductId = req.params.orderProductId; // get the order product id
@@ -39,5 +39,17 @@ order_productsRouter.get('/:orderId', requireUser, async (req, res, next) => {
     }
 })
 
+
+order_productsRouter.post('/', async (req, res, next) => {
+    const {orderId, productId, quantity = 1} = req.body;
+    try{
+        const order_product = await addProductToOrder(orderId, productId, quantity);
+        res.send(order_product);
+
+
+    } catch(error) {
+        next(error);
+    }
+})
 
 module.exports = order_productsRouter;
