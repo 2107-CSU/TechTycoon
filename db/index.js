@@ -126,13 +126,29 @@ async function getProductsbyCategoryId(id)
   } catch(error) {throw error;}
 }
 
-async function createNewCategory(name){
+async function createNewCategory(categoryList){
+  if (categoryList.length === 0) return;
+
+  const valuesStringInsert = categoryList.map(
+    (_, index) => `$${index + 1}`
+  ).join('), (');
+
+  const valuesStringSelect = categoryList.map(
+    (_, index) => `$${index + 1}`
+  ).join(', ');
+
   try {
-    const {rows} = await client.query(`
+    await client.query(`
       INSERT INTO categories (name)
-      VALUES ($1)
-      RETURNING *;
-    `, [name])
+      VALUES (${valuesStringInsert})
+      ON CONFLICT (name) DO NOTHING;
+    `, categoryList)
+
+    const {rows} = await client.query(`
+      SELECT * FROM categories
+      WHERE name
+      IN (${valuesStringSelect});
+    `, categoryList)
 
     return rows
   } catch (error) {
