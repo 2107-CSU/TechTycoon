@@ -124,13 +124,13 @@ async function getProductsbyCategoryId(id)
   } catch(error) {throw error;}
 }
 
-async function createNewCategory(categoryName){
+async function createNewCategory(name){
   try {
     const {rows} = await client.query(`
       INSERT INTO categories (name)
       VALUES ($1)
       RETURNING *;
-    `, [categoryName])
+    `, [name])
 
     return rows
   } catch (error) {

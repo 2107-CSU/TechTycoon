@@ -2,7 +2,8 @@
 const {
   client,
   addProduct,
-   createUser,
+  createUser,
+  createNewCategory,
 } = require('./index');
 
 async function buildTables() {
@@ -77,16 +78,6 @@ async function buildTables() {
   }
 }
 
-async function populateInitialData() {
-  try {
-    // create useful starting data
-
-  } catch (error) {
-    console.error("Error initializing tables!")
-    throw error;
-  }
-}
-
 
 async function createInitialUsers() {
   console.log('Starting to create users...');
@@ -115,17 +106,22 @@ async function createCategories() {
       {name: 'accessories'},
       {name: 'gaming'}  
     ]
+
+    const categories = await Promise.all(categoriesToCreate.map(createNewCategory));
+
+    console.log('Categories created: ')
+    console.log(categories)
   } catch (error) {
     console.error("Error creating categories!");
+    throw error
   }
 }
 
-async function rebuildDB() {
+async function buildDB() {
   try {
     client.connect();
-    await dropTables();
-    await createTables();
     await createInitialUsers();
+    await createCategories();
     
   } catch (error) {
     console.log('Error during rebuildDB')
@@ -134,6 +130,6 @@ async function rebuildDB() {
 }
 
 buildTables()
-  //.then(populateInitialData)
+  .then(buildDB)
   .catch(console.error)
   .finally(() => client.end());
