@@ -1,7 +1,7 @@
 // code to build and initialize DB goes here
 const {
   client,
-  // other db methods
+  addProduct,
    createUser,
 } = require('./index');
 
@@ -70,6 +70,7 @@ async function buildTables() {
         "productId" INTEGER REFERENCES products(id),
         quantity INTEGER,
         "isOrdered" BOOLEAN DEFAULT false
+        UNIQUE("orderId", "productId")
       );
     `)
   } catch (error) {
