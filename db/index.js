@@ -54,7 +54,7 @@ async function addProduct({ name, description, price, photo, availability, quant
     const {rows} = await client.query(`
       INSERT INTO products(name, description, price, photo, availability, quantity)
       VALUES($1, $2, $3, $4, $5, $6)
-      RETURNING *,
+      RETURNING *;,
     `, [name, description, price, photo, availability, quantity])
   
     return rows;
@@ -71,13 +71,27 @@ async function destroyProductFromOrder(id){ // takes product id?
       const {rows:[deletedResult]}= await client.query(`
       DELETE FROM order_products
       WHERE id = $1
-      RETURNING *`, [id]);
+      RETURNING *;`, [id]);
 
       return deletedResult;   // populate the order_products that we deleted
   }
   catch(error) {
       throw error;
   }
+}
+
+async function getProductsbyCategoryId(id)
+{
+  try{
+    const {rows} = await client.query(`
+    SELECT * 
+    FROM product_categories
+    JOIN products ON product_categories."productId" = product.id
+    WHERE product_categories."categoryId" = $1;`, [id]);
+
+    return rows;
+
+  } catch(error) {throw error;}
 }
 
 
@@ -89,4 +103,5 @@ module.exports = {
   addProductToOrder,
   addProduct,
   destroyProductFromOrder,
+  getProductsbyCategoryId
 }
