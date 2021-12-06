@@ -24,7 +24,19 @@ async function createUser({username, password}) {
   }
 }
 
+async function makeUserAdmin({id}){
+  try {
+    const {rows} = await client.query(`
+      UPDATE users
+      SET isAdmin=true
+      WHERE id=$1;
+    `, [id])
 
+    return rows
+  } catch (error) {
+    throw error;
+  }
+}
 
 // ===== get all products ================
 
@@ -152,10 +164,25 @@ async function getOrderByOrderId(orderId){
   }
 }
 
+async function getAllProductsByOrderId(orderId){
+  try{
+    const {rows} = await client.query(`
+    SELECT *
+    FROM order_products
+    JOIN products ON order_products."productId" = product.id
+    WHERE order_products."orderId" = $1;`, [orderId]);
+    return rows;
+
+  } catch(error) {
+    throw error;
+  }
+}
+
 // export
 module.exports = {
   client,
   createUser,
+  makeUserAdmin,
   getAllProducts,
   addProductToOrder,
   addProduct,
@@ -165,4 +192,5 @@ module.exports = {
   getProductById,
   getReviewsByProductId,
   getOrderByOrderId,
+  getAllProductsByOrderId,
 }
