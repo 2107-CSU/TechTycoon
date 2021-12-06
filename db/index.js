@@ -3,7 +3,7 @@ const { Client } = require('pg');
 const DB_NAME = 'tech-tycoons-dev'
 const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME }`;
 const client = new Client(DB_URL);
-const bcrypt = require('bcrypt; // import bcrypt
+const bcrypt = require('bcrypt'); // import bcrypt
 
 //====================== Create Users ==================
 async function createUser({username, password}) {
