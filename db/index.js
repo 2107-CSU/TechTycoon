@@ -57,6 +57,23 @@ async function destroyProductFromOrder(id){ // takes product id?
   }
 }
 
+// =============== edit order product quantity ================
+
+async function updateOrderProductQuantity({ id, quantity }){
+  try{
+      const {rows: [orderProductQuantity] } = await client.query(`
+      UPDATE order_products
+      SET quantity = $1
+      WHERE id= ${id}
+      RETURNING *;
+      `, [quantity])
+      return orderProductQuantity;
+  }
+  catch(error){
+      throw error;
+  }
+}
+
 
 // export
 module.exports = {
@@ -65,4 +82,5 @@ module.exports = {
   // db methods
   getAllProducts,
   destroyProductFromOrder,
+  updateOrderProductQuantity
 }
