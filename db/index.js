@@ -252,6 +252,21 @@ async function getAllProductsByOrderId(orderId){
   }
 }
 
+//----------------------------Orders Endpoints----------------------------
+
+async function getAllOrdersByUser(id) {
+  try {
+    const {rows: userOrders} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE "userId"=$1;`, [id]);
+
+    return userOrders;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // export
 module.exports = {
   client,
@@ -268,5 +283,6 @@ module.exports = {
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
-  removeProductById
+  removeProductById,
+  getAllOrdersByUser
 }
