@@ -268,4 +268,5 @@ module.exports = {
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
+  removeProductById
 }

@@ -1,6 +1,6 @@
 const express = require('express');
 const productsRouter = express.Router();
-const {getAllProducts, addProduct, getProductById} = require('../db');
+const {getAllProducts, addProduct, getProductById, removeProductById} = require('../db');
 
 productsRouter.get('/',  async (req, res, next) => {
         try {const products = await getAllProducts();
@@ -24,6 +24,22 @@ productsRouter.post('/', async(req, res, next) => {
         const newProduct = await addProduct(name, description, price, photo, availability, quantity)
         
         res.send(newProduct);
+    } catch (error) {
+        next(error)
+    }
+})
+
+// should require user when that is implemented
+productsRouter.delete('/:productId/delete', async (req, res, next) => {
+    const {productId} = req.params;
+    // make sure user is admin before continuing
+    try {
+        const deleteMessage = await removeProductById(productId);
+
+        res.send({
+            status: 'successful',
+            message: deleteMessage}
+        );
     } catch (error) {
         next(error)
     }
