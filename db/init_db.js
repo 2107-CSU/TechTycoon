@@ -118,6 +118,8 @@ async function createInitialCategories() {
 
 async function createInitialProducts() {
   console.log("Starting to create products...");
+
+  const [albert, sandra, glamgal] = await getAll
   try {
     const productsToCreate = [
       {name: 'Adobe Creative Cloud', description: 'Adobe software', price: 29.99, photo: 'adobe-creative-cloud', availability: true, quantity: 10000},

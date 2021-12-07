@@ -54,6 +54,19 @@ async function deleteUser(userId){
   }
 }
 
+async function getAllUsers(){
+  try {
+    const {rows} = await client.query(`
+      SELECT *
+      FROM users;
+    `);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // ===== get all products ================
 
 
