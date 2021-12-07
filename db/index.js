@@ -249,6 +249,27 @@ async function createOrder(userId) {
     throw error;
   }
 }
+
+async function editOrderProductStatus(orderId, status) {
+  try {
+    const {rows: [order]} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE id=$1`, [orderId]);
+
+    if (order) {
+      const {rows: [editedOrder]} = await client.query(`
+      UPDATE orders
+      SET "status"=$1
+      WHERE id=${orderId}
+      RETURNING *;`, [status]);
+
+      return editedOrder;
+    } else return 'no order found under that id';
+  } catch (error) {
+    throw error;
+  }
+}
 // export
 module.exports = {
   client,
@@ -265,4 +286,6 @@ module.exports = {
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
+  createOrder,
+  editOrderProductStatus
 }
