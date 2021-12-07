@@ -233,6 +233,22 @@ async function getAllProductsByOrderId(orderId){
   }
 }
 
+// adds a new order to the orders table
+async function createOrder(userId) {
+
+  // initial state for status when creating an order
+  const status = 'created';
+  try {
+    const {rows: [order]} = await client.query(`
+    INSERT INTO orders("userId", status)
+    VALUES ($1, $2)
+    RETURNING *;`);
+
+    return order;
+  } catch (error) {
+    throw error;
+  }
+}
 // export
 module.exports = {
   client,
