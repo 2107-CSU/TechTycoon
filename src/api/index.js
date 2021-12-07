@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios';  // makes calls to the api, api reuqests
 
 export async function getSomething() {
   try {
