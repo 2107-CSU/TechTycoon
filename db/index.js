@@ -81,16 +81,37 @@ async function addProductToOrder(orderId, productId, quantity = 1)
 }
 
 
-async function addProduct({ name, description, price, photo, availability, quantity }){
+async function addProduct({ name, description, price, photo, availability, quantity, categories = [] }){
   try {
-    const {rows} = await client.query(`
+    const { rows: [product] } = await client.query(`
       INSERT INTO products(name, description, price, photo, availability, quantity)
       VALUES($1, $2, $3, $4, $5, $6)
       RETURNING *;,
     `, [name, description, price, photo, availability, quantity])
   
-    return rows;
+    const categoryList = await createCategories(categories);
+
+    return await addCategoriesToProduct(product.id, categoryList)
   } catch (error) {
+    throw error;
+  }
+}
+
+async function removeProductById(id) {
+  try {
+    await client.query(`
+    DELETE FROM products
+    WHERE id=${id};`);
+
+    // NOT SURE IF WE SHOULD BE DELETING THIS
+    /*
+    await client.query(`
+    DELETE FROM order_products
+    WHERE "productId"=${id};`)
+    */
+
+    return `Successfully deleted the product with an id of ${id}`;
+  } catch(error) {
     throw error;
   }
 }
@@ -144,6 +165,59 @@ async function getProductsbyCategoryId(id)
   } catch(error) {throw error;}
 }
 
+async function createCategories(categoryList){
+  if (categoryList.length === 0) return;
+
+  const valuesStringInsert = categoryList.map(
+    (_, index) => `$${index + 1}`
+  ).join('), (');
+
+  const valuesStringSelect = categoryList.map(
+    (_, index) => `$${index + 1}`
+  ).join(', ');
+
+  try {
+    await client.query(`
+      INSERT INTO categories (name)
+      VALUES (${valuesStringInsert})
+      ON CONFLICT (name) DO NOTHING;
+    `, categoryList)
+
+    const {rows} = await client.query(`
+      SELECT * FROM categories
+      WHERE name
+      IN (${valuesStringSelect});
+    `, categoryList)
+
+    return rows
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createProductCategory(productId, categoryId){
+  try {
+    await client.query(`
+      INSERT INTO product_categories("productId", "categoryId")
+      VALUES ($1, $2)
+      ON CONFLICT ("productId", "categoryId") DO NOTHING;
+    `, [productId, categoryId]);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function addCategoriesToProduct(productId, categoryList){
+  try {
+    const createProductCategoryPromises = categoryList.map(category => createProductCategory(productId, category.id));
+
+    await Promise.all(createProductCategoryPromises);
+
+    return await getProductById(productId);
+  } catch (error) {
+    throw error;
+  }
+}
 //---------------Single Product endpoints----------------
 
 async function getProductById(id){
@@ -198,6 +272,21 @@ async function getAllProductsByOrderId(orderId){
   }
 }
 
+//----------------------------Orders Endpoints----------------------------
+
+async function getAllOrdersByUser(id) {
+  try {
+    const {rows: userOrders} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE "userId"=$1;`, [id]);
+
+    return userOrders;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // export
 module.exports = {
   client,
@@ -209,9 +298,12 @@ module.exports = {
   destroyProductFromOrder,
   updateOrderProductQuantity,
   getProductsbyCategoryId,
+  createCategories,
   getProductById,
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
-  editProduct
+  editProduct,
+  removeProductById,
+  getAllOrdersByUser
 }
