@@ -27,16 +27,19 @@ async function editProduct(forms = {}) {
 }
 async function getAllProducts()
 {
-  const {rows} = await client.query(
-    `SELECT *
-    FROM products;`)
-
+    try {const {rows} = await client.query(
+      `SELECT *
+      WHERE availabilty = $1
+      FROM products;`, [true])
+    } catch(error){throw error;}
     return rows;
 }
 
 // export
 module.exports = {
   client,
-  editProduct
+  
   // db methods
+  getAllProducts,
+  editProduct
 }
