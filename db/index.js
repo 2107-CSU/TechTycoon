@@ -77,6 +77,25 @@ async function addProduct({ name, description, price, photo, availability, quant
   }
 }
 
+async function removeProductById(id) {
+  try {
+    await client.query(`
+    DELETE FROM products
+    WHERE id=${id};`);
+
+    // NOT SURE IF WE SHOULD BE DELETING THIS
+    /*
+    await client.query(`
+    DELETE FROM order_products
+    WHERE "productId"=${id};`)
+    */
+
+    return `Successfully deleted the product with an id of ${id}`;
+  } catch(error) {
+    throw error;
+  }
+}
+
 // =========== destroy product from order =========
 
 // check with matt, rebecca, amadeo? which id, po id or p id
@@ -233,6 +252,21 @@ async function getAllProductsByOrderId(orderId){
   }
 }
 
+//----------------------------Orders Endpoints----------------------------
+
+async function getAllOrdersByUser(id) {
+  try {
+    const {rows: userOrders} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE "userId"=$1;`, [id]);
+
+    return userOrders;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // export
 module.exports = {
   client,
@@ -249,4 +283,6 @@ module.exports = {
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
+  removeProductById,
+  getAllOrdersByUser
 }
