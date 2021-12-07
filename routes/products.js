@@ -1,5 +1,7 @@
 const express = require('express');
+const { send } = require('process');
 const productsRouter = express.Router();
+const {getAllProducts, addProduct, getProductById, editProduct} = require('../db');
 const {getAllProducts, addProduct, getProductById, removeProductById} = require('../db');
 
 productsRouter.get('/',  async (req, res, next) => {
@@ -26,6 +28,20 @@ productsRouter.post('/', async(req, res, next) => {
         res.send(newProduct);
     } catch (error) {
         next(error)
+    }
+})
+
+// needs to be updated when token is added
+productsRouter.patch('/:productId/edit', async (req, res, next) => {
+    const {productId} = req.params;
+    req.body.id = productId;
+    // check if admin. if true continue. false next(something)
+    try {
+        const editedProduct = editProduct(req.body);
+
+        send(editedProduct);
+    } catch (error) {
+        next(error);
     }
 })
 

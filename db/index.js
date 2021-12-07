@@ -41,6 +41,26 @@ async function makeUserAdmin({id}){
 // ===== get all products ================
 
 
+async function editProduct({id, name, description, price, photo, availability, quantity}) {
+  const fields = arguments[0];
+  const { id } = fields;
+  delete fields.id;
+
+  const setString = Object.keys(fields).map((key, idx)
+    `"${key}"=$${index + 1}`).join(', ');
+
+    try {
+      const {rows: [product] } = await client.query(`
+      UPDATE products
+      SET ${setString}
+      WHERE id=${id}
+      RETURNING *;`, [Object.values(fields)]);
+
+      return product;
+    } catch (error) {
+      throw error
+    }
+}
 async function getAllProducts()
 {
     try {const {rows} = await client.query(
@@ -283,6 +303,7 @@ module.exports = {
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
+  editProduct,
   removeProductById,
   getAllOrdersByUser
 }
