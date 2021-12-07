@@ -6,16 +6,16 @@ const client = new Client(DB_URL);
 const bcrypt = require('bcrypt'); // import bcrypt
 
 //====================== Create Users ==================
-async function createUser({username, password}) {
+async function createUser({username, password, email}) {
   const SALT_COUNT = 10;   // salt makes encryption more complex
   const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
   try {
       const {rows: [user]} = await client.query(`
-          INSERT INTO users (username, password)
-          VALUES ($1, $2)
+          INSERT INTO users (username, password, email)
+          VALUES ($1, $2, $3)
           ON CONFLICT (username) DO NOTHING
           RETURNING *;
-      `, [username, hashedPassword]);
+      `, [username, hashedPassword, email]);
       delete user.password;
       return user;
   }
@@ -59,7 +59,7 @@ async function deleteUser(userId){
 
 async function editProduct({id, name, description, price, photo, availability, quantity}) {
   const fields = arguments[0];
-  const { id } = fields;
+  //const { id } = fields;
   delete fields.id;
 
   const setString = Object.keys(fields).map((key, idx)

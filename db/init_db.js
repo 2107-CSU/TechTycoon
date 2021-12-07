@@ -83,9 +83,9 @@ async function createInitialUsers() {
   console.log('Starting to create users...');
   try {
     const usersToCreate = [
-      { username: 'albert', password: 'bertie99' },
-      { username: 'sandra', password: 'sandra123' },
-      { username: 'glamgal', password: 'glamgal123' },
+      { username: 'albert', password: 'bertie99', email: 'albert@gmail.com' },
+      { username: 'sandra', password: 'sandra123', email: 'sandra@gmail.com' },
+      { username: 'glamgal', password: 'glamgal123', email: 'glamgal@gmail.com' },
     ]
     const users = await Promise.all(usersToCreate.map(createUser));   // promise.all waits for everything in the array to reurn
       console.log('Users created:');
@@ -142,8 +142,6 @@ async function createInitialProducts() {
 
 async function buildDB() {
   try {
-    client.connect();
-    await buildTables();
     await createInitialUsers();
     await createInitialCategories();
     await createInitialProducts();
