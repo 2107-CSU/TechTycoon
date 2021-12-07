@@ -1,6 +1,7 @@
 const express = require('express');
 const order_productsRouter = express.Router();
 const{destroyProductFromOrder, addProductToOrder, updateOrderProductQuantity, getAllProductsByOrderId} = require('../db');
+const {requireUser} = require('./utils');
 
 order_productsRouter.delete('/:orderproductid', async (req, res, next) => {    // req.user just seees if you are logged in
     const orderProductId = req.params.orderProductId; // get the order product id
