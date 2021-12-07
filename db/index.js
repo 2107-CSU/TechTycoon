@@ -255,7 +255,7 @@ async function editOrderProductStatus(orderId, status) {
     const {rows: [order]} = await client.query(`
     SELECT *
     FROM orders
-    WHERE id=$1`, [orderId]);
+    WHERE id=$1;`, [orderId]);
 
     if (order) {
       const {rows: [editedOrder]} = await client.query(`
