@@ -111,21 +111,18 @@ async function addProductToOrder(orderId, productId, quantity = 1)
 
 
 async function addProduct({ name, description, price, photo, availability, quantity, categories = [] }){
-  console.log("addProduct is working...")
   try {
-    console.log("Query is starting")
     const { rows: [product] } = await client.query(`
       INSERT INTO products(name, description, price, photo, availability, quantity)
       VALUES($1, $2, $3, $4, $5, $6)
       ON CONFLICT (name) DO NOTHING
       RETURNING *;
     `, [name, description, price, photo, availability, quantity])
-    console.log("Query was successful")
+
     const categoryList = await createCategories(categories);
 
     return await addCategoriesToProduct(product.id, categoryList)
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -232,7 +229,6 @@ async function createCategories(categoryList){
 
 async function createProductCategory(productId, categoryId){
   try {
-    console.log("createProductCategory is working ...");
     await client.query(`
       INSERT INTO product_categories("productId", "categoryId")
       VALUES ($1, $2)
