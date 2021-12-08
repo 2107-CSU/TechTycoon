@@ -20,4 +20,18 @@ productsRouter.post('/', async(req, res, next) => {
     }
 })
 
+productsRouter.patch('/:productId', async (req, res, next) => { // do we check that user is admin??
+    const id = req.params.productId;    // grab the id
+    const {quantity} = req.body;  // not sure where quantity comes from?
+    try {
+        const product = await updateProductQuantity(id, quantity);
+        res.send(product);   // not sure if this is what is sent?
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+})
+
+
 module.exports = productsRouter;

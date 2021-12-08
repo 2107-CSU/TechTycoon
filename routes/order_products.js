@@ -28,4 +28,18 @@ order_productsRouter.patch('/:orderproductid', requireUser, async (req, res, nex
 })
 
 
+order_productsRouter.patch('/:orderproductid', requireUser, async (req, res, next) => { // url variable is inside of params in req
+    const id = req.params.orderProductId; 
+    const status = req.body;       // is this where status comes from?   
+    try {
+        const orderStatus = await updateOrderStatus({id, status});
+        res.send(orderStatus);   
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+})
+
+
 module.exports = order_productsRouter;
