@@ -1,7 +1,7 @@
 const express= require('express');
 const usersRouter = express.Router();
 
-const {createUser, makeUserAdmin, getAllOrdersByUser} = require('../db/index');
+const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser} = require('../db/index');
 
 const requireAdmin = (req, res, next) => {
     if(req.isAdmin) next()
@@ -48,11 +48,26 @@ usersRouter.get('/:userId/orders', async (req, res, next) => {
 // PATCH REQUESTS
 
 usersRouter.patch('/admin/:userId', requireAdmin, async(req, res, next) => {
+    const {userId} = req.params;
+
     try {
-        const patchedUser = await makeUserAdmin(id);
+        const patchedUser = await makeUserAdmin(userId);
         res.send(patchedUser)
     } catch (error) {
         next(error)
+    }
+})
+
+// DELETE REQUEST
+
+usersRouter.delete('/admin/:userId', requireAdmin, async(req, res, next) => {
+    const {userId} = req.params;
+
+    try {
+        const deletedUser = await deleteUser(userId);
+        res.send(deletedUser);
+    } catch (error) {
+        next(error);
     }
 })
 

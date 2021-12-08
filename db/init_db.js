@@ -69,8 +69,8 @@ async function buildTables() {
         id SERIAL PRIMARY KEY,
         "orderId" INTEGER REFERENCES orders(id),
         "productId" INTEGER REFERENCES products(id),
-        quantity INTEGER
-	UNIQUE("orderId", "productId")
+        quantity INTEGER,
+	      UNIQUE("orderId", "productId")
       );
     `)
   } catch (error) {
@@ -143,6 +143,7 @@ async function createInitialProducts() {
 async function buildDB() {
   try {
     client.connect();
+    await buildTables();
     await createInitialUsers();
     await createInitialCategories();
     await createInitialProducts();

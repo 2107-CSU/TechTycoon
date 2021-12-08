@@ -38,6 +38,22 @@ async function makeUserAdmin({id}){
   }
 }
 
+async function deleteUser(userId){
+  try {
+    await client.query(`
+      DELETE FROM users
+      WHERE id=$1;
+    `, [userId]);
+
+    await client.query(`
+      DELETE FROM orders
+      WHERE "userId"=$1;
+    `, [userId])
+  } catch (error) {
+    throw error;
+  }
+}
+
 // ===== get all products ================
 
 
@@ -330,6 +346,7 @@ module.exports = {
   client,
   createUser,
   makeUserAdmin,
+  deleteUser,
   getAllProducts,
   addProductToOrder,
   addProduct,
