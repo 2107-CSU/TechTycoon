@@ -253,13 +253,23 @@ async function addCategoriesToProduct(productId, categoryList){
 
 async function getProductById(id){
   try {
-    const {rows} = await client.query(`
+    const {rows: [product]} = await client.query(`
       SELECT * FROM products
       WHERE id=$1;
     `, [id]);
 
-    return rows;
+    const {rows: categories} = await client.query(`
+      SELECT categories.*
+      FROM categories
+      JOIN product_categories ON categories.id = product_categories."categoryId"
+      WHERE product_categories."productId" = $1;`
+      , [id]);
+
+      product.categories = categories;
+
+    return product;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }
