@@ -228,22 +228,7 @@ async function updateOrderProductQuantity({ id, quantity }){
   }
 }
 
-// ========== edit order status ====================================
 
-async function updateOrderStatus({ id, status }){      // do we need a set string here?
-  try{
-      const {rows: [orderStatus] } = await client.query(`
-      UPDATE order_products
-      SET status = $1
-      WHERE id= ${id}
-      RETURNING *;
-      `, [status]);
-      return orderStatus;
-  }
-  catch(error){
-      throw error;
-  }
-}
 
 async function createCategories(categoryList){
   if (categoryList.length === 0) return;
@@ -370,22 +355,7 @@ async function createOrder(userId) {
   }
 }
 
-async function editOrderProductStatus(orderId, status) {
-  try {
-    const {rows: [order]} = await client.query(`
-    SELECT *
-    FROM orders
-    WHERE id=$1;`, [orderId]);
 
-    if (order) {
-      const {rows: [editedOrder]} = await client.query(`
-      UPDATE orders
-      SET "status"=$1
-      WHERE id=${orderId}
-      RETURNING *;`, [status]);
-
-      return editedOrder;
-    } else return 'no order found under that id';
 
 //----------------------------Orders Endpoints----------------------------
 
@@ -403,6 +373,26 @@ async function getAllOrdersByUser(id) {
   }
 }
 
+async function editOrderStatus(orderId, status) {
+  try {
+    const {rows: [order]} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE id=$1;`, [orderId]);
+
+    if (order) {
+      const {rows: [editedOrder]} = await client.query(`
+      UPDATE orders
+      SET "status"=$1
+      WHERE id=${orderId}
+      RETURNING *;`, [status]);
+
+      return editedOrder;
+    } else return 'no order found under that id';
+  } catch (error) {
+    throw error;
+  }
+}
 
 
 // export
@@ -419,14 +409,13 @@ module.exports = {
   getProductsbyCategoryId,
   getUserById,
   updateProductQuantity,
-  updateOrderStatus,
   createCategories,
   getProductById,
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
   createOrder,
-  editOrderProductStatus,
+  editOrderStatus,
   editProduct,
   removeProductById,
   getAllOrdersByUser
