@@ -41,6 +41,26 @@ async function makeUserAdmin({id}){
 // ===== get all products ================
 
 
+async function editProduct({id, name, description, price, photo, availability, quantity}) {
+  const fields = arguments[0];
+  const { id } = fields;
+  delete fields.id;
+
+  const setString = Object.keys(fields).map((key, idx)
+    `"${key}"=$${index + 1}`).join(', ');
+
+    try {
+      const {rows: [product] } = await client.query(`
+      UPDATE products
+      SET ${setString}
+      WHERE id=${id}
+      RETURNING *;`, [Object.values(fields)]);
+
+      return product;
+    } catch (error) {
+      throw error
+    }
+}
 async function getAllProducts()
 {
     try {const {rows} = await client.query(
@@ -73,6 +93,25 @@ async function addProduct({ name, description, price, photo, availability, quant
 
     return await addCategoriesToProduct(product.id, categoryList)
   } catch (error) {
+    throw error;
+  }
+}
+
+async function removeProductById(id) {
+  try {
+    await client.query(`
+    DELETE FROM products
+    WHERE id=${id};`);
+
+    // NOT SURE IF WE SHOULD BE DELETING THIS
+    /*
+    await client.query(`
+    DELETE FROM order_products
+    WHERE "productId"=${id};`)
+    */
+
+    return `Successfully deleted the product with an id of ${id}`;
+  } catch(error) {
     throw error;
   }
 }
@@ -233,6 +272,7 @@ async function getAllProductsByOrderId(orderId){
   }
 }
 
+
 // adds a new order to the orders table
 async function createOrder(userId) {
 
@@ -266,10 +306,25 @@ async function editOrderProductStatus(orderId, status) {
 
       return editedOrder;
     } else return 'no order found under that id';
+
+//----------------------------Orders Endpoints----------------------------
+
+async function getAllOrdersByUser(id) {
+  try {
+    const {rows: userOrders} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE "userId"=$1;`, [id]);
+
+    return userOrders;
+
   } catch (error) {
     throw error;
   }
 }
+
+
+
 // export
 module.exports = {
   client,
@@ -288,4 +343,8 @@ module.exports = {
   getAllProductsByOrderId,
   createOrder,
   editOrderProductStatus
+  editProduct,
+  removeProductById,
+  getAllOrdersByUser
+
 }

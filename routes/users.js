@@ -1,7 +1,7 @@
 const express= require('express');
 const usersRouter = express.Router();
 
-const {createUser, makeUserAdmin} = require('../db/index');
+const {createUser, makeUserAdmin, getAllOrdersByUser} = require('../db/index');
 
 const requireAdmin = (req, res, next) => {
     if(req.isAdmin) next()
@@ -33,6 +33,18 @@ usersRouter.post('/register', async(req, res, next)=>{
 
 // GET REQUESTS
 
+// sends the orders of the matching userId
+usersRouter.get('/:userId/orders', async (req, res, next) => {
+    const {userId} = req.params;
+
+    try {
+        const userOrders = await getAllOrdersByUser(userId);
+
+        res.send(userOrders);
+    } catch (error) {
+        next(error)
+    }
+})
 // PATCH REQUESTS
 
 usersRouter.patch('/admin/:userId', requireAdmin, async(req, res, next) => {
