@@ -196,7 +196,6 @@ async function getProductsbyCategoryId(id)
 }
 
 async function createCategories(categoryList){
-  console.log("createCategories is working...")
 
   if (categoryList.length === 0) return;
 
@@ -240,7 +239,6 @@ async function createProductCategory(productId, categoryId){
 }
 
 async function addCategoriesToProduct(productId, categoryList){
-  console.log("addCategoriesToProduct is working...")
   try {
     const createProductCategoryPromises = categoryList.map(async category => await createProductCategory(productId, category.id));
 

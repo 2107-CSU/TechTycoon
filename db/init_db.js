@@ -100,25 +100,6 @@ async function createInitialUsers() {
   }
 }
 
-// async function createInitialCategories() {
-//   console.log("Starting to create categories...");
-//   try {
-//     const categoriesToCreate = [
-//       {name: 'software'},
-//       {name: 'computers'},
-//       {name: 'accessories'},
-//       {name: 'gaming'}  
-//     ]
-
-//     const categories = await Promise.all(categoriesToCreate.map(createCategories));
-
-//     console.log('Categories created: ', categories)
-//   } catch (error) {
-//     console.error("Error creating categories!");
-//     throw error
-//   }
-// }
-
 async function createInitialProducts() {
   console.log("Starting to create products...");
 
@@ -147,7 +128,6 @@ async function createInitialProducts() {
 async function buildDB() {
   try {
     await createInitialUsers();
-    //await createInitialCategories();
     await createInitialProducts();
     
   } catch (error) {
