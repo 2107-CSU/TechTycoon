@@ -30,7 +30,7 @@ async function buildTables() {
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL,
-        price INTEGER NOT NULL,
+        price FLOAT NOT NULL,
         photo VARCHAR(255) NOT NULL,
         availability BOOLEAN NOT NULL DEFAULT true,
         quantity INTEGER 
@@ -41,7 +41,9 @@ async function buildTables() {
       );
       CREATE TABLE product_categories(
         "productId" INTEGER UNIQUE REFERENCES products(id),
-	      "catgeoryId" INTEGER UNIQUE REFERENCES categories(id)
+	      "categoryId" INTEGER UNIQUE REFERENCES categories(id),
+        UNIQUE("productId", "categoryId")
+
       );
 
       CREATE TABLE users(

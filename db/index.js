@@ -125,6 +125,7 @@ async function addProduct({ name, description, price, photo, availability, quant
 
     return await addCategoriesToProduct(product.id, categoryList)
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }
@@ -231,6 +232,7 @@ async function createCategories(categoryList){
 
 async function createProductCategory(productId, categoryId){
   try {
+    console.log("createProductCategory is working ...");
     await client.query(`
       INSERT INTO product_categories("productId", "categoryId")
       VALUES ($1, $2)
