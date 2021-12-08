@@ -5,6 +5,8 @@ const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME
 const client = new Client(DB_URL);
 const bcrypt = require('bcrypt'); // import bcrypt
 
+
+//=================== USERS ============================
 //====================== Create Users ==================
 async function createUser({username, password}) {
   const SALT_COUNT = 10;   // salt makes encryption more complex
@@ -20,6 +22,22 @@ async function createUser({username, password}) {
       return user;
   }
   catch (error) {
+      throw error;
+  }
+}
+
+
+// ==================== get user =========================
+
+async function getUserById(id){
+  try{
+      const {rows: [user]} = await client.query(`
+      SELECT * FROM users
+      WHERE id= $1;
+      `, [id]);
+      return user;
+  }
+  catch(error){
       throw error;
   }
 }
@@ -54,8 +72,7 @@ async function deleteUser(userId){
   }
 }
 
-// ===== get all products ================
-
+// ======== PRODUCTS ===================
 
 async function editProduct({id, name, description, price, photo, availability, quantity}) {
   const fields = arguments[0];
@@ -77,15 +94,40 @@ async function editProduct({id, name, description, price, photo, availability, q
       throw error
     }
 }
+
+// ===== get all products ================    
+
 async function getAllProducts()
 {
     try {const {rows} = await client.query(
       `SELECT *
       WHERE availabilty = $1
-      FROM products;`, [true])
-    } catch(error){throw error;}
+      FROM products;`, [true])}
+    catch(error){
+      throw error;
+    }
     return rows;
 }
+
+// ====== edit product quantity ===========
+
+
+async function updateProductQuantity(quantity, id){ // no object destructuring for quantity?
+  try{
+      const {rows: [quantity] } = await client.query(`
+      UPDATE products
+      SET quantity = $1
+      WHERE id= ${id}
+      RETURNING *;
+      `, [quantity]);
+      return quantity;       // is this what we return?
+  }
+  catch(error){
+      throw error;
+  }
+}
+
+//=========== add product to order =======
 
 async function addProductToOrder(orderId, productId, quantity = 1)
 {
@@ -96,6 +138,8 @@ async function addProductToOrder(orderId, productId, quantity = 1)
   );} catch (error) {throw error;}
 }
 
+
+// ========== add a product in general ? =============
 
 async function addProduct({ name, description, price, photo, availability, quantity, categories = [] }){
   try {
@@ -113,6 +157,23 @@ async function addProduct({ name, description, price, photo, availability, quant
   }
 }
 
+// ============== get product by category ==============
+async function getProductsbyCategoryId(id)
+{
+  try{
+    const {rows} = await client.query(`
+    SELECT * 
+    FROM product_categories
+    JOIN products ON product_categories."productId" = product.id
+    WHERE product_categories."categoryId" = $1;`, [id]);
+
+    return rows;
+
+  } catch(error) {throw error;}
+}
+
+
+// ==========ORDER PRODUCTS =====================
 async function removeProductById(id) {
   try {
     await client.query(`
@@ -167,18 +228,21 @@ async function updateOrderProductQuantity({ id, quantity }){
   }
 }
 
-async function getProductsbyCategoryId(id)
-{
+// ========== edit order status ====================================
+
+async function updateOrderStatus({ id, status }){      // do we need a set string here?
   try{
-    const {rows} = await client.query(`
-    SELECT * 
-    FROM product_categories
-    JOIN products ON product_categories."productId" = product.id
-    WHERE product_categories."categoryId" = $1;`, [id]);
-
-    return rows;
-
-  } catch(error) {throw error;}
+      const {rows: [orderStatus] } = await client.query(`
+      UPDATE order_products
+      SET status = $1
+      WHERE id= ${id}
+      RETURNING *;
+      `, [status]);
+      return orderStatus;
+  }
+  catch(error){
+      throw error;
+  }
 }
 
 async function createCategories(categoryList){
@@ -353,13 +417,16 @@ module.exports = {
   destroyProductFromOrder,
   updateOrderProductQuantity,
   getProductsbyCategoryId,
+  getUserById,
+  updateProductQuantity,
+  updateOrderStatus,
   createCategories,
   getProductById,
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
   createOrder,
-  editOrderProductStatus
+  editOrderProductStatus,
   editProduct,
   removeProductById,
   getAllOrdersByUser

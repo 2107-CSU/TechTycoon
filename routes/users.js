@@ -33,8 +33,19 @@ usersRouter.post('/register', async(req, res, next)=>{
 
 // GET REQUESTS
 
+usersRouter.get('/:username', async (req, res, next) => {
+    const {id} = req.params; // user id should be stored in req (comes from the user)
+    try {
+        const user = await getUserById({id});
+        res.send(user);    // populate routine information
+    }
+    catch (error) {
+        next(error);
+    }
+} )
+
 // sends the orders of the matching userId
-usersRouter.get('/:userId/orders', async (req, res, next) => {
+usersRouter.get('/orders/:userId', async (req, res, next) => {
     const {userId} = req.params;
 
     try {
