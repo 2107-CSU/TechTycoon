@@ -272,6 +272,41 @@ async function getAllProductsByOrderId(orderId){
   }
 }
 
+
+// adds a new order to the orders table
+async function createOrder(userId) {
+
+  // initial state for status when creating an order
+  const status = 'created';
+  try {
+    const {rows: [order]} = await client.query(`
+    INSERT INTO orders("userId", status)
+    VALUES ($1, $2)
+    RETURNING *;`, [userId, status]);
+
+    return order;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function editOrderProductStatus(orderId, status) {
+  try {
+    const {rows: [order]} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE id=$1;`, [orderId]);
+
+    if (order) {
+      const {rows: [editedOrder]} = await client.query(`
+      UPDATE orders
+      SET "status"=$1
+      WHERE id=${orderId}
+      RETURNING *;`, [status]);
+
+      return editedOrder;
+    } else return 'no order found under that id';
+
 //----------------------------Orders Endpoints----------------------------
 
 async function getAllOrdersByUser(id) {
@@ -282,10 +317,13 @@ async function getAllOrdersByUser(id) {
     WHERE "userId"=$1;`, [id]);
 
     return userOrders;
+
   } catch (error) {
     throw error;
   }
 }
+
+
 
 // export
 module.exports = {
@@ -303,7 +341,10 @@ module.exports = {
   getReviewsByProductId,
   getOrderByOrderId,
   getAllProductsByOrderId,
+  createOrder,
+  editOrderProductStatus
   editProduct,
   removeProductById,
   getAllOrdersByUser
+
 }
