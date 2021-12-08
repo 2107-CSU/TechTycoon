@@ -40,8 +40,8 @@ async function buildTables() {
         name VARCHAR(255) UNIQUE NOT NULL
       );
       CREATE TABLE product_categories(
-        "productId" INTEGER UNIQUE REFERENCES products(id),
-	      "categoryId" INTEGER UNIQUE REFERENCES categories(id),
+        "productId" INTEGER REFERENCES products(id),
+	      "categoryId" INTEGER REFERENCES categories(id),
         UNIQUE("productId", "categoryId")
 
       );
