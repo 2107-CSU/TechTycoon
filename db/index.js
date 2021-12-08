@@ -26,6 +26,7 @@ async function createUser({username, password}) {
   }
 }
 
+
 // ==================== get user =========================
 
 async function getUserById(id){
@@ -41,17 +42,70 @@ async function getUserById(id){
   }
 }
 
+async function makeUserAdmin({id}){
+  try {
+    const {rows} = await client.query(`
+      UPDATE users
+      SET isAdmin=true
+      WHERE id=$1;
+    `, [id])
+
+    return rows
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function deleteUser(userId){
+  try {
+    await client.query(`
+      DELETE FROM users
+      WHERE id=$1;
+    `, [userId]);
+
+    await client.query(`
+      DELETE FROM orders
+      WHERE "userId"=$1;
+    `, [userId])
+  } catch (error) {
+    throw error;
+  }
+}
+
 // ======== PRODUCTS ===================
-// ===== get all products ================
 
+async function editProduct({id, name, description, price, photo, availability, quantity}) {
+  const fields = arguments[0];
+  const { id } = fields;
+  delete fields.id;
 
-async function getAllProducts()          
+  const setString = Object.keys(fields).map((key, idx)
+    `"${key}"=$${index + 1}`).join(', ');
+
+    try {
+      const {rows: [product] } = await client.query(`
+      UPDATE products
+      SET ${setString}
+      WHERE id=${id}
+      RETURNING *;`, [Object.values(fields)]);
+
+      return product;
+    } catch (error) {
+      throw error
+    }
+}
+
+// ===== get all products ================    
+
+async function getAllProducts()
 {
     try {const {rows} = await client.query(
       `SELECT *
       WHERE availabilty = $1
-      FROM products;`, [true])
-    } catch(error){throw error;}
+      FROM products;`, [true])}
+    catch(error){
+      throw error;
+    }
     return rows;
 }
 
@@ -80,20 +134,24 @@ async function addProductToOrder(orderId, productId, quantity = 1)
   try{ const {rows} = await client.query(
     `INSERT INTO order_products("orderId", "productId", quantity)
     VALUES($1, $2, $3)
-    ON CONFLICT ("orderId", "productId") DO NOTHING`, [orderId, productId, quantity]
+    ON CONFLICT ("orderId", "productId") DO NOTHING;`, [orderId, productId, quantity]
   );} catch (error) {throw error;}
 }
 
+
 // ========== add a product in general ? =============
-async function addProduct({ name, description, price, photo, availability, quantity }){
+
+async function addProduct({ name, description, price, photo, availability, quantity, categories = [] }){
   try {
-    const {rows} = await client.query(`
+    const { rows: [product] } = await client.query(`
       INSERT INTO products(name, description, price, photo, availability, quantity)
       VALUES($1, $2, $3, $4, $5, $6)
       RETURNING *;,
     `, [name, description, price, photo, availability, quantity])
   
-    return rows;
+    const categoryList = await createCategories(categories);
+
+    return await addCategoriesToProduct(product.id, categoryList)
   } catch (error) {
     throw error;
   }
@@ -116,6 +174,25 @@ async function getProductsbyCategoryId(id)
 
 
 // ==========ORDER PRODUCTS =====================
+async function removeProductById(id) {
+  try {
+    await client.query(`
+    DELETE FROM products
+    WHERE id=${id};`);
+
+    // NOT SURE IF WE SHOULD BE DELETING THIS
+    /*
+    await client.query(`
+    DELETE FROM order_products
+    WHERE "productId"=${id};`)
+    */
+
+    return `Successfully deleted the product with an id of ${id}`;
+  } catch(error) {
+    throw error;
+  }
+}
+
 // =========== destroy product from order =========
 
 // check with matt, rebecca, amadeo? which id, po id or p id
@@ -149,6 +226,7 @@ async function updateOrderProductQuantity({ id, quantity }){
   catch(error){
       throw error;
   }
+}
 
 // ========== edit order status ====================================
 
@@ -165,11 +243,174 @@ async function updateOrderStatus({ id, status }){      // do we need a set strin
   catch(error){
       throw error;
   }
+}
+
+async function createCategories(categoryList){
+  if (categoryList.length === 0) return;
+
+  const valuesStringInsert = categoryList.map(
+    (_, index) => `$${index + 1}`
+  ).join('), (');
+
+  const valuesStringSelect = categoryList.map(
+    (_, index) => `$${index + 1}`
+  ).join(', ');
+
+  try {
+    await client.query(`
+      INSERT INTO categories (name)
+      VALUES (${valuesStringInsert})
+      ON CONFLICT (name) DO NOTHING;
+    `, categoryList)
+
+    const {rows} = await client.query(`
+      SELECT * FROM categories
+      WHERE name
+      IN (${valuesStringSelect});
+    `, categoryList)
+
+    return rows
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createProductCategory(productId, categoryId){
+  try {
+    await client.query(`
+      INSERT INTO product_categories("productId", "categoryId")
+      VALUES ($1, $2)
+      ON CONFLICT ("productId", "categoryId") DO NOTHING;
+    `, [productId, categoryId]);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function addCategoriesToProduct(productId, categoryList){
+  try {
+    const createProductCategoryPromises = categoryList.map(category => createProductCategory(productId, category.id));
+
+    await Promise.all(createProductCategoryPromises);
+
+    return await getProductById(productId);
+  } catch (error) {
+    throw error;
+  }
+}
+//---------------Single Product endpoints----------------
+
+async function getProductById(id){
+  try {
+    const {rows} = await client.query(`
+      SELECT * FROM products
+      WHERE id=$1;
+    `, [id]);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+async function getReviewsByProductId(productId){
+  try {
+    const {rows} = await client.query(`
+      SELECT * FROM reviews
+      WHERE "productId"=$1;
+    `, [productId])
+
+    return rows
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getOrderByOrderId(orderId){
+  try{
+    const {rows} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE id = $1;`, [orderId])
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getAllProductsByOrderId(orderId){
+  try{
+    const {rows} = await client.query(`
+    SELECT *
+    FROM order_products
+    JOIN products ON order_products."productId" = product.id
+    WHERE order_products."orderId" = $1;`, [orderId]);
+    return rows;
+
+  } catch(error) {
+    throw error;
+  }
+}
+
+
+// adds a new order to the orders table
+async function createOrder(userId) {
+
+  // initial state for status when creating an order
+  const status = 'created';
+  try {
+    const {rows: [order]} = await client.query(`
+    INSERT INTO orders("userId", status)
+    VALUES ($1, $2)
+    RETURNING *;`, [userId, status]);
+
+    return order;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function editOrderProductStatus(orderId, status) {
+  try {
+    const {rows: [order]} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE id=$1;`, [orderId]);
+
+    if (order) {
+      const {rows: [editedOrder]} = await client.query(`
+      UPDATE orders
+      SET "status"=$1
+      WHERE id=${orderId}
+      RETURNING *;`, [status]);
+
+      return editedOrder;
+    } else return 'no order found under that id';
+
+//----------------------------Orders Endpoints----------------------------
+
+async function getAllOrdersByUser(id) {
+  try {
+    const {rows: userOrders} = await client.query(`
+    SELECT *
+    FROM orders
+    WHERE "userId"=$1;`, [id]);
+
+    return userOrders;
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 
 // export
 module.exports = {
   client,
   createUser,
+  makeUserAdmin,
+  deleteUser,
   getAllProducts,
   addProductToOrder,
   addProduct,
@@ -178,5 +419,16 @@ module.exports = {
   getProductsbyCategoryId,
   getUserById,
   updateProductQuantity,
-  updateOrderStatus
+  updateOrderStatus,
+  createCategories,
+  getProductById,
+  getReviewsByProductId,
+  getOrderByOrderId,
+  getAllProductsByOrderId,
+  createOrder,
+  editOrderProductStatus,
+  editProduct,
+  removeProductById,
+  getAllOrdersByUser
+
 }

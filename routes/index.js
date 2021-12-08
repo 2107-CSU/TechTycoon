@@ -21,4 +21,7 @@ apiRouter.use('/orderproducts', order_productsRouter);
 const product_categoriesRouter = require('./product_categories');
 apiRouter.use('/productcategories', product_categoriesRouter);
 
+const ordersRouter = require('./orders');
+apiRouter.use('/orders', ordersRouter);
+
 module.exports = apiRouter;

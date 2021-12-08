@@ -2,7 +2,8 @@
 const {
   client,
   addProduct,
-   createUser,
+  createUser,
+  createCategories,
 } = require('./index');
 
 async function buildTables() {
@@ -69,21 +70,10 @@ async function buildTables() {
         "orderId" INTEGER REFERENCES orders(id),
         "productId" INTEGER REFERENCES products(id),
         quantity INTEGER,
-        "isOrdered" BOOLEAN DEFAULT false
-        UNIQUE("orderId", "productId")
+	      UNIQUE("orderId", "productId")
       );
     `)
   } catch (error) {
-    throw error;
-  }
-}
-
-async function populateInitialData() {
-  try {
-    // create useful starting data
-
-  } catch (error) {
-    console.error("Error initializing tables!")
     throw error;
   }
 }
@@ -107,12 +97,56 @@ async function createInitialUsers() {
   }
 }
 
-async function rebuildDB() {
+async function createInitialCategories() {
+  console.log("Starting to create categories...");
+  try {
+    const categoriesToCreate = [
+      {name: 'software'},
+      {name: 'computers'},
+      {name: 'accessories'},
+      {name: 'gaming'}  
+    ]
+
+    const categories = await Promise.all(categoriesToCreate.map(createCategories));
+
+    console.log('Categories created: ', categories)
+  } catch (error) {
+    console.error("Error creating categories!");
+    throw error
+  }
+}
+
+async function createInitialProducts() {
+  console.log("Starting to create products...");
+  try {
+    const productsToCreate = [
+      {name: 'Adobe Creative Cloud', description: 'Adobe software', price: 29.99, photo: 'adobe-creative-cloud', availability: true, quantity: 10000},
+      {name: 'Microsoft Office Suite 2021', description: 'All microsoft products', price: 249.99, photo: 'office-home-business-2021', availability: true, quantity: 10000},
+      {name: '10.2-inch iPad Wi-Fi + Cellular 256GB - Silver', description: 'Apple tablet', price: 579, photo: '10.2-ipad-256gb', availability: true, quantity: 10000},
+      {name: 'Microsoft Surface Book 3 13.5" Platinum', description: 'Microsoft laptop', price: 1575, photo: 'microsoft-surface-book', availability: true, quantity: 10000},  
+      {name: '140W USB-C Power Adapter', description: 'Power adapter', price: 99, photo: '140w-usb-c-power-adapter', availability: true, quantity: 10000},
+      {name: '4-Port Hub Belkin Super Speed 3.0', description: 'Belkin port with 4 USB slots', price: 49.99, photo: '4-port-hub-belkin-3.0', availability: true, quantity: 10000},
+      {name: 'Cooler Master Devastator 3 RGB Gaming Keyboard and Mouse Combo', description: 'Keyboard and mouse', price: 35.99, photo: 'cooler-master-devastator-keyboard-and-mouse', availability: true, quantity: 10000},
+      {name: 'Microsoft Xbox Elite Wireless Controller - Series 2', description: 'Xbox controller', price: 152, photo: 'microsoft-xbox-elite-wireless-controller', availability: true, quantity: 10000}
+    ]
+
+    const products = await Promise.all(productsToCreate.map(product => addProduct(product)));
+
+    console.log("Products created: ", products)
+  } catch (error) {
+    
+  }
+}
+
+
+
+async function buildDB() {
   try {
     client.connect();
-    await dropTables();
-    await createTables();
+    await buildTables();
     await createInitialUsers();
+    await createInitialCategories();
+    await createInitialProducts();
     
   } catch (error) {
     console.log('Error during rebuildDB')
@@ -121,6 +155,6 @@ async function rebuildDB() {
 }
 
 buildTables()
-  //.then(populateInitialData)
+  .then(buildDB)
   .catch(console.error)
   .finally(() => client.end());

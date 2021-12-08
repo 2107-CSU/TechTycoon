@@ -1,8 +1,12 @@
 const express= require('express');
 const usersRouter = express.Router();
 
-const {createUser} = require('../db/index');
+const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser} = require('../db/index');
 
+const requireAdmin = (req, res, next) => {
+    if(req.isAdmin) next()
+    else next(error)
+}
 
 // POST REQUESTS
 
@@ -40,6 +44,43 @@ usersRouter.get('/:username', async (req, res, next) => {
     }
 } )
 
+// sends the orders of the matching userId
+usersRouter.get('/orders/:userId', async (req, res, next) => {
+    const {userId} = req.params;
+
+    try {
+        const userOrders = await getAllOrdersByUser(userId);
+
+        res.send(userOrders);
+    } catch (error) {
+        next(error)
+    }
+})
+// PATCH REQUESTS
+
+usersRouter.patch('/admin/:userId', requireAdmin, async(req, res, next) => {
+    const {userId} = req.params;
+
+    try {
+        const patchedUser = await makeUserAdmin(userId);
+        res.send(patchedUser)
+    } catch (error) {
+        next(error)
+    }
+})
+
+// DELETE REQUEST
+
+usersRouter.delete('/admin/:userId', requireAdmin, async(req, res, next) => {
+    const {userId} = req.params;
+
+    try {
+        const deletedUser = await deleteUser(userId);
+        res.send(deletedUser);
+    } catch (error) {
+        next(error);
+    }
+})
 
 module.exports = usersRouter;
 
