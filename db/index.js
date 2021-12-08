@@ -111,13 +111,16 @@ async function addProductToOrder(orderId, productId, quantity = 1)
 
 
 async function addProduct({ name, description, price, photo, availability, quantity, categories = [] }){
+  console.log("addProduct is working...")
   try {
+    console.log("Query is starting")
     const { rows: [product] } = await client.query(`
       INSERT INTO products(name, description, price, photo, availability, quantity)
       VALUES($1, $2, $3, $4, $5, $6)
-      RETURNING *;,
+      ON CONFLICT (name) DO NOTHING
+      RETURNING *;
     `, [name, description, price, photo, availability, quantity])
-  
+    console.log("Query was successful")
     const categoryList = await createCategories(categories);
 
     return await addCategoriesToProduct(product.id, categoryList)
@@ -195,6 +198,8 @@ async function getProductsbyCategoryId(id)
 }
 
 async function createCategories(categoryList){
+  console.log("createCategories is working...")
+
   if (categoryList.length === 0) return;
 
   const valuesStringInsert = categoryList.map(
@@ -237,8 +242,9 @@ async function createProductCategory(productId, categoryId){
 }
 
 async function addCategoriesToProduct(productId, categoryList){
+  console.log("addCategoriesToProduct is working...")
   try {
-    const createProductCategoryPromises = categoryList.map(category => createProductCategory(productId, category.id));
+    const createProductCategoryPromises = categoryList.map(async category => await createProductCategory(productId, category.id));
 
     await Promise.all(createProductCategoryPromises);
 
@@ -322,6 +328,7 @@ module.exports = {
   createUser,
   makeUserAdmin,
   deleteUser,
+  getAllUsers,
   getAllProducts,
   addProductToOrder,
   addProduct,

@@ -4,6 +4,7 @@ const {
   addProduct,
   createUser,
   createCategories,
+  getAllUsers,
 } = require('./index');
 
 async function buildTables() {
@@ -30,7 +31,7 @@ async function buildTables() {
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL,
         price INTEGER NOT NULL,
-        photo VARCHAR(255) UNIQUE NOT NULL,
+        photo VARCHAR(255) NOT NULL,
         availability BOOLEAN NOT NULL DEFAULT true,
         quantity INTEGER 
       );
@@ -97,42 +98,41 @@ async function createInitialUsers() {
   }
 }
 
-async function createInitialCategories() {
-  console.log("Starting to create categories...");
-  try {
-    const categoriesToCreate = [
-      {name: 'software'},
-      {name: 'computers'},
-      {name: 'accessories'},
-      {name: 'gaming'}  
-    ]
+// async function createInitialCategories() {
+//   console.log("Starting to create categories...");
+//   try {
+//     const categoriesToCreate = [
+//       {name: 'software'},
+//       {name: 'computers'},
+//       {name: 'accessories'},
+//       {name: 'gaming'}  
+//     ]
 
-    const categories = await Promise.all(categoriesToCreate.map(createCategories));
+//     const categories = await Promise.all(categoriesToCreate.map(createCategories));
 
-    console.log('Categories created: ', categories)
-  } catch (error) {
-    console.error("Error creating categories!");
-    throw error
-  }
-}
+//     console.log('Categories created: ', categories)
+//   } catch (error) {
+//     console.error("Error creating categories!");
+//     throw error
+//   }
+// }
 
 async function createInitialProducts() {
   console.log("Starting to create products...");
 
-  const [albert, sandra, glamgal] = await getAll
   try {
     const productsToCreate = [
-      {name: 'Adobe Creative Cloud', description: 'Adobe software', price: 29.99, photo: 'adobe-creative-cloud', availability: true, quantity: 10000},
-      {name: 'Microsoft Office Suite 2021', description: 'All microsoft products', price: 249.99, photo: 'office-home-business-2021', availability: true, quantity: 10000},
-      {name: '10.2-inch iPad Wi-Fi + Cellular 256GB - Silver', description: 'Apple tablet', price: 579, photo: '10.2-ipad-256gb', availability: true, quantity: 10000},
-      {name: 'Microsoft Surface Book 3 13.5" Platinum', description: 'Microsoft laptop', price: 1575, photo: 'microsoft-surface-book', availability: true, quantity: 10000},  
-      {name: '140W USB-C Power Adapter', description: 'Power adapter', price: 99, photo: '140w-usb-c-power-adapter', availability: true, quantity: 10000},
-      {name: '4-Port Hub Belkin Super Speed 3.0', description: 'Belkin port with 4 USB slots', price: 49.99, photo: '4-port-hub-belkin-3.0', availability: true, quantity: 10000},
-      {name: 'Cooler Master Devastator 3 RGB Gaming Keyboard and Mouse Combo', description: 'Keyboard and mouse', price: 35.99, photo: 'cooler-master-devastator-keyboard-and-mouse', availability: true, quantity: 10000},
-      {name: 'Microsoft Xbox Elite Wireless Controller - Series 2', description: 'Xbox controller', price: 152, photo: 'microsoft-xbox-elite-wireless-controller', availability: true, quantity: 10000}
+      {name: 'Adobe Creative Cloud', description: 'Adobe software', price: 29.99, photo: 'adobe-creative-cloud', availability: true, quantity: 10000, categories: ['software']},
+      {name: 'Microsoft Office Suite 2021', description: 'All microsoft products', price: 249.99, photo: 'office-home-business-2021', availability: true, quantity: 10000, categories: ['software']},
+      {name: '10.2-inch iPad Wi-Fi + Cellular 256GB - Silver', description: 'Apple tablet', price: 579, photo: '10.2-ipad-256gb', availability: true, quantity: 10000, categories: ['computers']},
+      {name: 'Microsoft Surface Book 3 13.5" Platinum', description: 'Microsoft laptop', price: 1575, photo: 'microsoft-surface-book', availability: true, quantity: 10000, categories: ['computers']},  
+      {name: '140W USB-C Power Adapter', description: 'Power adapter', price: 99, photo: '140w-usb-c-power-adapter', availability: true, quantity: 10000, categories: ['accessories']},
+      {name: '4-Port Hub Belkin Super Speed 3.0', description: 'Belkin port with 4 USB slots', price: 49.99, photo: '4-port-hub-belkin-3.0', availability: true, quantity: 10000, categories: ['accessories']},
+      {name: 'Cooler Master Devastator 3 RGB Gaming Keyboard and Mouse Combo', description: 'Keyboard and mouse', price: 35.99, photo: 'cooler-master-devastator-keyboard-and-mouse', availability: true, quantity: 10000, categories: ['gaming']},
+      {name: 'Microsoft Xbox Elite Wireless Controller - Series 2', description: 'Xbox controller', price: 152, photo: 'microsoft-xbox-elite-wireless-controller', availability: true, quantity: 10000, categories: ['gaming']}
     ]
 
-    const products = await Promise.all(productsToCreate.map(product => addProduct(product)));
+    const products = await Promise.all(productsToCreate.map(async product => await addProduct(product)));
 
     console.log("Products created: ", products)
   } catch (error) {
@@ -145,7 +145,7 @@ async function createInitialProducts() {
 async function buildDB() {
   try {
     await createInitialUsers();
-    await createInitialCategories();
+    //await createInitialCategories();
     await createInitialProducts();
     
   } catch (error) {

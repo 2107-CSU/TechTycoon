@@ -9,4 +9,9 @@ function requireUser(req, res, next) {
     next();
 }
 
-module.exports = {requireUser};
+const requireAdmin = (req, res, next) => {
+    if(req.isAdmin) next()
+    else next(error)
+}
+
+module.exports = {requireUser, requireAdmin};

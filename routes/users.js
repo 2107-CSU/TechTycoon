@@ -2,12 +2,7 @@ const express= require('express');
 const usersRouter = express.Router();
 
 const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser} = require('../db/index');
-
-const requireAdmin = (req, res, next) => {
-    if(req.isAdmin) next()
-    else next(error)
-}
-
+const {requireAdmin} = require('./utils')
 // POST REQUESTS
 
 usersRouter.post('/register', async(req, res, next)=>{
