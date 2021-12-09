@@ -389,8 +389,10 @@ async function getOrderByOrderId(orderId){
     const {rows} = await client.query(`
     SELECT *
     FROM orders
-    WHERE id = $1;`, [orderId])
+    WHERE id = $1;`, [orderId]);
+    return rows;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }
@@ -405,6 +407,7 @@ async function getAllProductsByOrderId(orderId){
     return rows;
 
   } catch(error) {
+    console.log(error);
     throw error;
   }
 }
@@ -465,6 +468,18 @@ async function editOrderStatus(orderId, status) {
   }
 }
 
+async function getAllOrders() {
+  try{
+    const {rows} = await client.query(`
+      SELECT *
+      FROM orders;`);
+      return rows
+  }
+  catch(error){
+    throw error;
+  }
+}
+
 
 // export
 module.exports = {
@@ -490,6 +505,7 @@ module.exports = {
   editProduct,
   removeProductById,
   getAllOrdersByUser,
-  getUser
+  getUser,
+  getAllOrders,
 
 }

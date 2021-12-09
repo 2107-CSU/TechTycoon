@@ -12,6 +12,9 @@ const {
   getProductsbyCategoryName,
   removeProductById,
   createOrder,
+  editOrderStatus,
+  getAllOrders,
+  getOrderByOrderId,
 } = require('./index');
 
 async function buildTables() {
@@ -138,18 +141,34 @@ async function createInitialProducts() {
     const removedProduct = await removeProductById(1)
     console.log(removedProduct)
   } catch (error) {
-    
+    console.log(error);
+    throw error;
   }
 }
 
 async function createInitialOrders(){
   console.log("Starting to create orders...");
-  const users = await getAllUsers();
-  // console.log(users);
-  const orders = await Promise.all(users.map(async user => await createOrder(user.id)));
-  console.log("Orders created: ", orders);
 
+  try{
+    const users = await getAllUsers();
+    const orders = await Promise.all(users.map(async user => await createOrder(user.id)));
+    console.log("Orders created: ", orders);
 
+    // edit order status and add new created orders:
+    const newStatus = "edited";
+    await Promise.all(orders.map(async order => await (editOrderStatus(order.id, newStatus))));
+    await Promise.all(users.map(async user => await createOrder(user.id)));
+    console.log("edited Orders: ", await getAllOrders());
+
+    const orderId = 1;
+    const order = await getOrderByOrderId(orderId);
+    console.log("Order with id ", orderId, ": ", order);
+
+  } catch(error){
+    console.log(error);
+    throw error;
+
+  }
 }
 
 
