@@ -127,17 +127,6 @@ async function getAllUsers(){
 // ======== PRODUCTS ===================
 
 
-async function editProduct({id, name, description, price, photo, availability, quantity}) {
-  const fields = arguments[0];
-  //const { id } = fields;
-  delete fields.id;
-
-    return rows;
-  } catch (error) {
-    throw error;
-  }
-}
-
 async function editProduct(productId, fields = {}) {
   const {categories} = fields;
   delete fields.categories;
