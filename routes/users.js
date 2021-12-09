@@ -1,7 +1,10 @@
 const express= require('express');
+const jwt = require('jsonwebtoken')
 const usersRouter = express.Router();
 
-const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser} = require('../db/index');
+const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser} = require('../db/index');
+
+const { requireUser } = require('./utils'); // verifies user is logged in
 
 const requireAdmin = (req, res, next) => {
     if(req.isAdmin) next()
@@ -31,6 +34,31 @@ usersRouter.post('/register', async(req, res, next)=>{
 
 })
 
+usersRouter.post('/login', async (req, res, next) => {
+    const {username, password} = req.body;
+
+    // if either of these are falsey it throws an error
+    if (!username || !password) {
+        throw Error({
+          name: "MissingCredentialsError",
+          message: "Please supply both a username and password"
+        });
+      }
+
+    try {
+        const user = await getUser(req.body);
+
+        if (!user) throw Error('Your password is incorrect!');
+
+        const token = jwt.sign({id: user.id, username: user.username, isAdmin: user.isAdmin}, process.env.JWT_SECRET);
+
+        res.send({
+            message: 'successful login',
+            token: token});
+    } catch (error) {
+        next(error);
+    }
+})
 // GET REQUESTS
 
 usersRouter.get('/:username', async (req, res, next) => {

@@ -42,6 +42,42 @@ async function getUserById(id){
   }
 }
 
+// returns the relevant information of a user after verifying username and password match
+async function getUser({username, password}) {
+  try {
+    const user = getUserByUsername(username);
+
+    if (!user) throw Error('User could not be fetched!');
+
+    // comparing the password sent in to the password of the matching username
+    // we need bcrypt because the user tables passwords are encrypted
+    const passwordIsMatch = await bcrypt.compare(password, user.password);
+
+    if (passwordIsMatch) {
+      delete user.password;
+
+      return user;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+// returns the user data of the specified username
+async function getUserByUsername(username) {
+  try {
+    const {rows: [user] } = await client.query(`
+    SELECT *
+    FROM users
+    WHERE username=$1`, [username]);
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
 async function makeUserAdmin({id}){
   try {
     const {rows} = await client.query(`
@@ -418,6 +454,7 @@ module.exports = {
   editOrderStatus,
   editProduct,
   removeProductById,
-  getAllOrdersByUser
+  getAllOrdersByUser,
+  getUser
 
 }
