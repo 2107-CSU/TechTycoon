@@ -126,6 +126,8 @@ async function createInitialProducts() {
 
     const allProducts = await getAllProducts()
     console.log('all products are ', allProducts)
+
+    const updatedQuantity
   } catch (error) {
     
   }

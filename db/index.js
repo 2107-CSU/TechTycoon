@@ -178,24 +178,6 @@ async function getAllProducts()
     
 }
 
-// ====== edit product quantity ===========
-
-
-async function updateProductQuantity(quantity, id){ // no object destructuring for quantity?
-  try{
-      const {rows: [quantity] } = await client.query(`
-      UPDATE products
-      SET quantity = $1
-      WHERE id= ${id}
-      RETURNING *;
-      `, [quantity]);
-      return quantity;       // is this what we return?
-  }
-  catch(error){
-      throw error;
-  }
-}
-
 //=========== add product to order =======
 
 async function addProductToOrder(orderId, productId, quantity = 1)
