@@ -1,8 +1,12 @@
 const express= require('express');
+const jwt = require('jsonwebtoken')
 const usersRouter = express.Router();
 
-const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser} = require('../db/index');
-const {requireAdmin} = require('./utils')
+
+const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser} = require('../db/index');
+const {requireAdmin, requireUser} = require('./utils')
+
+
 // POST REQUESTS
 
 usersRouter.post('/register', async(req, res, next)=>{
@@ -26,10 +30,46 @@ usersRouter.post('/register', async(req, res, next)=>{
 
 })
 
+usersRouter.post('/login', async (req, res, next) => {
+    const {username, password} = req.body;
+
+    // if either of these are falsey it throws an error
+    if (!username || !password) {
+        throw Error({
+          name: "MissingCredentialsError",
+          message: "Please supply both a username and password"
+        });
+      }
+
+    try {
+        const user = await getUser(req.body);
+
+        if (!user) throw Error('Your password is incorrect!');
+
+        const token = jwt.sign({id: user.id, username: user.username, isAdmin: user.isAdmin}, process.env.JWT_SECRET);
+
+        res.send({
+            message: 'successful login',
+            token: token});
+    } catch (error) {
+        next(error);
+    }
+})
 // GET REQUESTS
 
+usersRouter.get('/:username', async (req, res, next) => {
+    const {id} = req.params; // user id should be stored in req (comes from the user)
+    try {
+        const user = await getUserById({id});
+        res.send(user);    // populate routine information
+    }
+    catch (error) {
+        next(error);
+    }
+} )
+
 // sends the orders of the matching userId
-usersRouter.get('/:userId/orders', async (req, res, next) => {
+usersRouter.get('/orders/:userId', async (req, res, next) => {
     const {userId} = req.params;
 
     try {

@@ -1,3 +1,6 @@
+require('dotenv').config();
+
+const {PORT = 3000} = process.env;
 // This is the Web Server
 const express = require('express');
 const server = express();
