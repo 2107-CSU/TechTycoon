@@ -118,11 +118,10 @@ async function createInitialProducts() {
     ]
 
     const products = await Promise.all(productsToCreate.map(async product => await addProduct(product)));
-
     console.log("Products created: ", products)
 
-    const {id} = getProductById(1)
-    const editedProduct = await editProduct(productsToCreate[0])
+    const editedProduct = await editProduct(1, {name: 'New name', description: 'New description', price: 30, photo: 'new photo', categories: ['new category', 'second new category']});
+    console.log("Product edited: ", editedProduct)
   } catch (error) {
     
   }

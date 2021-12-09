@@ -128,15 +128,15 @@ async function editProduct(productId, fields = {}) {
   const {categories} = fields;
   delete fields.categories;
 
-  const setString = Object.keys(fields).map((key, idx)
-    `"${key}"=$${index + 1}`).join(', ');
+  const setString = Object.keys(fields).map((key, idx) =>
+    `"${key}"=$${idx + 1}`).join(', ');
 
     try {
       const {rows: [product] } = await client.query(`
       UPDATE products
       SET ${setString}
       WHERE id=${productId}
-      RETURNING *;`, [Object.values(fields)]);
+      RETURNING *;`, Object.values(fields));
 
       if(categories === undefined) return product;
 
@@ -357,14 +357,15 @@ async function getProductById(id){
       WHERE id=$1;
     `, [id]);
 
-    const {rows: categories} = await client.query(`
+    const {rows: [categories]} = await client.query(`
       SELECT categories.*
       FROM categories
       JOIN product_categories ON categories.id = product_categories."categoryId"
       WHERE product_categories."productId" = $1;`
       , [id]);
 
-      product.categories = categories;
+      console.log(categories.name)
+      product.categories = [categories.name];
 
     return product;
   } catch (error) {
