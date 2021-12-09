@@ -15,6 +15,7 @@ const {
   editOrderStatus,
   getAllOrders,
   getOrderByOrderId,
+  getAllOrdersByUser,
 } = require('./index');
 
 async function buildTables() {
@@ -163,6 +164,10 @@ async function createInitialOrders(){
     const orderId = 1;
     const order = await getOrderByOrderId(orderId);
     console.log("Order with id ", orderId, ": ", order);
+
+    const userId = 1;
+    const userOrders = await getAllOrdersByUser(userId);
+    console.log("User ", userId, "'s orders: ", userOrders);
 
   } catch(error){
     console.log(error);
