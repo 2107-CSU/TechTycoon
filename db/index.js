@@ -162,14 +162,20 @@ async function editProduct(productId, fields = {}) {
 
 async function getAllProducts()
 {
-    try {const {rows} = await client.query(
-      `SELECT *
-      WHERE availabilty = $1
-      FROM products;`, [true])}
+    try {
+      const {rows: productIds} = await client.query(`
+        SELECT id
+        FROM products
+        WHERE availability=true;
+      `)
+      
+      const products = await Promise.all(productIds.map(product => getProductById(product.id)))
+      return products;
+    }
     catch(error){
       throw error;
     }
-    return rows;
+    
 }
 
 // ====== edit product quantity ===========

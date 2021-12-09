@@ -7,6 +7,7 @@ const {
   getAllUsers,
   editProduct,
   getProductById,
+  getAllProducts,
 } = require('./index');
 
 async function buildTables() {
@@ -122,6 +123,9 @@ async function createInitialProducts() {
 
     const editedProduct = await editProduct(1, {name: 'New name', description: 'New description', price: 30, photo: 'new photo', categories: ['new category', 'second new category']});
     console.log("Product edited: ", editedProduct)
+
+    const allProducts = await getAllProducts()
+    console.log('all products are ', allProducts)
   } catch (error) {
     
   }
