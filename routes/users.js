@@ -2,7 +2,6 @@ const express= require('express');
 const jwt = require('jsonwebtoken')
 const usersRouter = express.Router();
 
-
 const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser} = require('../db/index');
 const {requireAdmin, requireUser} = require('./utils')
 

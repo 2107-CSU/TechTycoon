@@ -108,6 +108,8 @@ async function deleteUser(userId){
   }
 }
 
+
+
 async function getAllUsers(){
   try {
     const {rows} = await client.query(`
@@ -130,17 +132,41 @@ async function editProduct({id, name, description, price, photo, availability, q
   //const { id } = fields;
   delete fields.id;
 
-  const setString = Object.keys(fields).map((key, idx)
-    `"${key}"=$${index + 1}`).join(', ');
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function editProduct(productId, fields = {}) {
+  const {categories} = fields;
+  delete fields.categories;
+
+  const setString = Object.keys(fields).map((key, idx) =>
+    `"${key}"=$${idx + 1}`).join(', ');
 
     try {
       const {rows: [product] } = await client.query(`
       UPDATE products
       SET ${setString}
-      WHERE id=${id}
-      RETURNING *;`, [Object.values(fields)]);
+      WHERE id=${productId}
+      RETURNING *;`, Object.values(fields));
 
-      return product;
+      if(categories === undefined) return product;
+
+      const categoryList = await createCategories(categories)
+      const categoryListIdString = categoryList.map(category => `${category.id}`).join(', ')
+
+      await client.query(`
+        DELETE FROM product_categories
+        WHERE "categoryId"
+        NOT IN (${categoryListIdString})
+        AND "productId"=$1;
+      `, [productId]);
+
+      await addCategoriesToProduct(productId, categoryList)
+
+      return await getProductById(productId)
     } catch (error) {
       throw error
     }
@@ -150,43 +176,35 @@ async function editProduct({id, name, description, price, photo, availability, q
 
 async function getAllProducts()
 {
-    try {const {rows} = await client.query(
-      `SELECT *
-      WHERE availabilty = $1
-      FROM products;`, [true])}
+    try {
+      const {rows: productIds} = await client.query(`
+        SELECT id
+        FROM products
+        WHERE availability=true;
+      `)
+      
+      const products = await Promise.all(productIds.map(product => getProductById(product.id)))
+      return products;
+    }
     catch(error){
       throw error;
     }
-    return rows;
-}
-
-// ====== edit product quantity ===========
-
-
-async function updateProductQuantity(quantity, id){ // no object destructuring for quantity?
-  try{
-      const {rows: [quantity] } = await client.query(`
-      UPDATE products
-      SET quantity = $1
-      WHERE id= ${id}
-      RETURNING *;
-      `, [quantity]);
-      return quantity;       // is this what we return?
-  }
-  catch(error){
-      throw error;
-  }
+    
 }
 
 //=========== add product to order =======
 
 async function addProductToOrder(orderId, productId, quantity = 1)
 {
-  try{ const {rows} = await client.query(
-    `INSERT INTO order_products("orderId", "productId", quantity)
-    VALUES($1, $2, $3)
-    ON CONFLICT ("orderId", "productId") DO NOTHING;`, [orderId, productId, quantity]
-  );} catch (error) {throw error;}
+  try{ 
+    const {rows} = await client.query(`
+      INSERT INTO order_products("orderId", "productId", quantity)
+      VALUES($1, $2, $3)
+      ON CONFLICT ("orderId", "productId") DO NOTHING;
+    `, [orderId, productId, quantity]);
+
+    return rows
+  } catch (error) {throw error;}
 }
 
 
@@ -210,16 +228,18 @@ async function addProduct({ name, description, price, photo, availability, quant
 }
 
 // ============== get product by category ==============
-async function getProductsbyCategoryId(id)
+async function getProductsbyCategoryName(categoryName)
 {
-  try{
-    const {rows} = await client.query(`
-    SELECT * 
-    FROM product_categories
-    JOIN products ON product_categories."productId" = product.id
-    WHERE product_categories."categoryId" = $1;`, [id]);
+  try {
 
-    return rows;
+    const {rows: productIds} = await client.query(`
+      SELECT products.id 
+      FROM products
+      JOIN product_categories ON products.id=product_categories."productId"
+      JOIN categories ON categories.id=product_categories."categoryId"
+      WHERE categories.name=$1;`, [categoryName]);
+    
+    return await Promise.all(productIds.map(product => getProductById(product.id)));
 
   } catch(error) {throw error;}
 }
@@ -229,15 +249,12 @@ async function getProductsbyCategoryId(id)
 async function removeProductById(id) {
   try {
     await client.query(`
+    DELETE FROM product_categories
+    WHERE "productId"=${id};`)
+
+    await client.query(`
     DELETE FROM products
     WHERE id=${id};`);
-
-    // NOT SURE IF WE SHOULD BE DELETING THIS
-    /*
-    await client.query(`
-    DELETE FROM order_products
-    WHERE "productId"=${id};`)
-    */
 
     return `Successfully deleted the product with an id of ${id}`;
   } catch(error) {
@@ -352,7 +369,8 @@ async function getProductById(id){
       WHERE product_categories."productId" = $1;`
       , [id]);
 
-      product.categories = categories;
+      product.categories = categories.map(categoryObject => categoryObject.name);
+
 
     return product;
   } catch (error) {
@@ -470,9 +488,8 @@ module.exports = {
   addProduct,
   destroyProductFromOrder,
   updateOrderProductQuantity,
-  getProductsbyCategoryId,
+  getProductsbyCategoryName,
   getUserById,
-  updateProductQuantity,
   createCategories,
   getProductById,
   getReviewsByProductId,

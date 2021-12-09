@@ -5,6 +5,12 @@ const {
   createUser,
   createCategories,
   getAllUsers,
+  editProduct,
+  getProductById,
+  getAllProducts,
+  addProductToOrder,
+  getProductsbyCategoryName,
+  removeProductById,
 } = require('./index');
 
 async function buildTables() {
@@ -118,6 +124,18 @@ async function createInitialProducts() {
     const products = await Promise.all(productsToCreate.map(async product => await addProduct(product)));
 
     console.log("Products created: ", products)
+
+    const editedProduct = await editProduct(1, {name: 'New name', description: 'New description', price: 30, photo: 'new photo', categories: ['new category', 'second new category']});
+    console.log("Product edited: ", editedProduct)
+
+    const allProducts = await getAllProducts()
+    console.log('all products are ', allProducts)
+
+    const productsByCategory = await getProductsbyCategoryName('software')
+    console.log('products by category name are ', productsByCategory)
+
+    const removedProduct = await removeProductById(1)
+    console.log(removedProduct)
   } catch (error) {
     
   }
