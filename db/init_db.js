@@ -5,6 +5,8 @@ const {
   createUser,
   createCategories,
   getAllUsers,
+  editProduct,
+  getProductById,
 } = require('./index');
 
 async function buildTables() {
@@ -118,6 +120,9 @@ async function createInitialProducts() {
     const products = await Promise.all(productsToCreate.map(async product => await addProduct(product)));
 
     console.log("Products created: ", products)
+
+    const {id} = getProductById(1)
+    const editedProduct = await editProduct(productsToCreate[0])
   } catch (error) {
     
   }

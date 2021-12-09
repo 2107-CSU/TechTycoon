@@ -124,10 +124,9 @@ async function getAllUsers(){
   }
 }
 
-async function editProduct({id, name, description, price, photo, availability, quantity}) {
-  const fields = arguments[0];
-  //const { id } = fields;
-  delete fields.id;
+async function editProduct(productId, fields = {}) {
+  const {categories} = fields;
+  delete fields.categories;
 
   const setString = Object.keys(fields).map((key, idx)
     `"${key}"=$${index + 1}`).join(', ');
@@ -136,10 +135,24 @@ async function editProduct({id, name, description, price, photo, availability, q
       const {rows: [product] } = await client.query(`
       UPDATE products
       SET ${setString}
-      WHERE id=${id}
+      WHERE id=${productId}
       RETURNING *;`, [Object.values(fields)]);
 
-      return product;
+      if(categories === undefined) return product;
+
+      const categoryList = await createCategories(categories)
+      const categoryListIdString = categoryList.map(category => `${category.id}`).join(', ')
+
+      await client.query(`
+        DELETE FROM product_categories
+        WHERE "categoryId"
+        NOT IN (${categoryListIdString})
+        AND "productId"=$1;
+      `, [productId]);
+
+      await addCategoriesToProduct(productId, categoryList)
+
+      return await getProductById(productId)
     } catch (error) {
       throw error
     }
