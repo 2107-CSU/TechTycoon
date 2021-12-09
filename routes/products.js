@@ -42,7 +42,7 @@ productsRouter.patch('/:productId', async (req, res, next) => { // do we check t
         console.log(error);
         next(error);
     }
-}
+})
                      
 // needs to be updated when token is added
 productsRouter.patch('/:productId/edit', async (req, res, next) => {
