@@ -8,16 +8,16 @@ const bcrypt = require('bcrypt'); // import bcrypt
 
 //=================== USERS ============================
 //====================== Create Users ==================
-async function createUser({username, password}) {
+async function createUser({username, password, email}) {
   const SALT_COUNT = 10;   // salt makes encryption more complex
   const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
   try {
       const {rows: [user]} = await client.query(`
-          INSERT INTO users (username, password)
-          VALUES ($1, $2)
+          INSERT INTO users (username, password, email)
+          VALUES ($1, $2, $3)
           ON CONFLICT (username) DO NOTHING
           RETURNING *;
-      `, [username, hashedPassword]);
+      `, [username, hashedPassword, email]);
       delete user.password;
       return user;
   }
@@ -108,11 +108,26 @@ async function deleteUser(userId){
   }
 }
 
+async function getAllUsers(){
+  try {
+    const {rows} = await client.query(`
+      SELECT *
+      FROM users;
+    `);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 // ======== PRODUCTS ===================
+
 
 async function editProduct({id, name, description, price, photo, availability, quantity}) {
   const fields = arguments[0];
-  const { id } = fields;
+  //const { id } = fields;
   delete fields.id;
 
   const setString = Object.keys(fields).map((key, idx)
@@ -182,9 +197,10 @@ async function addProduct({ name, description, price, photo, availability, quant
     const { rows: [product] } = await client.query(`
       INSERT INTO products(name, description, price, photo, availability, quantity)
       VALUES($1, $2, $3, $4, $5, $6)
-      RETURNING *;,
+      ON CONFLICT (name) DO NOTHING
+      RETURNING *;
     `, [name, description, price, photo, availability, quantity])
-  
+
     const categoryList = await createCategories(categories);
 
     return await addCategoriesToProduct(product.id, categoryList)
@@ -267,6 +283,7 @@ async function updateOrderProductQuantity({ id, quantity }){
 
 
 async function createCategories(categoryList){
+
   if (categoryList.length === 0) return;
 
   const valuesStringInsert = categoryList.map(
@@ -310,7 +327,7 @@ async function createProductCategory(productId, categoryId){
 
 async function addCategoriesToProduct(productId, categoryList){
   try {
-    const createProductCategoryPromises = categoryList.map(category => createProductCategory(productId, category.id));
+    const createProductCategoryPromises = categoryList.map(async category => await createProductCategory(productId, category.id));
 
     await Promise.all(createProductCategoryPromises);
 
@@ -323,13 +340,23 @@ async function addCategoriesToProduct(productId, categoryList){
 
 async function getProductById(id){
   try {
-    const {rows} = await client.query(`
+    const {rows: [product]} = await client.query(`
       SELECT * FROM products
       WHERE id=$1;
     `, [id]);
 
-    return rows;
+    const {rows: categories} = await client.query(`
+      SELECT categories.*
+      FROM categories
+      JOIN product_categories ON categories.id = product_categories."categoryId"
+      WHERE product_categories."productId" = $1;`
+      , [id]);
+
+      product.categories = categories;
+
+    return product;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }
@@ -437,6 +464,7 @@ module.exports = {
   createUser,
   makeUserAdmin,
   deleteUser,
+  getAllUsers,
   getAllProducts,
   addProductToOrder,
   addProduct,

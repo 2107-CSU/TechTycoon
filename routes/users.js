@@ -2,14 +2,10 @@ const express= require('express');
 const jwt = require('jsonwebtoken')
 const usersRouter = express.Router();
 
+
 const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser} = require('../db/index');
+const {requireAdmin, requireUser} = require('./utils')
 
-const { requireUser } = require('./utils'); // verifies user is logged in
-
-const requireAdmin = (req, res, next) => {
-    if(req.isAdmin) next()
-    else next(error)
-}
 
 // POST REQUESTS
 
