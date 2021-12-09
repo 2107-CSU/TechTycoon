@@ -357,15 +357,14 @@ async function getProductById(id){
       WHERE id=$1;
     `, [id]);
 
-    const {rows: [categories]} = await client.query(`
+    const {rows: categories} = await client.query(`
       SELECT categories.*
       FROM categories
       JOIN product_categories ON categories.id = product_categories."categoryId"
       WHERE product_categories."productId" = $1;`
       , [id]);
 
-      console.log(categories.name)
-      product.categories = [categories.name];
+      product.categories = categories.map(categoryObject => categoryObject.name);
 
     return product;
   } catch (error) {
