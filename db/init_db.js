@@ -8,6 +8,8 @@ const {
   editProduct,
   getProductById,
   getAllProducts,
+  addProductToOrder,
+  getProductsbyCategoryName,
 } = require('./index');
 
 async function buildTables() {
@@ -127,7 +129,8 @@ async function createInitialProducts() {
     const allProducts = await getAllProducts()
     console.log('all products are ', allProducts)
 
-    const updatedQuantity
+    const productsByCategory = await getProductsbyCategoryName('software')
+    console.log('products by category name are ', productsByCategory)
   } catch (error) {
     
   }

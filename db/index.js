@@ -182,11 +182,15 @@ async function getAllProducts()
 
 async function addProductToOrder(orderId, productId, quantity = 1)
 {
-  try{ const {rows} = await client.query(
-    `INSERT INTO order_products("orderId", "productId", quantity)
-    VALUES($1, $2, $3)
-    ON CONFLICT ("orderId", "productId") DO NOTHING;`, [orderId, productId, quantity]
-  );} catch (error) {throw error;}
+  try{ 
+    const {rows} = await client.query(`
+      INSERT INTO order_products("orderId", "productId", quantity)
+      VALUES($1, $2, $3)
+      ON CONFLICT ("orderId", "productId") DO NOTHING;
+    `, [orderId, productId, quantity]);
+
+    return rows
+  } catch (error) {throw error;}
 }
 
 
@@ -210,16 +214,18 @@ async function addProduct({ name, description, price, photo, availability, quant
 }
 
 // ============== get product by category ==============
-async function getProductsbyCategoryId(id)
+async function getProductsbyCategoryName(categoryName)
 {
-  try{
-    const {rows} = await client.query(`
-    SELECT * 
-    FROM product_categories
-    JOIN products ON product_categories."productId" = product.id
-    WHERE product_categories."categoryId" = $1;`, [id]);
+  try {
 
-    return rows;
+    const {rows: productIds} = await client.query(`
+      SELECT products.id 
+      FROM products
+      JOIN product_categories ON products.id=product_categories."productId"
+      JOIN categories ON categories.id=product_categories."categoryId"
+      WHERE categories.name=$1;`, [categoryName]);
+    
+    return await Promise.all(productIds.map(product => getProductById(product.id)));
 
   } catch(error) {throw error;}
 }
@@ -470,9 +476,8 @@ module.exports = {
   addProduct,
   destroyProductFromOrder,
   updateOrderProductQuantity,
-  getProductsbyCategoryId,
+  getProductsbyCategoryName,
   getUserById,
-  updateProductQuantity,
   createCategories,
   getProductById,
   getReviewsByProductId,
