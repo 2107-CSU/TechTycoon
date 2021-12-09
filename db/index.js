@@ -235,15 +235,12 @@ async function getProductsbyCategoryName(categoryName)
 async function removeProductById(id) {
   try {
     await client.query(`
+    DELETE FROM product_categories
+    WHERE "productId"=${id};`)
+
+    await client.query(`
     DELETE FROM products
     WHERE id=${id};`);
-
-    // NOT SURE IF WE SHOULD BE DELETING THIS
-    /*
-    await client.query(`
-    DELETE FROM order_products
-    WHERE "productId"=${id};`)
-    */
 
     return `Successfully deleted the product with an id of ${id}`;
   } catch(error) {
