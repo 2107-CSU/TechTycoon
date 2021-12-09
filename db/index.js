@@ -382,6 +382,8 @@ async function getReviewsByProductId(productId){
   }
 }
 
+//----------------------------Orders Endpoints----------------------------
+
 async function getOrderByOrderId(orderId){
   try{
     const {rows} = await client.query(`
@@ -408,6 +410,7 @@ async function getAllProductsByOrderId(orderId){
 }
 
 
+
 // adds a new order to the orders table
 async function createOrder(userId) {
 
@@ -426,8 +429,6 @@ async function createOrder(userId) {
 }
 
 
-
-//----------------------------Orders Endpoints----------------------------
 
 async function getAllOrdersByUser(id) {
   try {

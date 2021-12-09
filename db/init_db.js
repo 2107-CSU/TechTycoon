@@ -11,6 +11,7 @@ const {
   addProductToOrder,
   getProductsbyCategoryName,
   removeProductById,
+  createOrder,
 } = require('./index');
 
 async function buildTables() {
@@ -141,12 +142,22 @@ async function createInitialProducts() {
   }
 }
 
+async function createInitialOrders(){
+  console.log("Starting to create orders...");
+  const users = await getAllUsers();
+  // console.log(users);
+  const orders = await Promise.all(users.map(async user => await createOrder(user.id)));
+  console.log("Orders created: ", orders);
+
+
+}
 
 
 async function buildDB() {
   try {
     await createInitialUsers();
     await createInitialProducts();
+    await createInitialOrders();
     
   } catch (error) {
     console.log('Error during rebuildDB')
