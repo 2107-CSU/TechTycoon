@@ -2,20 +2,10 @@ const express= require('express');
 const jwt = require('jsonwebtoken')
 const usersRouter = express.Router();
 
-<<<<<<< HEAD
 const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser} = require('../db/index');
+const {requireAdmin, requireUser} = require('./utils')
 
-const { requireUser } = require('./utils'); // verifies user is logged in
 
-const requireAdmin = (req, res, next) => {
-    if(req.isAdmin) next()
-    else next(error)
-}
-
-=======
-const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser} = require('../db/index');
-const {requireAdmin} = require('./utils')
->>>>>>> 578eb4e4c0f2783256a281bc99699cfd0a48cde7
 // POST REQUESTS
 
 usersRouter.post('/register', async(req, res, next)=>{

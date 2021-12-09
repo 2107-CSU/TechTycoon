@@ -122,6 +122,7 @@ async function createInitialProducts() {
     ]
 
     const products = await Promise.all(productsToCreate.map(async product => await addProduct(product)));
+
     console.log("Products created: ", products)
 
     const editedProduct = await editProduct(1, {name: 'New name', description: 'New description', price: 30, photo: 'new photo', categories: ['new category', 'second new category']});

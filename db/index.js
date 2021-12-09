@@ -109,7 +109,6 @@ async function deleteUser(userId){
 }
 
 
-// ======== PRODUCTS ===================
 
 async function getAllUsers(){
   try {
@@ -117,6 +116,21 @@ async function getAllUsers(){
       SELECT *
       FROM users;
     `);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+// ======== PRODUCTS ===================
+
+
+async function editProduct({id, name, description, price, photo, availability, quantity}) {
+  const fields = arguments[0];
+  //const { id } = fields;
+  delete fields.id;
 
     return rows;
   } catch (error) {
@@ -356,6 +370,7 @@ async function getProductById(id){
       , [id]);
 
       product.categories = categories.map(categoryObject => categoryObject.name);
+
 
     return product;
   } catch (error) {
