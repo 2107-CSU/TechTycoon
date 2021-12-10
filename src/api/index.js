@@ -11,10 +11,12 @@ export async function getSingleProduct(productId)
         'Content-Type': 'application/json',
       }
     }); 
+    console.log(product)
     return product;
 
   } catch(error)
   {
+    console.log(error)
     throw error;
   }
 }
