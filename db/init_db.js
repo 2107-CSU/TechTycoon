@@ -4,6 +4,8 @@ const {
   addProduct,
   createUser,
   createCategories,
+  getReviewsByProductId,
+  createReview,
   getAllUsers,
   editProduct,
   getProductById,
@@ -16,6 +18,7 @@ const {
   getAllOrders,
   getOrderByOrderId,
   getAllOrdersByUser,
+
 } = require('./index');
 
 async function buildTables() {
@@ -176,11 +179,33 @@ async function createInitialOrders(){
   }
 }
 
+//============ create reviews================
+async function createInitialReviews() {
+  console.log('Starting to create reviews...');
+  try {
+    const reviewDataToCreate = [
+      { productId:5, userId:2, wouldRecommend: true, comments: 'this item is cool'}, 
+      { productId:5, userId:1, wouldRecommend: false, comments: 'dont buy this' },
+      { productId:3, userId:2, wouldRecommend: true, comments: 'this is a great product' },
+    ]
+
+    const reviews = await Promise.all(reviewDataToCreate.map( (review) => { return createReview(review) } ));   
+      console.log('Reviews created:');
+      console.log(reviews);
+      console.log('Finished creating reviews!');
+  } catch (error) {
+      console.error('Error creating reviews!');
+    throw error;
+  }
+}
+
+
 
 async function buildDB() {
   try {
     await createInitialUsers();
     await createInitialProducts();
+    await createInitialReviews();
     await createInitialOrders();
     
   } catch (error) {

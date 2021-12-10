@@ -126,7 +126,6 @@ async function getAllUsers(){
 
 // ======== PRODUCTS ===================
 
-
 async function editProduct(productId, fields = {}) {
   const {categories} = fields;
   delete fields.categories;
@@ -166,6 +165,7 @@ async function editProduct(productId, fields = {}) {
 async function getAllProducts()
 {
     try {
+
       const {rows: productIds} = await client.query(`
         SELECT id
         FROM products
@@ -175,6 +175,7 @@ async function getAllProducts()
       const products = await Promise.all(productIds.map(product => getProductById(product.id)))
       return products;
     }
+
     catch(error){
       throw error;
     }
@@ -382,7 +383,18 @@ async function getReviewsByProductId(productId){
   }
 }
 
-//----------------------------Orders Endpoints----------------------------
+async function createReview( {comments, productId, userId, wouldRecommend}){
+  try {
+    const {rows: [review] } = await client.query(`
+      INSERT INTO reviews ("productId", "userId", "wouldRecommend", comments)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `, [productId, userId, wouldRecommend, comments])
+    return review
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function getOrderByOrderId(orderId){
   try{
@@ -505,6 +517,7 @@ module.exports = {
   editProduct,
   removeProductById,
   getAllOrdersByUser,
+  createReview,
   getUser,
   getAllOrders,
 
