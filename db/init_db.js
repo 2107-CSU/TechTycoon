@@ -5,6 +5,7 @@ const {
   createUser,
   createCategories,
   getReviewsByProductId,
+  createReview,
 } = require('./index');
 
 async function buildTables() {
@@ -145,11 +146,12 @@ async function createInitialReviews() {
   console.log('Starting to create reviews...');
   try {
     const reviewDataToCreate = [
-      { wouldRecommend: 'true', comments: 'this item is cool', date:'12/1/21' }, // should would recommend be in quotes? should date be num or string?
-      { wouldRecommend: 'false', comments: 'dont buy this', date:'12/2/21' },
-      { wouldRecommend: 'true', comments: 'this is a great product', date:'12/3/21' },
+      { productId:5, userId:2, wouldRecommend: true, comments: 'this item is cool'}, 
+      { productId:5, userId:1, wouldRecommend: false, comments: 'dont buy this' },
+      { productId:3, userId:2, wouldRecommend: true, comments: 'this is a great product' },
     ]
-    const reviews = await Promise.all(reviewDataToCreate.map(getReviewsByProductId));   // do we pass in id to getReviewByProductId function?
+
+    const reviews = await Promise.all(reviewDataToCreate.map( (review) => { return createReview(review) } ));   
       console.log('Reviews created:');
       console.log(reviews);
       console.log('Finished creating reviews!');

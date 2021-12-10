@@ -76,7 +76,7 @@ async function deleteUser(userId){
 
 async function editProduct({id, name, description, price, photo, availability, quantity}) {
   const fields = arguments[0];
-  const { id } = fields;
+  //const { id } = fields;
   delete fields.id;  // delete id bc we wont change id in the following setstring
 
   const setString = Object.keys(fields).map((key, idx)
