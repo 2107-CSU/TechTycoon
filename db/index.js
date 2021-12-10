@@ -8,16 +8,16 @@ const bcrypt = require('bcrypt'); // import bcrypt
 
 //=================== USERS ============================
 //====================== Create Users ==================
-async function createUser({username, password}) {
+async function createUser({username, password, email}) {
   const SALT_COUNT = 10;   // salt makes encryption more complex
   const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
   try {
       const {rows: [user]} = await client.query(`
-          INSERT INTO users (username, password)
-          VALUES ($1, $2)
+          INSERT INTO users (username, password, email)
+          VALUES ($1, $2, $3)
           ON CONFLICT (username) DO NOTHING
           RETURNING *;
-      `, [username, hashedPassword]);
+      `, [username, hashedPassword, email]);
       delete user.password;
       return user;
   }
@@ -42,6 +42,42 @@ async function getUserById(id){
   }
 }
 
+// returns the relevant information of a user after verifying username and password match
+async function getUser({username, password}) {
+  try {
+    const user = getUserByUsername(username);
+
+    if (!user) throw Error('User could not be fetched!');
+
+    // comparing the password sent in to the password of the matching username
+    // we need bcrypt because the user tables passwords are encrypted
+    const passwordIsMatch = await bcrypt.compare(password, user.password);
+
+    if (passwordIsMatch) {
+      delete user.password;
+
+      return user;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+// returns the user data of the specified username
+async function getUserByUsername(username) {
+  try {
+    const {rows: [user] } = await client.query(`
+    SELECT *
+    FROM users
+    WHERE username=$1`, [username]);
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
 async function makeUserAdmin({id}){
   try {
     const {rows} = await client.query(`
@@ -72,24 +108,53 @@ async function deleteUser(userId){
   }
 }
 
+
+
+async function getAllUsers(){
+  try {
+    const {rows} = await client.query(`
+      SELECT *
+      FROM users;
+    `);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 // ======== PRODUCTS ===================
 
-async function editProduct({id, name, description, price, photo, availability, quantity}) {
-  const fields = arguments[0];
-  const { id } = fields;
-  delete fields.id;  // delete id bc we wont change id in the following setstring
+async function editProduct(productId, fields = {}) {
+  const {categories} = fields;
+  delete fields.categories;
 
-  const setString = Object.keys(fields).map((key, idx)
-    `"${key}"=$${index + 1}`).join(', ');
+  const setString = Object.keys(fields).map((key, idx) =>
+    `"${key}"=$${idx + 1}`).join(', ');
 
     try {
       const {rows: [product] } = await client.query(`
       UPDATE products
       SET ${setString}
-      WHERE id=${id}
-      RETURNING *;`, [Object.values(fields)]);
+      WHERE id=${productId}
+      RETURNING *;`, Object.values(fields));
 
-      return product;
+      if(categories === undefined) return product;
+
+      const categoryList = await createCategories(categories)
+      const categoryListIdString = categoryList.map(category => `${category.id}`).join(', ')
+
+      await client.query(`
+        DELETE FROM product_categories
+        WHERE "categoryId"
+        NOT IN (${categoryListIdString})
+        AND "productId"=$1;
+      `, [productId]);
+
+      await addCategoriesToProduct(productId, categoryList)
+
+      return await getProductById(productId)
     } catch (error) {
       throw error
     }
@@ -100,43 +165,36 @@ async function editProduct({id, name, description, price, photo, availability, q
 async function getAllProducts()
 {
     try {
-      const {rows} = await client.query(
-      `SELECT *
-      WHERE availabilty = $1
-      FROM products;`, [true])}
+
+      const {rows: productIds} = await client.query(`
+        SELECT id
+        FROM products
+        WHERE availability=true;
+      `)
+      
+      const products = await Promise.all(productIds.map(product => getProductById(product.id)))
+      return products;
+    }
+
     catch(error){
       throw error;
     }
-    return rows;
-}
-
-// ====== edit product quantity ===========
-
-
-async function updateProductQuantity(quantity, id){ // no object destructuring for quantity?
-  try{
-      const {rows: [quantity] } = await client.query(`
-      UPDATE products
-      SET quantity = $1
-      WHERE id= ${id}
-      RETURNING *;
-      `, [quantity]);
-      return quantity;       // is this what we return?
-  }
-  catch(error){
-      throw error;
-  }
+    
 }
 
 //=========== add product to order =======
 
 async function addProductToOrder(orderId, productId, quantity = 1)
 {
-  try{ const {rows} = await client.query(
-    `INSERT INTO order_products("orderId", "productId", quantity)
-    VALUES($1, $2, $3)
-    ON CONFLICT ("orderId", "productId") DO NOTHING;`, [orderId, productId, quantity]
-  );} catch (error) {throw error;}
+  try{ 
+    const {rows} = await client.query(`
+      INSERT INTO order_products("orderId", "productId", quantity)
+      VALUES($1, $2, $3)
+      ON CONFLICT ("orderId", "productId") DO NOTHING;
+    `, [orderId, productId, quantity]);
+
+    return rows
+  } catch (error) {throw error;}
 }
 
 
@@ -147,9 +205,10 @@ async function addProduct({ name, description, price, photo, availability, quant
     const { rows: [product] } = await client.query(`
       INSERT INTO products(name, description, price, photo, availability, quantity)
       VALUES($1, $2, $3, $4, $5, $6)
-      RETURNING *;,
+      ON CONFLICT (name) DO NOTHING
+      RETURNING *;
     `, [name, description, price, photo, availability, quantity])
-  
+
     const categoryList = await createCategories(categories);
 
     return await addCategoriesToProduct(product.id, categoryList)
@@ -159,16 +218,18 @@ async function addProduct({ name, description, price, photo, availability, quant
 }
 
 // ============== get product by category ==============
-async function getProductsbyCategoryId(id)
+async function getProductsbyCategoryName(categoryName)
 {
-  try{
-    const {rows} = await client.query(`
-    SELECT * 
-    FROM product_categories
-    JOIN products ON product_categories."productId" = product.id
-    WHERE product_categories."categoryId" = $1;`, [id]);
+  try {
 
-    return rows;
+    const {rows: productIds} = await client.query(`
+      SELECT products.id 
+      FROM products
+      JOIN product_categories ON products.id=product_categories."productId"
+      JOIN categories ON categories.id=product_categories."categoryId"
+      WHERE categories.name=$1;`, [categoryName]);
+    
+    return await Promise.all(productIds.map(product => getProductById(product.id)));
 
   } catch(error) {throw error;}
 }
@@ -178,15 +239,12 @@ async function getProductsbyCategoryId(id)
 async function removeProductById(id) {
   try {
     await client.query(`
+    DELETE FROM product_categories
+    WHERE "productId"=${id};`)
+
+    await client.query(`
     DELETE FROM products
     WHERE id=${id};`);
-
-    // NOT SURE IF WE SHOULD BE DELETING THIS
-    /*
-    await client.query(`
-    DELETE FROM order_products
-    WHERE "productId"=${id};`)
-    */
 
     return `Successfully deleted the product with an id of ${id}`;
   } catch(error) {
@@ -232,6 +290,7 @@ async function updateOrderProductQuantity({ id, quantity }){
 
 
 async function createCategories(categoryList){
+
   if (categoryList.length === 0) return;
 
   const valuesStringInsert = categoryList.map(
@@ -275,7 +334,7 @@ async function createProductCategory(productId, categoryId){
 
 async function addCategoriesToProduct(productId, categoryList){
   try {
-    const createProductCategoryPromises = categoryList.map(category => createProductCategory(productId, category.id));
+    const createProductCategoryPromises = categoryList.map(async category => await createProductCategory(productId, category.id));
 
     await Promise.all(createProductCategoryPromises);
 
@@ -288,13 +347,24 @@ async function addCategoriesToProduct(productId, categoryList){
 
 async function getProductById(id){
   try {
-    const {rows} = await client.query(`
+    const {rows: [product]} = await client.query(`
       SELECT * FROM products
       WHERE id=$1;
     `, [id]);
 
-    return rows;
+    const {rows: categories} = await client.query(`
+      SELECT categories.*
+      FROM categories
+      JOIN product_categories ON categories.id = product_categories."categoryId"
+      WHERE product_categories."productId" = $1;`
+      , [id]);
+
+      product.categories = categories.map(categoryObject => categoryObject.name);
+
+
+    return product;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }
@@ -313,13 +383,17 @@ async function getReviewsByProductId(productId){
   }
 }
 
+//----------------------------Orders Endpoints----------------------------
+
 async function getOrderByOrderId(orderId){
   try{
     const {rows} = await client.query(`
     SELECT *
     FROM orders
-    WHERE id = $1;`, [orderId])
+    WHERE id = $1;`, [orderId]);
+    return rows;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }
@@ -334,9 +408,11 @@ async function getAllProductsByOrderId(orderId){
     return rows;
 
   } catch(error) {
+    console.log(error);
     throw error;
   }
 }
+
 
 
 // adds a new order to the orders table
@@ -357,8 +433,6 @@ async function createOrder(userId) {
 }
 
 
-
-//----------------------------Orders Endpoints----------------------------
 
 async function getAllOrdersByUser(id) {
   try {
@@ -395,6 +469,18 @@ async function editOrderStatus(orderId, status) {
   }
 }
 
+async function getAllOrders() {
+  try{
+    const {rows} = await client.query(`
+      SELECT *
+      FROM orders;`);
+      return rows
+  }
+  catch(error){
+    throw error;
+  }
+}
+
 
 // export
 module.exports = {
@@ -402,14 +488,14 @@ module.exports = {
   createUser,
   makeUserAdmin,
   deleteUser,
+  getAllUsers,
   getAllProducts,
   addProductToOrder,
   addProduct,
   destroyProductFromOrder,
   updateOrderProductQuantity,
-  getProductsbyCategoryId,
+  getProductsbyCategoryName,
   getUserById,
-  updateProductQuantity,
   createCategories,
   getProductById,
   getReviewsByProductId,
@@ -419,6 +505,8 @@ module.exports = {
   editOrderStatus,
   editProduct,
   removeProductById,
-  getAllOrdersByUser
+  getAllOrdersByUser,
+  getUser,
+  getAllOrders,
 
 }
