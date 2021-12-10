@@ -184,16 +184,17 @@ async function getAllProducts()
 
 //=========== add product to order =======
 
-async function addProductToOrder(orderId, productId, quantity = 1)
+async function addProductToOrder({orderId, productId, quantity = 1})
 {
   try{ 
-    const {rows} = await client.query(`
+    const {rows: [orderProduct]} = await client.query(`
       INSERT INTO order_products("orderId", "productId", quantity)
       VALUES($1, $2, $3)
-      ON CONFLICT ("orderId", "productId") DO NOTHING;
+      ON CONFLICT ("orderId", "productId") DO NOTHING
+      RETURNING *;
     `, [orderId, productId, quantity]);
 
-    return rows
+    return orderProduct;
   } catch (error) {throw error;}
 }
 
