@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getAllProducts } from '../../db/index'; // is this the route?
+import { getProducts } from '../api/products'
 
 const Products = () => {
 
     const [products, setProducts]= useState([]);    
     
     useEffect(async () => {
-        const result = await getAllProducts(id);
+        const result = await getProducts();
         setProducts(result);
     }, [])
 
