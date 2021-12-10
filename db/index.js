@@ -386,7 +386,7 @@ async function getReviewsByProductId(productId){
 async function createReview( {comments, productId, userId, wouldRecommend}){
   try {
     const {rows: [review] } = await client.query(`
-      INSERT INTO reviews (productId, userId, wouldRecommend, comments)
+      INSERT INTO reviews ("productId", "userId", "wouldRecommend", comments)
       VALUES ($1, $2, $3, $4)
       RETURNING *;
     `, [productId, userId, wouldRecommend, comments])
