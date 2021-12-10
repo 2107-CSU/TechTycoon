@@ -4,6 +4,7 @@ const {
   addProduct,
   createUser,
   createCategories,
+  getReviewsByProductId,
 } = require('./index');
 
 async function buildTables() {
@@ -139,6 +140,26 @@ async function createInitialProducts() {
 }
 
 
+//============ create reviews================
+async function createInitialReviews() {
+  console.log('Starting to create reviews...');
+  try {
+    const reviewDataToCreate = [
+      { wouldRecommend: 'true', comments: 'this item is cool', date:'12/1/21' }, // should would recommend be in quotes? should date be num or string?
+      { wouldRecommend: 'false', comments: 'dont buy this', date:'12/2/21' },
+      { wouldRecommend: 'true', comments: 'this is a great product', date:'12/3/21' },
+    ]
+    const reviews = await Promise.all(reviewDataToCreate.map(getReviewsByProductId));   // do we pass in id to getReviewByProductId function?
+      console.log('Reviews created:');
+      console.log(reviews);
+      console.log('Finished creating reviews!');
+  } catch (error) {
+      console.error('Error creating reviews!');
+    throw error;
+  }
+}
+
+
 
 async function buildDB() {
   try {
@@ -147,6 +168,7 @@ async function buildDB() {
     await createInitialUsers();
     await createInitialCategories();
     await createInitialProducts();
+    await createInitialReviews();
     
   } catch (error) {
     console.log('Error during rebuildDB')

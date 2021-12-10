@@ -77,7 +77,7 @@ async function deleteUser(userId){
 async function editProduct({id, name, description, price, photo, availability, quantity}) {
   const fields = arguments[0];
   const { id } = fields;
-  delete fields.id;
+  delete fields.id;  // delete id bc we wont change id in the following setstring
 
   const setString = Object.keys(fields).map((key, idx)
     `"${key}"=$${index + 1}`).join(', ');
@@ -99,7 +99,8 @@ async function editProduct({id, name, description, price, photo, availability, q
 
 async function getAllProducts()
 {
-    try {const {rows} = await client.query(
+    try {
+      const {rows} = await client.query(
       `SELECT *
       WHERE availabilty = $1
       FROM products;`, [true])}
