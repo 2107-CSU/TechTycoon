@@ -413,10 +413,11 @@ async function getOrderByOrderId(orderId){
 async function getAllProductsByOrderId(orderId){
   try{
     const {rows} = await client.query(`
-    SELECT *
+    SELECT "productId", order_products.quantity, name, description, price, photo, availability
     FROM order_products
-    JOIN products ON order_products."productId" = product.id
-    WHERE order_products."orderId" = $1;`, [orderId]);
+    JOIN products ON products.id = order_products."productId"
+    WHERE order_products."orderId" = $1
+    ;`, [orderId]);
     return rows;
 
   } catch(error) {

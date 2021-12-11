@@ -18,6 +18,9 @@ const {
   getAllOrders,
   getOrderByOrderId,
   getAllOrdersByUser,
+  destroyProductFromOrder,
+  updateOrderProductQuantity,
+  getAllProductsByOrderId,
 
 } = require('./index');
 
@@ -216,6 +219,17 @@ async function createInitialOrderProducts() {
 
     const orderProducts = await Promise.all(orderProductsToCreate.map(orderProduct => addProductToOrder(orderProduct)));
     console.log("OrderProducts created: ", orderProducts);
+
+    console.log("Destroying orderProduct 1 ...");
+    await destroyProductFromOrder(1);
+
+    console.log("Changing quantity of orderProduct 2 ...");
+    await updateOrderProductQuantity({id: 2, quantity: 5});
+
+    const ProductsForOrder = await getAllProductsByOrderId(4);
+    console.log("Products for order 4: ", ProductsForOrder);
+
+
 
   } catch(error) {
     console.log(error);
