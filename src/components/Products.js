@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getProducts } from '../api/products'
+import { getProducts, getPhotos } from '../api/products'
+
 
 const Products = ({products, setProducts}) => {
 
-    //const [products, setProducts]= useState([]);    
+    const [photos, setPhotos]= useState([]);    
     
     useEffect(() => {
         async function result(){ 
             const response = await getProducts(); 
             setProducts(response)
+
+            const photo = await getPhotos(1)
+            setPhotos(photo)
         }
         result()
     }, [])
@@ -20,9 +24,11 @@ const Products = ({products, setProducts}) => {
             <div>
                 {products.map(product => (
                     <article key={product.id}>
-                        <Link to={'/products/' + product.id}>{product.name}</Link>
+                        <Link to={`/products/${product.id}`}>{product.name}</Link>
                         <p>{product.description}</p>
                         <p>{product.price}</p>
+                        <p>{product.photo}</p>
+                        <img src={`/${product.photo}`} />
                     </article>
                 ))}    
             </div>           

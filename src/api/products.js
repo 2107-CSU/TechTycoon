@@ -21,3 +21,18 @@ export async function getProducts()
     throw error;
   }
 }
+
+export async function getPhotos(productId){
+  try {
+    const response = await fetch(BaseUrl + `api/photos/${productId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    const photo = await response.json();
+    console.log('PHOTO IS', photo)
+    return photo;
+  } catch (error) {
+    throw error
+  }
+}

@@ -23,7 +23,8 @@ productsRouter.get('/:productId', async (req, res, next) => {
 productsRouter.get('/photos/:productId', async (req, res, next) => {
     const productId = req.params.productId;
     try {
-        const photos = await getPhotoByProductId(productId)
+        const photos = await getPhotoByProductId(productId);
+        res.send(photos);
     } catch (error) {
         next(error)
     }

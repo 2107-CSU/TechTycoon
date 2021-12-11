@@ -119,8 +119,8 @@ async function createInitialProducts() {
 
   try {
     const productsToCreate = [
-      {name: 'Adobe Creative Cloud', description: 'Adobe software', price: 29.99, photo: 'adobe-creative-cloud', availability: true, quantity: 10000, categories: ['software']},
-      {name: 'Microsoft Office Suite 2021', description: 'All microsoft products', price: 249.99, photo: 'office-home-business-2021', availability: true, quantity: 10000, categories: ['software']},
+      {name: 'Adobe Creative Cloud', description: 'Adobe software', price: 29.99, photo: 'adobe-creative-cloud.png', availability: true, quantity: 10000, categories: ['software']},
+      {name: 'Microsoft Office Suite 2021', description: 'All microsoft products', price: 249.99, photo: 'office-home-business-2021.png', availability: true, quantity: 10000, categories: ['software']},
       {name: '10.2-inch iPad Wi-Fi + Cellular 256GB - Silver', description: 'Apple tablet', price: 579, photo: '10.2-ipad-256gb', availability: true, quantity: 10000, categories: ['computers']},
       {name: 'Microsoft Surface Book 3 13.5" Platinum', description: 'Microsoft laptop', price: 1575, photo: 'microsoft-surface-book', availability: true, quantity: 10000, categories: ['computers']},  
       {name: '140W USB-C Power Adapter', description: 'Power adapter', price: 99, photo: '140w-usb-c-power-adapter', availability: true, quantity: 10000, categories: ['accessories']},
