@@ -1,7 +1,7 @@
 const express = require('express');
 const { send } = require('process');
 const productsRouter = express.Router();
-const {getAllProducts, addProduct, getProductById, editProduct, removeProductById} = require('../db');
+const {getAllProducts, addProduct, getProductById, editProduct, removeProductById, getPhotoByProductId} = require('../db');
 
 productsRouter.get('/',  async (req, res, next) => {
         try {const products = await getAllProducts();
@@ -15,6 +15,15 @@ productsRouter.get('/:productId', async (req, res, next) => {
     try {
         const singleProduct = await getProductById(productId);
         res.send(singleProduct)
+    } catch (error) {
+        next(error)
+    }
+})
+
+productsRouter.get('/photos/:productId', async (req, res, next) => {
+    const productId = req.params.productId;
+    try {
+        const photos = await getPhotoByProductId(productId)
     } catch (error) {
         next(error)
     }
