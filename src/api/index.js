@@ -22,6 +22,8 @@ export async function getSingleProduct(productId)
   }
 }
 
+// export async function 
+
 
 export async function getSomething() {
   try {

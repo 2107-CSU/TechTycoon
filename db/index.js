@@ -492,6 +492,23 @@ async function getAllOrders() {
   }
 }
 
+async function getCartByUser(userId)
+{
+  try{
+    const {rows: [order]} = await client.query(`
+      SELECT *
+      FROM orders
+      WHERE "userId" = $1
+      AND status = $2
+      RETURNING *`, [userId, "created"]);
+      return order;
+
+  } catch(error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 
 // export
 module.exports = {
