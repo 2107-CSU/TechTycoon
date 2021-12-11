@@ -184,16 +184,17 @@ async function getAllProducts()
 
 //=========== add product to order =======
 
-async function addProductToOrder(orderId, productId, quantity = 1)
+async function addProductToOrder({orderId, productId, quantity = 1})
 {
   try{ 
-    const {rows} = await client.query(`
+    const {rows: [orderProduct]} = await client.query(`
       INSERT INTO order_products("orderId", "productId", quantity)
       VALUES($1, $2, $3)
-      ON CONFLICT ("orderId", "productId") DO NOTHING;
+      ON CONFLICT ("orderId", "productId") DO NOTHING
+      RETURNING *;
     `, [orderId, productId, quantity]);
 
-    return rows
+    return orderProduct;
   } catch (error) {throw error;}
 }
 
@@ -412,10 +413,11 @@ async function getOrderByOrderId(orderId){
 async function getAllProductsByOrderId(orderId){
   try{
     const {rows} = await client.query(`
-    SELECT *
+    SELECT "productId", order_products.quantity, name, description, price, photo, availability
     FROM order_products
-    JOIN products ON order_products."productId" = product.id
-    WHERE order_products."orderId" = $1;`, [orderId]);
+    JOIN products ON products.id = order_products."productId"
+    WHERE order_products."orderId" = $1
+    ;`, [orderId]);
     return rows;
 
   } catch(error) {

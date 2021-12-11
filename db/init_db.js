@@ -18,6 +18,9 @@ const {
   getAllOrders,
   getOrderByOrderId,
   getAllOrdersByUser,
+  destroyProductFromOrder,
+  updateOrderProductQuantity,
+  getAllProductsByOrderId,
 
 } = require('./index');
 
@@ -199,6 +202,42 @@ async function createInitialReviews() {
   }
 }
 
+async function createInitialOrderProducts() {
+  console.log('Starting to create orderProducts...');
+  try{
+    const orderProductsToCreate = [
+      {orderId: 4, productId: 3, quantity: 4},
+      {orderId: 4, productId: 2, quantity: 1},
+      {orderId: 4, productId: 6, quantity: 12},
+      {orderId: 5, productId: 3, quantity: 1},
+      {orderId: 5, productId: 7, quantity: 2},
+      {orderId: 6, productId: 3, quantity: 1},
+      {orderId: 6, productId: 4, quantity: 1},
+      {orderId: 6, productId: 2, quantity: 1},
+      {orderId: 6, productId: 8, quantity: 1}
+    ]
+
+    const orderProducts = await Promise.all(orderProductsToCreate.map(orderProduct => addProductToOrder(orderProduct)));
+    console.log("OrderProducts created: ", orderProducts);
+
+    console.log("Destroying orderProduct 1 ...");
+    await destroyProductFromOrder(1);
+
+    console.log("Changing quantity of orderProduct 2 ...");
+    await updateOrderProductQuantity({id: 2, quantity: 5});
+
+    const ProductsForOrder = await getAllProductsByOrderId(4);
+    console.log("Products for order 4: ", ProductsForOrder);
+
+
+
+  } catch(error) {
+    console.log(error);
+    throw error;
+  }
+
+}
+
 
 
 async function buildDB() {
@@ -207,6 +246,7 @@ async function buildDB() {
     await createInitialProducts();
     await createInitialReviews();
     await createInitialOrders();
+    await createInitialOrderProducts();
     
   } catch (error) {
     console.log('Error during rebuildDB')
