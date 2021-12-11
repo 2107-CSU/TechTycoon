@@ -22,6 +22,25 @@ export async function getSingleProduct(productId)
   }
 }
 
+export async function getCart()
+{
+  try{
+    const response = await fetch(BaseUrl + 'api/orders/cart', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+    })
+      const cart = await response.json();
+      return cart;
+
+  } catch(error)
+  {
+    console.log(error);
+    throw error;
+  }
+}
+
 // export async function 
 
 
@@ -33,3 +52,4 @@ export async function getSomething() {
     throw error;
   }
 }
+

@@ -3,6 +3,16 @@ const ordersRouter = express.Router();
 const{getOrderByOrderId, createOrder, editOrderStatus, getCartByUser} = require('../db');
 const {requireUser} = require('./utils');
 
+ordersRouter.get('/cart', requireUser, async (req, res, next) => {
+    try{
+        const cart = await getCartByUser(req.user.id);
+        res.send(cart);
+
+    } catch (error) {
+        next(error);
+    }
+})
+
 ordersRouter.get('/:orderId', async (req, res, next) => {
     const orderId = req.params.orderId;
     try{
@@ -39,13 +49,5 @@ ordersRouter.patch('/:orderId', requireUser,  async (req, res, next) => {
 })
 
 
-ordersRouter.get('/cart', requireUser, async (req, res, next) => {
-    try{
-        const cart = await getCartByUser(req.user.id);
-        res.send(cart);
 
-    } catch (error) {
-        next(error);
-    }
-})
 module.exports = ordersRouter;
