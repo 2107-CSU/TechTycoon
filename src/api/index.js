@@ -6,15 +6,18 @@ const BaseUrl = "http://localhost:5000/";
 export async function getSingleProduct(productId)
 {
   try{
-    const product = await fetch(BaseUrl + 'api/' + productId, {
+    const response = await fetch(BaseUrl + 'api/products/' + productId, {
       headers: {
         'Content-Type': 'application/json',
       }
-    }); 
+    })
+    const product = await response.json();
+    console.log(product)
     return product;
 
   } catch(error)
   {
+    console.log(error)
     throw error;
   }
 }
