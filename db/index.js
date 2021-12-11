@@ -502,7 +502,7 @@ async function getCartByUser(userId)
       FROM orders
       WHERE "userId" = $1
       AND status = $2
-      RETURNING *`, [userId, "created"]);
+      ;`, [userId, "created"]);
       return order;
 
   } catch(error) {
@@ -539,5 +539,6 @@ module.exports = {
   createReview,
   getUser,
   getAllOrders,
+  getCartByUser,
 
 }

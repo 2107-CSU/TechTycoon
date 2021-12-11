@@ -21,6 +21,7 @@ const {
   destroyProductFromOrder,
   updateOrderProductQuantity,
   getAllProductsByOrderId,
+  getCartByUser,
 
 } = require('./index');
 
@@ -228,6 +229,10 @@ async function createInitialOrderProducts() {
 
     const ProductsForOrder = await getAllProductsByOrderId(4);
     console.log("Products for order 4: ", ProductsForOrder);
+
+    const order = await getCartByUser(1);
+    const ProductsForCart = await getAllProductsByOrderId(order.id);
+    console.log("Products for user 1's cart: ", ProductsForCart);
 
 
 
