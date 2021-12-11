@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import getProductById from '../../db/index'; // is this the route?
+import { getSingleProduct } from '../api';
 
-const SingleProduct = () => {
+const SingleProduct = ({match, history}) => {
 
     //which state?
-    const [singleProd, setSingleProd]= useEffect({});
+    const [singleProd, setSingleProd]= useState({});
     
     
     useEffect(async () => {
-        const result = await getProductById(id);
+        const result = await getSingleProduct(match.params.productId);
         setSingleProd(result);
     }, [])
 
