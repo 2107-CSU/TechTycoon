@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getProducts } from '../api/products'
 
-const Products = () => {
+const Products = ({products, setProducts}) => {
 
-    const [products, setProducts]= useState([]);    
+    //const [products, setProducts]= useState([]);    
     
-    useEffect(async () => {
-        const result = await getProducts();
-        setProducts(result);
+    useEffect(() => {
+        async function result(){ 
+            const response = await getProducts(); 
+            setProducts(response)
+        }
+        result()
     }, [])
 
     return (
@@ -16,7 +20,7 @@ const Products = () => {
             <div>
                 {products.map(product => (
                     <article key={product.id}>
-                        <h2>{product.name}</h2>
+                        <Link to={'/products/' + product.id}>{product.name}</Link>
                         <p>{product.description}</p>
                         <p>{product.price}</p>
                     </article>

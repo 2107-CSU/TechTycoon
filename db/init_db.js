@@ -141,9 +141,6 @@ async function createInitialProducts() {
 
     const productsByCategory = await getProductsbyCategoryName('software')
     console.log('products by category name are ', productsByCategory)
-
-    const removedProduct = await removeProductById(1)
-    console.log(removedProduct)
   } catch (error) {
     console.log(error);
     throw error;
