@@ -540,5 +540,6 @@ module.exports = {
   getUser,
   getAllOrders,
   getCartByUser,
+  getCartByUser,
 
 }
