@@ -28,7 +28,7 @@ const Products = ({products, setProducts}) => {
                         <p>{product.description}</p>
                         <p>{product.price}</p>
                         <p>{product.photo}</p>
-                        <img src={`/${product.photo}`} />
+                        <img src={`../../public/photos/${product.photo}.jpg`} />
                     </article>
                 ))}    
             </div>           
