@@ -1,0 +1,135 @@
+const { Client } = require('pg');
+const DB_NAME = 'tech-tycoons-dev'
+const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME }`; //?
+const client = new Client(DB_URL);   // connect to db
+const bcrypt = require('bcrypt'); // import bcrypt
+
+//============== USERS ==============================
+//----------------- create users ---------------------
+
+async function createUser({username, password, email}) {
+    const SALT_COUNT = 10;   // salt makes encryption more complex
+    const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+    try {
+        const {rows: [user]} = await client.query(`
+            INSERT INTO users (username, password, email)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (username) DO NOTHING
+            RETURNING *;
+        `, [username, hashedPassword, email]);  // create user in db
+        delete user.password;
+        return user;     // populate user info
+    }
+    catch (error) {
+        throw error;
+    }
+  }
+
+  // ------------------get user--------------------------
+
+  async function getUser({username, password}) { 
+    try {
+      const user = getUserByUsername(username);
+      if (!user) throw Error('User could not be fetched!'); // verify that the username exists
+      // comparing the password sent in to the password of that username
+      // we need bcrypt because the password is encrypted
+      const passwordIsMatch = await bcrypt.compare(password, user.password); // verify passwords match
+      if (passwordIsMatch) {   // if passwords match delete password and continue
+        delete user.password;
+        return user;  // populate user info which can be accessed by backend api
+      } else {
+        return false;   // why is this false needed? otherwise throw error?
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // -------------------get user (with user id)---------------
+
+  async function getUserById(id){
+    try{
+        const {rows: [user]} = await client.query(`
+        SELECT * FROM users
+        WHERE id= $1;
+        `, [id]);
+        return user;
+    }
+    catch(error){
+        throw error;
+    }
+  }
+
+// ------------------- get user (with username) -------------
+
+async function getUserByUsername(username) {
+    try {
+      const {rows: [user] } = await client.query(`
+      SELECT *
+      FROM users
+      WHERE username=$1`, [username]);
+  
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // ---------- make a user into an admin ---------------------
+
+  async function makeUserAdmin({id}){ // why is the id an object?
+    try {
+      const {rows} = await client.query(`
+        UPDATE users
+        SET isAdmin=true
+        WHERE id=$1;
+      `, [id])
+      return rows;     // why return all rows?
+    } catch (error) {
+      throw error;
+    }
+  }
+
+// ---------- get all users -----------------------------------
+
+async function getAllUsers(){ // select all the users
+    try {
+      const {rows} = await client.query(`
+        SELECT *
+        FROM users;
+      `);
+      return rows;   // return all the users
+    } catch (error) {
+      throw error;
+    }
+  }
+
+// --------- delete a user -------------------------------------
+
+async function deleteUser(userId){
+    try { // delete from users and orders
+      await client.query(`
+        DELETE FROM users
+        WHERE id=$1;
+      `, [userId]);
+      await client.query(`
+        DELETE FROM orders
+        WHERE "userId"=$1;
+      `, [userId]);   
+    } catch (error) { // do we need to return anything?
+      throw error;
+    }
+  }
+
+
+  module.exports = {
+    client,
+    createUser,
+    getUser,
+    getUserById,
+    getUserByUsername,
+    makeUserAdmin,
+    getAllUsers,
+    deleteUser,
+  }
+  

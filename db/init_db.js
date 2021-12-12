@@ -1,25 +1,37 @@
 // code to build and initialize DB goes here
 const {
   client,
-  addProduct,
   createUser,
+  getAllUsers,
+} = require('./users');
+
+const {
+  client,
   createCategories,
   getReviewsByProductId,
   createReview,
-  getAllUsers,
+
+} = require('./categoriesAndReviews');
+
+const {
+  client,
+  createOrder,
+  editOrderStatus,
+  getAllOrders,
+  getAllOrdersByUser,
+
+} = require('./orders');
+
+const {
+  client,
+  addProduct,
   editProduct,
   getProductById,
   getAllProducts,
   addProductToOrder,
   getProductsbyCategoryName,
   removeProductById,
-  createOrder,
-  editOrderStatus,
-  getAllOrders,
-  getOrderByOrderId,
-  getAllOrdersByUser,
-
-} = require('./index');
+} = require('./products');
 
 async function buildTables() {
   try {
@@ -37,6 +49,8 @@ async function buildTables() {
       DROP TABLE IF EXISTS products;
 
     `)
+
+    
     // build tables in correct order
     console.log("Building tables...")
     await client.query(`
@@ -179,16 +193,15 @@ async function createInitialOrders(){
   }
 }
 
-//============ create reviews================
+//============ reviews================
 async function createInitialReviews() {
   console.log('Starting to create reviews...');
   try {
     const reviewDataToCreate = [
-      { productId:5, userId:2, wouldRecommend: true, comments: 'this item is cool'}, 
-      { productId:5, userId:1, wouldRecommend: false, comments: 'dont buy this' },
-      { productId:3, userId:2, wouldRecommend: true, comments: 'this is a great product' },
+      { productId:5, userId:2, wouldRecommend: true, comments: 'This item works as expected'}, 
+      { productId:5, userId:1, wouldRecommend: false, comments: 'Dont buy this item, it doesnt match the product description' },
+      { productId:3, userId:2, wouldRecommend: true, comments: 'This is a great product' },
     ]
-
     const reviews = await Promise.all(reviewDataToCreate.map( (review) => { return createReview(review) } ));   
       console.log('Reviews created:');
       console.log(reviews);

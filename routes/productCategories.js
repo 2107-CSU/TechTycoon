@@ -1,8 +1,8 @@
 const express = require('express');
-const product_categoriesRouter = express.Router();
+const productCategoriesRouter = express.Router();
 const{getProductsbyCategoryId} = require('../db');
 
-product_categoriesRouter.get('/:categoryId', async (req, res, next) => {
+productCategoriesRouter.get('/:categoryId', async (req, res, next) => {
     const categoryId = req.params.categoryId;
     try{
         const productsByCategory = await getProductsbyCategoryId(categoryId);
@@ -13,4 +13,4 @@ product_categoriesRouter.get('/:categoryId', async (req, res, next) => {
     }
 })
 
-module.exports = product_categoriesRouter;
+module.exports = productCategoriesRouter;
