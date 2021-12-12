@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
+import { getCart } from "../api";
 
-const Cart = () => {
+const Cart = ({token}) => {
     return <h1> Cart </h1>
 }
 

@@ -6,6 +6,7 @@ import {Cart, Login, Profile, SingleProduct} from './'
 const App = () => {
   const [message, setMessage] = useState('');
   const [product, setProduct] = useState({});
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
   }, []);
@@ -13,7 +14,7 @@ const App = () => {
   return (
   <Router>
     <div>
-      <Route path = '/cart' render = {(routeProps) => <Cart {...routeProps} />}></Route>
+      <Route path = '/cart' render = {(routeProps) => <Cart {...routeProps} token = {token}/>}></Route>
       <Route exact path = '/products' render = {(routeProps) => <Cart {...routeProps} />}></Route>
       <Route path = '/products/:productId' render = {(routeProps) => <SingleProduct {...routeProps} />}></Route>
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} />}></Route>
