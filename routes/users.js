@@ -19,7 +19,7 @@ usersRouter.post('/register', async(req, res, next)=>{
         // if(_user) {
         //     throw new Error('A user by that name already exists');
         // }
-        const user = await createUser({username, password});  // save user in db
+        const user = await createUser(req.body);  // save user in db
         // const token = jwt.sign({id: user.id, username}, process.env.JWT_SECRET, { expiresIn: '1w'}); /// create token?
         res.send({user}); // send user data to front end (part of post request)
     }
@@ -42,7 +42,6 @@ usersRouter.post('/login', async (req, res, next) => {
 
     try {
         const user = await getUser(req.body);
-
         if (!user) throw Error('Your password is incorrect!');
 
         const token = jwt.sign({id: user.id, username: user.username, isAdmin: user.isAdmin}, process.env.JWT_SECRET);

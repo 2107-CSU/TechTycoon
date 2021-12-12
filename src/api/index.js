@@ -1,5 +1,5 @@
 import axios from 'axios';  // makes calls to the api, api reuqests
-
+import {register, login} from './users';
 const BaseUrl = "http://localhost:5000/";
 
 
@@ -53,3 +53,7 @@ export async function getSomething() {
   }
 }
 
+export {
+  login,
+  register
+}
