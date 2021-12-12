@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 
 const Navigation = ({token}) => {
     return (
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <h1 class="navbar-brand">Tech Tycoons</h1>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <h1 className="navbar-brand">Tech Tycoons</h1>
             <div>
-                <ul class="navbar-nav">
-                    <li class="nav-item"><Link to='/cart' class="nav-link">Cart</Link></li>
-                    <li class="active" class="nav-item active"><Link to='/products' class="nav-link">Products</Link></li>
+                <ul className="navbar-nav">
+                    <li className="nav-item"><Link to='/cart' className="nav-link">Cart</Link></li>
+                    <li className="active" className="nav-item active"><Link to='/products' className="nav-link">Products</Link></li>
                     {!!token ? 
-                    <li class="nav-item"><Link to='/profile' class="nav-link">Profile</Link></li> : 
-                    <li class="nav-item"><Link to='/login' class="nav-link">Login</Link></li>}
+                    <li className="nav-item"><Link to='/profile' className="nav-link">Profile</Link></li> : 
+                    <li className="nav-item"><Link to='/login' className="nav-link">Login</Link></li>}
                 </ul>
             </div>
         </nav>
