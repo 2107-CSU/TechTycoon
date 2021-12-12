@@ -45,17 +45,16 @@ async function getUserById(id){
 // returns the relevant information of a user after verifying username and password match
 async function getUser({username, password}) {
   try {
-    const user = getUserByUsername(username);
-
+    const user = await getUserByUsername(username);
     if (!user) throw Error('User could not be fetched!');
 
     // comparing the password sent in to the password of the matching username
     // we need bcrypt because the user tables passwords are encrypted
+    
     const passwordIsMatch = await bcrypt.compare(password, user.password);
-
     if (passwordIsMatch) {
       delete user.password;
-
+      
       return user;
     } else {
       return false;
