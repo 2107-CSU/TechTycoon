@@ -45,17 +45,16 @@ async function getUserById(id){
 // returns the relevant information of a user after verifying username and password match
 async function getUser({username, password}) {
   try {
-    const user = getUserByUsername(username);
-
+    const user = await getUserByUsername(username);
     if (!user) throw Error('User could not be fetched!');
 
     // comparing the password sent in to the password of the matching username
     // we need bcrypt because the user tables passwords are encrypted
+    
     const passwordIsMatch = await bcrypt.compare(password, user.password);
-
     if (passwordIsMatch) {
       delete user.password;
-
+      
       return user;
     } else {
       return false;
@@ -184,16 +183,17 @@ async function getAllProducts()
 
 //=========== add product to order =======
 
-async function addProductToOrder(orderId, productId, quantity = 1)
+async function addProductToOrder({orderId, productId, quantity = 1})
 {
   try{ 
-    const {rows} = await client.query(`
+    const {rows: [orderProduct]} = await client.query(`
       INSERT INTO order_products("orderId", "productId", quantity)
       VALUES($1, $2, $3)
-      ON CONFLICT ("orderId", "productId") DO NOTHING;
+      ON CONFLICT ("orderId", "productId") DO NOTHING
+      RETURNING *;
     `, [orderId, productId, quantity]);
 
-    return rows
+    return orderProduct;
   } catch (error) {throw error;}
 }
 
@@ -412,10 +412,11 @@ async function getOrderByOrderId(orderId){
 async function getAllProductsByOrderId(orderId){
   try{
     const {rows} = await client.query(`
-    SELECT *
+    SELECT "productId", order_products.quantity, name, description, price, photo, availability
     FROM order_products
-    JOIN products ON order_products."productId" = product.id
-    WHERE order_products."orderId" = $1;`, [orderId]);
+    JOIN products ON products.id = order_products."productId"
+    WHERE order_products."orderId" = $1
+    ;`, [orderId]);
     return rows;
 
   } catch(error) {
