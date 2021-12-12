@@ -22,7 +22,7 @@ export async function getSingleProduct(productId)
   }
 }
 
-export async function getCart()
+export async function getCart(token)
 {
   try{
     const response = await fetch(BaseUrl + 'api/orders/cart', {
@@ -33,6 +33,25 @@ export async function getCart()
     })
       const cart = await response.json();
       return cart;
+
+  } catch(error)
+  {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getProductsByOrder(token, orderId)
+{
+  try{
+    const response = await fetch(BaseUrl + 'api/orderproducts/' + orderId, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    const orderProducts = await response.json();
+    return orderProducts;
 
   } catch(error)
   {
@@ -52,6 +71,7 @@ export async function getSomething() {
     throw error;
   }
 }
+
 
 export {
   login,

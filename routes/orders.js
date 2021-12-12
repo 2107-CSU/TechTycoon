@@ -5,6 +5,7 @@ const {requireUser} = require('./utils');
 
 ordersRouter.get('/cart', requireUser, async (req, res, next) => {
     try{
+        console.log("user", req.user);
         const cart = await getCartByUser(req.user.id);
         res.send(cart);
 
