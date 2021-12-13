@@ -5,6 +5,42 @@ const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME
 const client = new Client(DB_URL);
 const bcrypt = require('bcrypt'); // import bcrypt
 
+const {
+  createUser,
+  getAllUsers,
+  makeUserAdmin,
+  deleteUser,
+  getUserById,
+  getUser,
+} = require('./users');
+
+const {
+  createCategories,
+  getReviewsByProductId,
+  createReview,
+
+} = require('./categoriesAndReviews');
+
+const {
+  createOrder,
+  editOrderStatus,
+  getAllOrders,
+  getAllOrdersByUser,
+  getOrderByOrderId,
+} = require('./orders');
+
+const {
+  addProduct,
+  editProduct,
+  getProductById,
+  getAllProducts,
+  addProductToOrder,
+  getProductsbyCategoryName,
+  removeProductById,
+  destroyProductFromOrder,
+  updateOrderProductQuantity,
+  getAllProductsByOrderId,
+} = require('./products');
 
 //=================== USERS ============================
 // //====================== Create Users ==================
@@ -493,32 +529,32 @@ const bcrypt = require('bcrypt'); // import bcrypt
 // }
 
 
-// // export
-// module.exports = {
-//   client,
-//   createUser,
-//   makeUserAdmin,
-//   deleteUser,
-//   getAllUsers,
-//   getAllProducts,
-//   addProductToOrder,
-//   addProduct,
-//   destroyProductFromOrder,
-//   updateOrderProductQuantity,
-//   getProductsbyCategoryName,
-//   getUserById,
-//   createCategories,
-//   getProductById,
-//   getReviewsByProductId,
-//   getOrderByOrderId,
-//   getAllProductsByOrderId,
-//   createOrder,
-//   editOrderStatus,
-//   editProduct,
-//   removeProductById,
-//   getAllOrdersByUser,
-//   createReview,
-//   getUser,
-//   getAllOrders,
+// export
+module.exports = {
+  client,
+  createUser,
+  makeUserAdmin,
+  deleteUser,
+  getAllUsers,
+  getAllProducts,
+  addProductToOrder,
+  addProduct,
+  destroyProductFromOrder,
+  updateOrderProductQuantity,
+  getProductsbyCategoryName,
+  getUserById,
+  createCategories,
+  getProductById,
+  getReviewsByProductId,
+  getOrderByOrderId,
+  getAllProductsByOrderId,
+  createOrder,
+  editOrderStatus,
+  editProduct,
+  removeProductById,
+  getAllOrdersByUser,
+  createReview,
+  getUser,
+  getAllOrders,
 
-// }
+}
