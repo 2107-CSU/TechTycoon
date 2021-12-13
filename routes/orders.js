@@ -1,6 +1,18 @@
 const express = require('express');
 const ordersRouter = express.Router();
-const{getOrderByOrderId, createOrder, editOrderProductStatus} = require('../db');
+const{getOrderByOrderId, createOrder, editOrderStatus, getCartByUser} = require('../db');
+const {requireUser} = require('./utils');
+
+ordersRouter.get('/cart', requireUser, async (req, res, next) => {
+    try{
+        console.log("user", req.user);
+        const cart = await getCartByUser(req.user.id);
+        res.send(cart);
+
+    } catch (error) {
+        next(error);
+    }
+})
 
 ordersRouter.get('/:orderId', async (req, res, next) => {
     const orderId = req.params.orderId;
@@ -13,7 +25,7 @@ ordersRouter.get('/:orderId', async (req, res, next) => {
     }
 })
 
-ordersRouter.post('/', /*requireUser*/ async (req, res, next) => {
+ordersRouter.post('/', requireUser, async (req, res, next) => {
     try {
         const order = await createOrder(req.user.id);
 
@@ -25,9 +37,9 @@ ordersRouter.post('/', /*requireUser*/ async (req, res, next) => {
     }
 })
 
-ordersRouter.patch('/:orderId', /*requireUser*/ async (req, res, next) => {
+ordersRouter.patch('/:orderId', requireUser,  async (req, res, next) => {
     try {
-        const editedOrder = await editOrderProductStatus(req.params.orderId, req.body.status);
+        const editedOrder = await editOrderStatus(req.params.orderId, req.body.status);
 
         res.send({
             message: 'successfully updated the status of the order',
@@ -36,4 +48,7 @@ ordersRouter.patch('/:orderId', /*requireUser*/ async (req, res, next) => {
         next(error)
     }
 })
+
+
+
 module.exports = ordersRouter;

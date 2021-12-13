@@ -128,7 +128,7 @@ async function createInitialProducts() {
 
   try {
     const productsToCreate = [
-      {name: 'Adobe Creative Cloud', description: 'Adobe software', price: 29.99, photo: 'adobe-creative-cloud', availability: true, quantity: 10000, categories: ['software']},
+      {name: 'Adobe Creative Cloud', description: 'Adobe software', price: 29.99, photo: 'adobe-creative-cloud.png', availability: true, quantity: 10000, categories: ['software']},
       {name: 'Microsoft Office Suite 2021', description: 'All microsoft products', price: 249.99, photo: 'office-home-business-2021', availability: true, quantity: 10000, categories: ['software']},
       {name: '10.2-inch iPad Wi-Fi + Cellular 256GB - Silver', description: 'Apple tablet', price: 579, photo: '10.2-ipad-256gb', availability: true, quantity: 10000, categories: ['computers']},
       {name: 'Microsoft Surface Book 3 13.5" Platinum', description: 'Microsoft laptop', price: 1575, photo: 'microsoft-surface-book', availability: true, quantity: 10000, categories: ['computers']},  
@@ -150,9 +150,6 @@ async function createInitialProducts() {
 
     const productsByCategory = await getProductsbyCategoryName('software')
     console.log('products by category name are ', productsByCategory)
-
-    const removedProduct = await removeProductById(1)
-    console.log(removedProduct)
   } catch (error) {
     console.log(error);
     throw error;
@@ -207,6 +204,46 @@ async function createInitialReviews() {
   }
 }
 
+async function createInitialOrderProducts() {
+  console.log('Starting to create orderProducts...');
+  try{
+    const orderProductsToCreate = [
+      {orderId: 4, productId: 3, quantity: 4},
+      {orderId: 4, productId: 2, quantity: 1},
+      {orderId: 4, productId: 6, quantity: 12},
+      {orderId: 5, productId: 3, quantity: 1},
+      {orderId: 5, productId: 7, quantity: 2},
+      {orderId: 6, productId: 3, quantity: 1},
+      {orderId: 6, productId: 4, quantity: 1},
+      {orderId: 6, productId: 2, quantity: 1},
+      {orderId: 6, productId: 8, quantity: 1}
+    ]
+
+    const orderProducts = await Promise.all(orderProductsToCreate.map(orderProduct => addProductToOrder(orderProduct)));
+    console.log("OrderProducts created: ", orderProducts);
+
+    console.log("Destroying orderProduct 1 ...");
+    await destroyProductFromOrder(1);
+
+    console.log("Changing quantity of orderProduct 2 ...");
+    await updateOrderProductQuantity({id: 2, quantity: 5});
+
+    const ProductsForOrder = await getAllProductsByOrderId(4);
+    console.log("Products for order 4: ", ProductsForOrder);
+
+    const order = await getCartByUser(1);
+    const ProductsForCart = await getAllProductsByOrderId(order.id);
+    console.log("Products for user 1's cart: ", ProductsForCart);
+
+
+
+  } catch(error) {
+    console.log(error);
+    throw error;
+  }
+
+}
+
 
 
 async function buildDB() {
@@ -215,6 +252,7 @@ async function buildDB() {
     await createInitialProducts();
     await createInitialReviews();
     await createInitialOrders();
+    await createInitialOrderProducts();
     
   } catch (error) {
     console.log('Error during rebuildDB')
