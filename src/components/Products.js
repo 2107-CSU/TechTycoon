@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getProducts, getPhotos } from '../api/products'
+import { getProducts, getPhotos } from '../api/products';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 
 const Products = ({products, setProducts}) => {
@@ -21,17 +24,22 @@ const Products = ({products, setProducts}) => {
     return (
         <div>
             <h1>Products</h1>
-            <div>
+            <Row xs={1} md={2} className="g-4">
                 {products.map(product => (
-                    <article key={product.id}>
-                        <Link to={`/products/${product.id}`}>{product.name}</Link>
-                        <p>{product.description}</p>
-                        <p>{product.price}</p>
-                        <img src={`photos/${product.photo}.jpg`} className='img-thumbnail' />
-                        <button>Add to Cart</button>
-                    </article>
+                    <Col>
+                        <Card style={{ width: '18rem' }}>
+                            <Card.Header>{product.categories}</Card.Header>
+                            <Card.Img src={`photos/${product.photo}.jpg`} variant='top'/>
+                            <Card.Body>
+                                <Card.Title>{product.name}</Card.Title>
+                                <Card.Text>{product.description}</Card.Text>
+                                <Card.Text>${product.price}</Card.Text>
+                                <Button href={`/products/${product.id}`}>See Details</Button>
+                            </Card.Body>
+                        </Card>
+                    </Col>
                 ))}    
-            </div>           
+            </Row>           
         </div>
     )
 }
