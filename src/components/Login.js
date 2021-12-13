@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import { Link } from 'react-router-dom';
 import {login, register} from '../api/index';
 
@@ -39,13 +39,14 @@ const Login = ({match, history, setToken}) => {
                     // attempting to log the user in
                     const result = await login(username, password);
 
-                    if (result.name) alert(result.message); // missing username or password
-                    else if (result === 'Your password is incorrect!') alert(result) // incorrect passsword
+                    if (result.error) alert(result.message); // error message(incorrect or missing info)
                     else {
                         // successful login
                         setToken(result.token);
                         localStorage.setItem('token', result.token);
                         alert(result.message);
+
+                        history.push('/profile');
                     }
                 }
             }} >
