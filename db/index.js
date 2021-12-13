@@ -552,5 +552,6 @@ module.exports = {
   getUser,
   getAllOrders,
   getCartByUser,
-  getPhotoByProductId
+  getPhotoByProductId,
+  getUserByUsername
 }
