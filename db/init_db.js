@@ -104,9 +104,9 @@ async function createInitialUsers() {
   console.log('Starting to create users...');
   try {
     const usersToCreate = [
-      { username: 'albert', password: 'bertie99', email: 'albert@gmail.com' },
-      { username: 'sandra', password: 'sandra123', email: 'sandra@gmail.com' },
-      { username: 'glamgal', password: 'glamgal123', email: 'glamgal@gmail.com' },
+      { username: 'albert', password: 'bertie99', email: 'albert@gmail.com', isAdmin: true },
+      { username: 'sandra', password: 'sandra123', email: 'sandra@gmail.com', isAdmin: true},
+      { username: 'glamgal', password: 'glamgal123', email: 'glamgal@gmail.com'},
     ]
     const users = await Promise.all(usersToCreate.map(createUser));   // promise.all waits for everything in the array to reurn
       console.log('Users created:');

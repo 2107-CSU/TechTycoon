@@ -6,17 +6,12 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 
-const Products = ({products, setProducts}) => {
-
-    const [photos, setPhotos]= useState([]);    
+const Products = ({products, setProducts}) => {  
     
     useEffect(() => {
         async function result(){ 
             const response = await getProducts(); 
             setProducts(response)
-
-            const photo = await getPhotos(1)
-            setPhotos(photo)
         }
         result()
     }, [])
