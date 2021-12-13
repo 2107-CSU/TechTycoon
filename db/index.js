@@ -506,6 +506,19 @@ async function getCartByUser(userId)
 
   } catch(error) {
     console.log(error);
+  }
+}
+
+async function getPhotoByProductId(productId){
+  try {
+    const {rows: [photo]} = await client.query(`
+      SELECT photo
+      FROM products
+      WHERE id=$1;
+    `, [productId])
+
+    return photo;
+  } catch (error) {
     throw error;
   }
 }
@@ -539,6 +552,5 @@ module.exports = {
   getUser,
   getAllOrders,
   getCartByUser,
-  getCartByUser,
-
+  getPhotoByProductId
 }
