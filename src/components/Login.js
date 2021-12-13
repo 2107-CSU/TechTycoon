@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { Link } from 'react-router-dom';
-import {login, register} from '../api/index';
+import {login, register, createOrder} from '../api/index';
 
 const Login = ({match, history, setToken}) => {
     const [username, setUsername] = useState('');
@@ -30,8 +30,12 @@ const Login = ({match, history, setToken}) => {
                     const result = await register(username, password, email);
 
                     // lets the user know if their password is too short
-                    if (result === "Password must be 8 or more characters") alert(result);
+                    if (result.error) alert(result.message);
                     else {
+                        // making an initial order for the user
+                        await createOrder(result.token);
+
+                        // notify user of successful login and bring them to the login page
                         alert('registered successfully please login to continue');
                         history.push('/login');
                     }
