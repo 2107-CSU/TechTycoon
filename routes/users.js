@@ -2,7 +2,7 @@ const express= require('express');
 const jwt = require('jsonwebtoken')
 const usersRouter = express.Router();
 
-const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser} = require('../db/index');
+const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser, getUserByUsername} = require('../db/index');
 const {requireAdmin, requireUser} = require('./utils')
 
 
@@ -15,13 +15,16 @@ usersRouter.post('/register', async(req, res, next)=>{
         if(password.length < MIN_PASSWORDLENGTH) { //check the password length
             throw new Error("Password must be 8 or more characters");  //error if password is too short
         }
-        // const _user = await functionname(username);    //check if the username already exists ?
-        // if(_user) {
-        //     throw new Error('A user by that name already exists');
-        // }
+        const userCheck = await getUserByUsername(username); //check if the username already exists
+        if(userCheck) {
+            throw new Error('A user by that name already exists');
+        }
         const user = await createUser(req.body);  // save user in db
-        // const token = jwt.sign({id: user.id, username}, process.env.JWT_SECRET, { expiresIn: '1w'}); /// create token?
-        res.send({user}); // send user data to front end (part of post request)
+
+        const token = jwt.sign({id: user.id, username: user.username, isAdmin: user.isAdmin}, process.env.JWT_SECRET);
+        user.token = token; // adding token to user object
+
+        res.send(user); // send user data to front end
     }
     catch (error) {
         next(error);   
