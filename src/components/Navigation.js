@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 
 
-const Navigation = ({token}) => {
+const Navigation = ({token, setToken}) => {
     return (
         <Navbar bg="light" expand="lg">
             <Container>
