@@ -493,6 +493,22 @@ async function getAllOrders() {
   }
 }
 
+async function getCartByUser(userId)
+{
+  try{
+    const {rows: [order]} = await client.query(`
+      SELECT *
+      FROM orders
+      WHERE "userId" = $1
+      AND status = $2
+      ;`, [userId, "created"]);
+      return order;
+
+  } catch(error) {
+    console.log(error);
+  }
+}
+
 async function getPhotoByProductId(productId){
   try {
     const {rows: [photo]} = await client.query(`
@@ -535,5 +551,6 @@ module.exports = {
   createReview,
   getUser,
   getAllOrders,
+  getCartByUser,
   getPhotoByProductId
 }

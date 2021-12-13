@@ -14,8 +14,8 @@ const App = () => {
   return (
   <Router>
     <div>
+      <Route path = '/cart' render = {(routeProps) => <Cart {...routeProps} token = {token}/>}></Route>
       <Navigation />
-      <Route path = '/cart' render = {(routeProps) => <Cart {...routeProps} />}></Route>
       <Route exact path = '/products' render = {(routeProps) => <Products {...routeProps} products={products} setProducts={setProducts} />}></Route>
       <Route path = '/products/:productId' render = {(routeProps) => <SingleProduct {...routeProps} />}></Route>
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} />}></Route>
