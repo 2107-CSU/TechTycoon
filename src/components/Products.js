@@ -27,7 +27,7 @@ const Products = ({products, setProducts}) => {
                         <Link to={`/products/${product.id}`}>{product.name}</Link>
                         <p>{product.description}</p>
                         <p>{product.price}</p>
-                        <img src={`../../public/photos/${product.photo}.jpg`} />
+                        <img src={`photos/${product.photo}.jpg`} className='img-thumbnail' />
                         <button>Add to Cart</button>
                     </article>
                 ))}    
