@@ -8,6 +8,7 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
   }, []);
@@ -16,9 +17,9 @@ const App = () => {
   <Router>
     <div>
       <Navigation token = {token} setToken={setToken}/>
-      <Route path = '/cart' render = {(routeProps) => <Cart {...routeProps} token = {token}/>}></Route>
+      <Route path = '/cart' render = {(routeProps) => <Cart {...routeProps} token = {token} cart = {cart} setCart = {setCart}/>}></Route>
       <Route exact path = '/products' render = {(routeProps) => <Products {...routeProps} products={products} setProducts={setProducts} />}></Route>
-      <Route path = '/products/:productId' render = {(routeProps) => <SingleProduct {...routeProps} />}></Route>
+      <Route path = '/products/:productId' render = {(routeProps) => <SingleProduct {...routeProps} cart = {cart} setCart = {setCart}/>}></Route>
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} />}></Route>
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
