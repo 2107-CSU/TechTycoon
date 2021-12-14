@@ -8,16 +8,17 @@ const bcrypt = require('bcrypt'); // import bcrypt
 
 //=================== USERS ============================
 //====================== Create Users ==================
-async function createUser({username, password, email}) {
+async function createUser({username, password, email, isAdmin}) {
   const SALT_COUNT = 10;   // salt makes encryption more complex
   const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+  if(!isAdmin) isAdmin = false
   try {
       const {rows: [user]} = await client.query(`
-          INSERT INTO users (username, password, email)
-          VALUES ($1, $2, $3)
+          INSERT INTO users (username, password, email, "isAdmin")
+          VALUES ($1, $2, $3, $4)
           ON CONFLICT (username) DO NOTHING
           RETURNING *;
-      `, [username, hashedPassword, email]);
+      `, [username, hashedPassword, email, isAdmin]);
       delete user.password;
       return user;
   }
