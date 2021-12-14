@@ -4,6 +4,8 @@ require('dotenv').config();
 const express = require('express');
 const server = express();
 
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
+
 // create logs for everything
 const morgan = require('morgan');
 server.use(morgan('dev'));

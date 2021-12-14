@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
 
 const Message = ({ message }) => (
     <section>
@@ -7,7 +6,7 @@ const Message = ({ message }) => (
     </section>
 )
 
-const Checkout = ({token, setToken}) => {
+const Checkout = () => {
     const [message, setMessage] = useState("")
     
     useEffect(() => {

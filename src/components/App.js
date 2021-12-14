@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {getSingleProduct, getSomething} from '../api'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import {Cart, Login, Profile, SingleProduct, Products, Navigation} from './'
+import {Cart, Login, Profile, SingleProduct, Products, Navigation, Checkout} from './'
 
 const App = () => {
   const [message, setMessage] = useState('');
@@ -21,7 +21,7 @@ const App = () => {
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} />}></Route>
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
-      
+      <Route path = '/checkout' render = {(routeProps) => <Checkout {...routeProps} />}></Route>
     </div>
   </Router>
   );
