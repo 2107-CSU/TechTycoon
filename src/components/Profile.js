@@ -1,7 +1,11 @@
 import React, {useState, useEffect} from "react";
 
-const Profile = () => {
-    return <h1> Profile </h1>
+const Profile = ({token}) => {
+    
+    return <div>
+                <h1> Profile </h1>
+                
+            </div>
 }
 
 export default Profile;

@@ -73,23 +73,6 @@ export async function getSomething() {
   }
 }
 
-export async function createOrder(token) {
-  try{
-    const response = await fetch(BaseUrl + 'api/orders/', {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      }
-
-    })
-    const {order} = await response.json();
-    return order;
-
-  } catch(error) {
-    throw error;
-  }
-}
 
 
 export {
