@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {getSingleProduct, getSomething} from '../api'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import {Cart, Login, Profile, SingleProduct, Products, Navigation} from './'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
   const [message, setMessage] = useState('');
@@ -15,7 +16,7 @@ const App = () => {
   return (
   <Router>
     <div>
-      <Navigation token = {token} />
+      <Navigation token = {token} setToken={setToken}/>
       <Route path = '/cart' render = {(routeProps) => <Cart {...routeProps} token = {token} cart = {cart} setCart = {setCart}/>}></Route>
       <Route exact path = '/products' render = {(routeProps) => <Products {...routeProps} products={products} setProducts={setProducts} />}></Route>
       <Route path = '/products/:productId' render = {(routeProps) => <SingleProduct {...routeProps} cart = {cart} setCart = {setCart}/>}></Route>
