@@ -1,20 +1,26 @@
 import React, {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container'
+import Nav from 'react-bootstrap/Nav'
 
-const Navigation = ({token}) => {
+
+const Navigation = ({token, setToken}) => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <h1 className="navbar-brand">Tech Tycoons</h1>
-            <div>
-                <ul className="navbar-nav">
-                    <li className="nav-item"><Link to='/cart' className="nav-link">Cart</Link></li>
-                    <li className="active" className="nav-item active"><Link to='/products' className="nav-link">Products</Link></li>
-                    {!!token ? 
-                    <li className="nav-item"><Link to='/profile' className="nav-link">Profile</Link></li> : 
-                    <li className="nav-item"><Link to='/login' className="nav-link">Login</Link></li>}
-                </ul>
-            </div>
-        </nav>
+        <Navbar bg="light" expand="lg">
+            <Container>
+                <Navbar.Brand className="navbar-brand">Tech Tycoons</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link href='/cart' >Cart</Nav.Link>
+                        <Nav.Link href='/products' >Products</Nav.Link>
+                        {!!token ? 
+                        <Nav.Link href='/profile' >Profile</Nav.Link> : 
+                        <Nav.Link href='/login' >Login</Nav.Link>}
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     )
 }
 
