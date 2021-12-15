@@ -23,17 +23,17 @@ export async function getSingleProduct(productId)
   }
 }
 
-export async function getCart(token)
+export async function getOrdersByUser(token)
 {
   try{
-    const response = await fetch(BaseUrl + 'api/orders/cart', {
+    const response = await fetch(BaseUrl + 'api/orders/userOrders', {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
     }
     })
-      const cart = await response.json();
-      return cart;
+      const orders = await response.json();
+      return orders;
 
   } catch(error)
   {

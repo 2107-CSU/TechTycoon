@@ -494,16 +494,15 @@ async function getAllOrders() {
   }
 }
 
-async function getCartByUser(userId)
+async function getOrdersByUser(userId)
 {
   try{
-    const {rows: [order]} = await client.query(`
+    const {rows: orders} = await client.query(`
       SELECT *
       FROM orders
       WHERE "userId" = $1
-      AND status = $2
-      ;`, [userId, "created"]);
-      return order;
+      ;`, [userId]);
+      return orders;
 
   } catch(error) {
     console.log(error);
@@ -552,7 +551,7 @@ module.exports = {
   createReview,
   getUser,
   getAllOrders,
-  getCartByUser,
+  getOrdersByUser,
   getPhotoByProductId,
   getUserByUsername
 }
