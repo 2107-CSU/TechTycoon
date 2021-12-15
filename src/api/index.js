@@ -1,99 +1,9 @@
 import axios from 'axios';  // makes calls to the api, api reuqests
-import {register, login} from './users';
-import { createOrder } from './orders';
-const BaseUrl = "http://localhost:5000/";
-
-
-export async function getSingleProduct(productId)
-{
-  try{
-    const response = await fetch(BaseUrl + 'api/products/' + productId, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    const product = await response.json();
-    console.log(product)
-    return product;
-
-  } catch(error)
-  {
-    console.log(error)
-    throw error;
-  }
-}
-
-export async function getOrdersByUser(token)
-{
-  try{
-    const response = await fetch(BaseUrl + 'api/orders/userOrders', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-    }
-    })
-      const orders = await response.json();
-      return orders;
-
-  } catch(error)
-  {
-    console.log(error);
-    throw error;
-  }
-}
-
-export async function getProductsByOrder(token, orderId)
-{
-  try{
-    const response = await fetch(BaseUrl + 'api/orderproducts/' + orderId, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      }
-    })
-    const orderProducts = await response.json();
-    return orderProducts;
-
-  } catch(error)
-  {
-    console.log(error);
-    throw error;
-  }
-}
-
-
-// -------------------- api function add to order -----------------------------
-export async function addProductToOrder(orderProduct, token, orderId)
-{
-  try{ // we need api request that sends request to post
-    const response = await fetch(BaseUrl + 'api/orderproducts/' + orderId, {
-      method: 'POST',
-      headers: { // do we need headers? to add products?
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({ // do these keys need to match db table?
-        post:{
-        orderId: orderProduct.orderId,
-        productId: orderProduct.productId,
-        quantity:orderProduct.quantity,
-        }
-      }) // end of body
-
-    }) // end of fetch
-    
-    const addedOrderProduct = await response.json();
-    console.log("&&&&&&&&& TEST the added products are", addedOrderProduct);
-    return addedOrderProduct;
-
-  } catch(error)
-  {
-    console.log(error);
-    throw error;
-  }
-}
-
-// export async function 
+import {register, login, getUser, makeAdmin, deleteUser} from './users';
+import { createOrder, getSingleOrder, getOrdersByUser, changeOrderStatus } from './orders';
+import { getProductsByCategory } from './product_categories';
+import { getProductsByOrder } from './order_products';
+import { getProducts, getSingleProduct, addProduct, updateProductAmount, editProduct, deleteProduct } from './products';
 
 
 export async function getSomething() {
@@ -109,6 +19,20 @@ export async function getSomething() {
 
 export {
   login,
-  register,
-  createOrder
+  register, 
+  getUser, 
+  makeAdmin, 
+  deleteUser,
+  getProductsByCategory,
+  createOrder,
+  getSingleOrder,
+  getOrdersByUser,
+  changeOrderStatus,
+  getProductsByOrder,
+  getProducts,
+  getSingleProduct, 
+  addProduct, 
+  updateProductAmount, 
+  editProduct, 
+  deleteProduct
 }

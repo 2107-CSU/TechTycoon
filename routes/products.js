@@ -2,6 +2,7 @@ const express = require('express');
 const { send } = require('process');
 const productsRouter = express.Router();
 const {getAllProducts, addProduct, getProductById, editProduct, removeProductById, getPhotoByProductId} = require('../db');
+const {requireAdmin} = require('./utils');
 
 productsRouter.get('/',  async (req, res, next) => {
         try {const products = await getAllProducts();
@@ -20,17 +21,7 @@ productsRouter.get('/:productId', async (req, res, next) => {
     }
 })
 
-productsRouter.get('/photos/:productId', async (req, res, next) => {
-    const productId = req.params.productId;
-    try {
-        const photos = await getPhotoByProductId(productId);
-        res.send(photos);
-    } catch (error) {
-        next(error)
-    }
-})
-
-productsRouter.post('/', async(req, res, next) => {
+productsRouter.post('/', requireAdmin, async(req, res, next) => {
     const { name, description, price, photo, availability, quantity } = req.body;
     try {
         const newProduct = await addProduct(name, description, price, photo, availability, quantity)
@@ -41,7 +32,7 @@ productsRouter.post('/', async(req, res, next) => {
     }
 })
 
-productsRouter.patch('/:productId', async (req, res, next) => { // do we check that user is admin??
+productsRouter.patch('/:productId', requireAdmin, async (req, res, next) => { // do we check that user is admin??
     const id = req.params.productId;    // grab the id
     const {quantity} = req.body;  // not sure where quantity comes from?
     try {
@@ -55,7 +46,7 @@ productsRouter.patch('/:productId', async (req, res, next) => { // do we check t
 })
                      
 // needs to be updated when token is added
-productsRouter.patch('/:productId/edit', async (req, res, next) => {
+productsRouter.patch('/:productId/edit', requireAdmin, async (req, res, next) => {
     const {productId} = req.params;
     req.body.id = productId;
     // check if admin. if true continue. false next(something)
@@ -70,7 +61,7 @@ productsRouter.patch('/:productId/edit', async (req, res, next) => {
 
 
 // should require user when that is implemented
-productsRouter.delete('/:productId/delete', async (req, res, next) => {
+productsRouter.delete('/:productId/delete', requireAdmin, async (req, res, next) => {
     const {productId} = req.params;
     // make sure user is admin before continuing
     try {

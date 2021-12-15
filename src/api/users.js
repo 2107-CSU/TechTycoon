@@ -44,3 +44,58 @@ export async function register(username, password, email) {
         throw error;
     }
 }
+
+export async function getUser(token) {
+    try {
+        const response = await fetch(`${BaseUrl}api/users/me`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const result = response.json();
+        console.log(result);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// ADMIN FUNCTIONS ------------------------------------------
+
+export async function makeAdmin(token, userId) {
+    try {
+        const response = await fetch(`${BaseUrl}api/users/admin/${userId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const result = response.json();
+        console.log(result);
+        return result;
+    } catch(error) {
+        throw error;
+    }
+}
+
+export async function deleteUser(token, userId) {
+    try {
+        const response = await fetch(`${BaseUrl}api/users/admin/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const result = response.json();
+        console.log(result);
+        return result;
+    } catch(error) {
+        throw error;
+    }
+}
