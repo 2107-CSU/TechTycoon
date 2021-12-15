@@ -1,13 +1,13 @@
 const express = require('express');
 const ordersRouter = express.Router();
-const{getOrderByOrderId, createOrder, editOrderStatus, getCartByUser} = require('../db');
+const{getOrderByOrderId, createOrder, editOrderStatus, getOrdersByUser} = require('../db');
 const {requireUser} = require('./utils');
 
-ordersRouter.get('/cart', requireUser, async (req, res, next) => {
+ordersRouter.get('/userOrders', requireUser, async (req, res, next) => {
     try{
         console.log("user", req.user);
-        const cart = await getCartByUser(req.user.id);
-        res.send(cart);
+        const orders = await getOrdersByUser(req.user.id);
+        res.send(orders);
 
     } catch (error) {
         next(error);
