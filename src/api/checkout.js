@@ -17,6 +17,7 @@ export async function createCheckoutSession(items) {
             window.location = url
         })
     } catch (error) {
+        console.error(error)
         throw error
     }
 }
