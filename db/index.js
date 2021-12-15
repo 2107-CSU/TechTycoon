@@ -82,5 +82,7 @@ module.exports = {
   createReview,
   getUser,
   getAllOrders,
-  getPhotoByProductId
+  getPhotoByProductId,
+  getOrdersByUser,
+  getPhotoByProductId,
 }
