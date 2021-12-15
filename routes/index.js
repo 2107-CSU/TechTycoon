@@ -1,4 +1,7 @@
 const apiRouter = require('express').Router();
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = process.env;
+
 const { getUserById } = require('../db/index');
 // Logs the user in if they have the relevant header information with their token
 apiRouter.use(async (req, res, next) => {
