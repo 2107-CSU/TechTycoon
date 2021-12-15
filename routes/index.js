@@ -29,24 +29,24 @@ apiRouter.use(async (req, res, next) => {
   }
 })
 
-apiRouter.get("/", (req, res, next) => {
+apiRouter.get("/", (req, res, next) => { // root url test
   res.send({
     message: "API is under construction!"
   });
 });
 
-
+// establishing the various urls
 const usersRouter = require('./users');
 apiRouter.use('/users', usersRouter);
 
 const productsRouter = require('./products');
 apiRouter.use('/products', productsRouter);
 
-const order_productsRouter = require('./order_products');
-apiRouter.use('/orderproducts', order_productsRouter);
+const orderProductsRouter = require('./orderProducts');
+apiRouter.use('/orderproducts', orderProductsRouter);
 
-const product_categoriesRouter = require('./product_categories');
-apiRouter.use('/productcategories', product_categoriesRouter);
+const productCategoriesRouter = require('./productCategories');
+apiRouter.use('/productcategories', productCategoriesRouter);
 
 const ordersRouter = require('./orders');
 apiRouter.use('/orders', ordersRouter);

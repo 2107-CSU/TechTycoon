@@ -1,7 +1,6 @@
 const express = require('express');
 const checkoutRouter = express.Router();
 const getAllProductsByOrderId = require('../db')
-const {PORT} = require('../index')
 
 checkoutRouter.post('/:orderId/create-checkout-session', async (req, res, next) => {
     const orderId = req.params.orderId

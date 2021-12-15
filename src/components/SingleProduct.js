@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getSingleProduct } from '../api';
+import { addProductToCart } from './functions';
 
-const SingleProduct = ({match, history}) => {
+const SingleProduct = ({match, history, cart, setCart}) => {
 
     //which state?
     const [singleProd, setSingleProd]= useState({});
@@ -15,7 +16,6 @@ const SingleProduct = ({match, history}) => {
     return (
         <div>
             
-                <p>More Information for this Product</p>
                 <p>name</p>
                 <h1>{singleProd.name}</h1>
 
@@ -33,6 +33,13 @@ const SingleProduct = ({match, history}) => {
 
                 <p>quantity</p>
                 <p>{singleProd.quantity}</p>
+
+                <button
+                    onClick = {() => {
+                        const newCart = addProductToCart(cart, singleProd, 1);
+                        console.log(newCart);
+                        setCart(newCart);
+                    }}>Add product to Cart</button>
 
                 <button               // button to go back?
                     onClick={() => {
