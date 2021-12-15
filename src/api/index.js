@@ -5,6 +5,7 @@ import { getProductsByCategory } from './product_categories';
 import { getProductsByOrder } from './order_products';
 import { getProducts, getSingleProduct, addProduct, updateProductAmount, editProduct, deleteProduct } from './products';
 
+
 export async function getSomething() {
   try {
     const { data } = await axios.get('/api');
