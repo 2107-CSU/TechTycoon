@@ -5,18 +5,19 @@ const {PORT} = require('../index')
 
 checkoutRouter.post('/:orderId/create-checkout-session', async (req, res, next) => {
     const orderId = req.params.orderId
+    const products = getAllProductsByOrderId(orderId)
+
     try {
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
-            line_items: req.body.items.map(item => {
-                const storeItem = getAllProductsByOrderId(orderId)
+            line_items: products.map(item => {
                 return {
                     price_data: {
                         currency: 'usd',
                         product_data: {
-                            name: storeItem.name,
+                            name: item.name,
                         },
-                        unit_amount: storeItem.priceInCents,
+                        unit_amount: item.price,
                     },
                     quantity: item.quantity
                 }

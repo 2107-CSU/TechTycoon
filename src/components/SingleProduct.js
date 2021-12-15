@@ -16,7 +16,7 @@ const SingleProduct = ({match, history}) => {
         <div>
             
                 <p>More Information for this Product</p>
-                {/* <p>name</p>
+                <p>name</p>
                 <h1>{singleProd.name}</h1>
 
                 <p>description</p>
@@ -39,7 +39,7 @@ const SingleProduct = ({match, history}) => {
                         history.push('/products');  // not sure what url is?
                     }}>
                     Go Back To Products
-                </button> */}
+                </button>
 
                 
             
