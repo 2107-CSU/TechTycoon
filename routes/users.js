@@ -67,6 +67,10 @@ usersRouter.get('/me', requireUser, async (req, res, next) => {
 } )
 
 // sends the orders of the matching userId
+// PROBABLY A DUPLICATE
+// REVIEW THE WORKSHOP INFO BEFORE DELETING
+// MIGHT HAVE ADMIN USAGE
+/*
 usersRouter.get('/orders/:userId', async (req, res, next) => {
     const {userId} = req.params;
 
@@ -78,6 +82,7 @@ usersRouter.get('/orders/:userId', async (req, res, next) => {
         next(error)
     }
 })
+*/
 // PATCH REQUESTS
 
 usersRouter.patch('/admin/:userId', requireAdmin, async(req, res, next) => {
