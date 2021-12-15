@@ -47,6 +47,7 @@ const Login = ({match, history, setToken}) => {
                     else {
                         // successful login
                         setToken(result.token);
+                        console.log(result);
                         localStorage.setItem('token', result.token);
                         alert(result.message);
 

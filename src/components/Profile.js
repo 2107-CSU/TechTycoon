@@ -2,8 +2,10 @@ import React, {useState, useEffect} from "react";
 import { getOrdersByUser, getProductsByOrder } from "../api";
 
 const Profile = ({token}) => {
+
     const [orders, setOrders] = useState([]);
     const [orderProducts, setOrderProducts] = useState([]);
+  
     useEffect(() => {
         const fetchData = async () => {
           if(token){

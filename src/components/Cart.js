@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {  removeProductFromCart} from "./functions";
+import { createOrder } from "../api";
 
 
 const Cart = ({token, cart, setCart}) => {
@@ -43,10 +44,15 @@ const Cart = ({token, cart, setCart}) => {
            </div>
        })}
        <button
-        onClick = {() => {
-          // make order
-          // add products to order
+        onClick = {async () => {
+          if(window.confirm("Order all objects in cart?"))
+          {
+            // make order
+            const order = await createOrder(token);
+            // add products to order
           setCart([]);
+          localStorage.setItem('cart', []);
+          }
         }}
        >Order Cart</button>
     </div>
