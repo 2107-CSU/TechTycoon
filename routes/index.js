@@ -40,10 +40,10 @@ const productsRouter = require('./products');
 apiRouter.use('/products', productsRouter);
 
 const orderProductsRouter = require('./orderProducts');
-apiRouter.use('/orderproducts', order_productsRouter);
+apiRouter.use('/orderproducts', orderProductsRouter);
 
 const productCategoriesRouter = require('./productCategories');
-apiRouter.use('/productcategories', product_categoriesRouter);
+apiRouter.use('/productcategories', productCategoriesRouter);
 
 const ordersRouter = require('./orders');
 apiRouter.use('/orders', ordersRouter);
