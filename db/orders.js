@@ -4,35 +4,20 @@ const client = require('./client');
 // ========= ORDERS ==========================
 
 // ------------ get orders by user -------------
-async function getAllOrdersByUser(id) {
-    try {
-      const {rows: userOrders} = await client.query(`
+  async function getOrdersByUser(userId)
+  {
+    try{
+      const {rows: orders} = await client.query(`
         SELECT *
         FROM orders
-        WHERE "userId"=$1;`, [id]);
-      return userOrders;
-    } catch (error) {
-      throw error;
+        WHERE "userId" = $1
+        ;`, [userId]);
+        return orders;
+  
+    } catch(error) {
+      console.log(error);
     }
   }
-
-  // ------------ get cart by user -------------- ?? whats the diff between this and prev
-
-  async function getCartByUser(userId)
-{
-  try{
-    const {rows: [order]} = await client.query(`
-      SELECT *
-      FROM orders
-      WHERE "userId" = $1
-      AND status = $2
-      ;`, [userId, "created"]);
-      return order;
-
-  } catch(error) {
-    console.log(error);
-  }
-}
 
   // ---------------- create order -----------------
 
@@ -108,8 +93,7 @@ async function getOrderByOrderId(orderId){
     
     createOrder,
     editOrderStatus,
-    getAllOrdersByUser,
+    getOrdersByUser,
     getAllOrders,
     getOrderByOrderId,
-    getCartByUser
   }

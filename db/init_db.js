@@ -22,7 +22,7 @@ const {
   editOrderStatus,
   editProduct,
   removeProductById,
-  getAllOrdersByUser,
+  getOrdersByUser,
   createReview,
   getUser,
   getAllOrders,
@@ -175,7 +175,7 @@ async function createInitialOrders(){
     console.log("Order with id ", orderId, ": ", order);
 
     const userId = 1;
-    const userOrders = await getAllOrdersByUser(userId);
+    const userOrders = await getOrdersByUser(userId);
     console.log("User ", userId, "'s orders: ", userOrders);
 
   } catch(error){
