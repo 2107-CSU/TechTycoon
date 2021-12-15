@@ -42,10 +42,15 @@ order_productsRouter.get('/:orderId', requireUser, async (req, res, next) => {
 
 
 order_productsRouter.post('/', async (req, res, next) => {
-    const {orderId, productId, quantity = 1} = req.body;
+    //const {orderId, productId, quantity = 1} = req.body;
+    const {products} = req.body;
     try{
-        const order_product = await addProductToOrder(orderId, productId, quantity);
-        res.send(order_product);
+        const order_products = await Promise.all(products.map(product => {
+            const {orderId, productId, quantity = 1} = product;
+            return addProductToOrder(orderId, productId, quantity);
+        }));
+        //const order_product = await addProductToOrder(orderId, productId, quantity);
+        res.send(order_products);
 
 
     } catch(error) {
