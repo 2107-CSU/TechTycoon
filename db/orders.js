@@ -1,7 +1,4 @@
-const { Client } = require('pg');
-const DB_NAME = 'tech-tycoons-dev'
-const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME }`;
-const client = new Client(DB_URL);
+const client = require('./client');
 
 
 // ========= ORDERS ==========================
@@ -18,6 +15,24 @@ async function getAllOrdersByUser(id) {
       throw error;
     }
   }
+
+  // ------------ get cart by user -------------- ?? whats the diff between this and prev
+
+  async function getCartByUser(userId)
+{
+  try{
+    const {rows: [order]} = await client.query(`
+      SELECT *
+      FROM orders
+      WHERE "userId" = $1
+      AND status = $2
+      ;`, [userId, "created"]);
+      return order;
+
+  } catch(error) {
+    console.log(error);
+  }
+}
 
   // ---------------- create order -----------------
 
@@ -90,10 +105,11 @@ async function getOrderByOrderId(orderId){
 
 
   module.exports = {
-    client,
+    
     createOrder,
     editOrderStatus,
     getAllOrdersByUser,
     getAllOrders,
-    getOrderByOrderId
+    getOrderByOrderId,
+    getCartByUser
   }

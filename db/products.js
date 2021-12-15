@@ -1,7 +1,5 @@
-const { Client } = require('pg');
-const DB_NAME = 'tech-tycoons-dev'
-const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME }`; //?
-const client = new Client(DB_URL);   // connect to db
+const client = require('./client');
+const {createCategories, createProductCategory} = require('./categoriesAndReviews');
 
 
 // ============ PRODUCTS ====================================
@@ -209,7 +207,7 @@ async function destroyProductFromOrder(id){ // takes product id
 }
 
 module.exports = {
-  client,
+  
   getAllProducts,
   addProductToOrder,
   addProduct,

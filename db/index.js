@@ -1,9 +1,7 @@
 // Connect to DB
-const { Client } = require('pg');
-const DB_NAME = 'tech-tycoons-dev'
-const DB_URL = process.env.DATABASE_URL || `postgres://localhost:5432/${ DB_NAME }`;
-const client = new Client(DB_URL);
-const bcrypt = require('bcrypt'); // import bcrypt
+
+
+const client = require('./client');
 
 const {
   createUser,
@@ -27,6 +25,7 @@ const {
   getAllOrders,
   getAllOrdersByUser,
   getOrderByOrderId,
+  getCartByUser,
 } = require('./orders');
 
 const {
@@ -528,21 +527,6 @@ const {
 //   }
 // }
 
-async function getCartByUser(userId)
-{
-  try{
-    const {rows: [order]} = await client.query(`
-      SELECT *
-      FROM orders
-      WHERE "userId" = $1
-      AND status = $2
-      ;`, [userId, "created"]);
-      return order;
-
-  } catch(error) {
-    console.log(error);
-  }
-}
 
 async function getPhotoByProductId(productId){
   try {

@@ -60,6 +60,38 @@ export async function getProductsByOrder(token, orderId)
   }
 }
 
+
+// -------------------- api function add to order -----------------------------
+export async function addProductToOrder(orderProduct, token, orderId)
+{
+  try{ // we need api request that sends request to post
+    const response = await fetch(BaseUrl + 'api/orderproducts/' + orderId, {
+      method: 'POST',
+      headers: { // do we need headers? to add products?
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ // do these keys need to match db table?
+        post:{
+        orderId: orderProduct.orderId,
+        productId: orderProduct.productId,
+        quantity:orderProduct.quantity,
+        }
+      }) // end of body
+
+    }) // end of fetch
+    
+    const addedOrderProduct = await response.json();
+    console.log("&&&&&&&&& TEST the added products are", addedOrderProduct);
+    return addedOrderProduct;
+
+  } catch(error)
+  {
+    console.log(error);
+    throw error;
+  }
+}
+
 // export async function 
 
 

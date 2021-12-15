@@ -1,7 +1,7 @@
 // code to build and initialize DB goes here
+const client = require('./client');
 
 const {
-  client,
   createUser,
   makeUserAdmin,
   deleteUser,
@@ -113,7 +113,7 @@ async function createInitialUsers() {
       { username: 'sandra', password: 'sandra123', email: 'sandra@gmail.com' },
       { username: 'glamgal', password: 'glamgal123', email: 'glamgal@gmail.com' },
     ]
-    const users = await Promise.all(usersToCreate.map(async user=> await createUser(user) ) );   // promise.all waits for everything in the array to reurn
+    const users = await Promise.all(usersToCreate.map(createUser) );   // promise.all waits for everything in the array to reurn
       console.log('Users created:');
       console.log(users);
       console.log('Finished creating users!');
