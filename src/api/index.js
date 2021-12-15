@@ -1,6 +1,9 @@
 import axios from 'axios';  // makes calls to the api, api reuqests
-import {register, login} from './users';
-import { createOrder } from './orders';
+import {register, login, getUser, makeAdmin, deleteUser} from './users';
+import { createOrder, getSingleOrder, getOrdersByUser, changeOrderStatus } from './orders';
+import { getProductsByCategory } from './product_categories';
+import { getProductsByOrder } from './order_products';
+import { getProducts, getSingleProduct, addProduct, updateProductAmount, editProduct, deleteProduct } from './products';
 
 export async function getSomething() {
   try {
@@ -15,6 +18,20 @@ export async function getSomething() {
 
 export {
   login,
-  register,
-  createOrder
+  register, 
+  getUser, 
+  makeAdmin, 
+  deleteUser,
+  getProductsByCategory,
+  createOrder,
+  getSingleOrder,
+  getOrdersByUser,
+  changeOrderStatus,
+  getProductsByOrder,
+  getProducts,
+  getSingleProduct, 
+  addProduct, 
+  updateProductAmount, 
+  editProduct, 
+  deleteProduct
 }
