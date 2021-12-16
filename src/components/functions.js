@@ -13,7 +13,3 @@ export function removeProductFromCart(cart, indx)
     localStorage.setItem('cart', JSON.stringify(cartCopy));
     return cartCopy;
 }
-
-export function handleCarouselSelect(){
-  
-}
