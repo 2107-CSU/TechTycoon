@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { getProducts, getPhotos } from '../api/products';
+import { addProductToCart } from './functions';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Image from 'react-bootstrap/Image'
+import Container from 'react-bootstrap/esm/Container';
 
 
-const Products = ({products, setProducts}) => {  
+const Products = ({products, setProducts, cart, setCart}) => {  
     
     useEffect(() => {
         async function result(){ 
@@ -29,6 +32,17 @@ const Products = ({products, setProducts}) => {
                                 <Card.Text>{product.description}</Card.Text>
                                 <Card.Text>${product.price}</Card.Text>
                                 <Button href={`/products/${product.id}`}>See Details</Button>
+                                <button 
+                                    onClick = {() => {
+                                        const newCart = addProductToCart(cart, product, 1);
+                                        console.log(newCart);
+                                        setCart(newCart);
+                                    }}
+                                >
+                                    <Col xs={6} md={4}>
+                                        <Image src={'photos/cart.jpg'} fluid/>
+                                    </Col>
+                                </button>
                             </Card.Body>
                         </Card>
                     </Col>
