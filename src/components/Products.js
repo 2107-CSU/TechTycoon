@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { Carousel } from 'bootstrap';
 
 
 const Products = ({products, setProducts}) => {  
@@ -18,7 +19,18 @@ const Products = ({products, setProducts}) => {
 
     return (
         <div>
-            <h1>Products</h1>
+            <Carousel>
+                <Carousel.Item interval={1000}>
+                    <img 
+                        className='d-block w-100'
+                        src="photos/office-home-business-2021.jpg"
+                        alt="First slide"
+                    />
+                    <Carousel.Caption>
+
+                    </Carousel.Caption>
+                </Carousel.Item>
+            </Carousel>
             <Row xs={1} md={2} className="g-4">
                 {products.map(product => (
                     <Col>
