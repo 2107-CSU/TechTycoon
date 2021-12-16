@@ -31,17 +31,19 @@ const Products = ({products, setProducts, cart, setCart}) => {
                                 <Card.Title>{product.name}</Card.Title>
                                 <Card.Text>{product.description}</Card.Text>
                                 <Card.Text>${product.price}</Card.Text>
-                                <Button href={`/products/${product.id}`}>See Details</Button>
-                                <button 
-                                    onClick = {() => {
-                                        const newCart = addProductToCart(cart, product, 1);
-                                        console.log(newCart);
-                                        setCart(newCart);
-                                    }}
-                                    type="button" class="btn btn-primary btn-circle"
-                                >
-                                    <Image src={'photos/cart.jpg'} fluid/>
-                                </button>
+                                <div className='container'>
+                                    <Button href={`/products/${product.id}`}>See Details</Button>
+                                    <button 
+                                        onClick = {() => {
+                                            const newCart = addProductToCart(cart, product, 1);
+                                            console.log(newCart);
+                                            setCart(newCart);
+                                        }}
+                                        type="button" class="btn btn-outline-primary btn-circle btn-md"
+                                    >
+                                        <i class="fas fa-cart-plus fa-lg"></i>
+                                    </button>
+                                </div>
                             </Card.Body>
                         </Card>
                     </Col>
