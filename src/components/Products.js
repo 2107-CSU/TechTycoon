@@ -38,10 +38,9 @@ const Products = ({products, setProducts, cart, setCart}) => {
                                         console.log(newCart);
                                         setCart(newCart);
                                     }}
+                                    type="button" class="btn btn-primary btn-circle"
                                 >
-                                    <Col xs={6} md={4}>
-                                        <Image src={'photos/cart.jpg'} fluid/>
-                                    </Col>
+                                    <Image src={'photos/cart.jpg'} fluid/>
                                 </button>
                             </Card.Body>
                         </Card>
