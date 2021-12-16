@@ -1,14 +1,15 @@
 const express = require('express');
 const checkoutRouter = express.Router();
 const getAllProductsByOrderId = require('../db')
+const stripe = require('stripe')('sk_test_51K6JdyKsoRJpj5Ly0qKVmvtqcoYuX2UikVo2H5GuX72P04ATDEl6aPf1c50gQwcT5roqqY8oGCuGIPkVuosUXI0c00VkqpNK9P')
 
-checkoutRouter.post('/:orderId/create-checkout-session', async (req, res, next) => {
-    const orderId = req.params.orderId
+checkoutRouter.post('/create-checkout-session', async (req, res, next) => {
+    const orderId = 4
     const products = getAllProductsByOrderId(orderId)
 
     try {
         const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
+           // payment_method_types: ['card'],
             line_items: products.map(item => {
                 return {
                     price_data: {
@@ -22,8 +23,8 @@ checkoutRouter.post('/:orderId/create-checkout-session', async (req, res, next) 
                 }
             }),
             mode: 'payment',
-            success_url: `${PORT}/?success=true`,
-            cancel_url: `${PORT}/?canceled=true`,
+            success_url: `http://localhost:5000/cart`,
+            cancel_url: `http://localhost:5000/products`,
         });
     
         res.redirect(303, session.url);

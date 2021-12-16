@@ -5,9 +5,11 @@ import {Cart, Login, Profile, SingleProduct, Products, Navigation, Checkout} fro
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 
+const stripePromise = loadStripe('pk_test_51K6JdyKsoRJpj5LyBuDfgXdryocGnfkLuxrRm12ZQhsPuWAjlcnpGJPPimIgVfwDeZ0Nl4WfX5970NH6dgI4whq600h4VIo3dH');
+
 const App = () => {
   const options = {
-    clientSecret: '{{CLIENT_SECRET}}'
+    clientSecret: 'sk_test_51K6JdyKsoRJpj5Ly0qKVmvtqcoYuX2UikVo2H5GuX72P04ATDEl6aPf1c50gQwcT5roqqY8oGCuGIPkVuosUXI0c00VkqpNK9P'
   }
   const [message, setMessage] = useState('');
   const [products, setProducts] = useState([]);
@@ -27,10 +29,10 @@ const App = () => {
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} token = {token} />}></Route>
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
-      <Route path = '/checkout' render = {(routeProps) => <Checkout {...routeProps} cart={cart} />}></Route>
-      {/* <Elements stripe={stripePromise} options={options}>
-        <Checkout />
-      </Elements> */}
+      
+      <Elements stripe={stripePromise} options={options}>
+        <Route path = '/checkout' render = {(routeProps) => <Checkout {...routeProps} cart={cart} />}></Route>
+      </Elements>
     </div>
   </Router>
   );
