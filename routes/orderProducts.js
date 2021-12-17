@@ -3,6 +3,24 @@ const orderProductsRouter = express.Router();
 const{destroyProductFromOrder, addProductToOrder, updateOrderProductQuantity, getAllProductsByOrderId} = require('../db');
 const {requireUser} = require('./utils');
 
+orderProductsRouter.post('/', async (req, res, next) => {
+    const {products, orderId} = req.body;
+    console.log("products: ", products);
+    try{
+        const order_products = await Promise.all(products.map(product => {
+            console.log(product);
+            const { productId, quantity } = product;
+            console.log(productId, quantity, orderId);
+            return addProductToOrder({orderId, productId, quantity});
+        }));
+        //const order_product = await addProductToOrder(orderId, productId, quantity);
+        res.send(order_products);
+
+
+    } catch(error) {
+        next(error);
+    }
+})
 orderProductsRouter.delete('/:orderproductid', async (req, res, next) => {    // req.user just seees if you are logged in
     const orderProductId = req.params.orderProductId; // get the order product id
     try {
@@ -33,19 +51,6 @@ orderProductsRouter.get('/:orderId', requireUser, async (req, res, next) => {
     try{
         const products = await getAllProductsByOrderId(orderId);
         res.send(products);
-
-
-    } catch(error) {
-        next(error);
-    }
-})
-
-
-orderProductsRouter.post('/', async (req, res, next) => {
-    const {orderId, productId, quantity = 1} = req.body;
-    try{
-        const order_product = await addProductToOrder(orderId, productId, quantity);
-        res.send(order_product);
 
 
     } catch(error) {

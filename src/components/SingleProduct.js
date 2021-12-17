@@ -11,6 +11,11 @@ const SingleProduct = ({match, history, cart, setCart}) => {
     useEffect(async () => {
         const result = await getSingleProduct(match.params.productId);
         setSingleProd(result);
+
+        const result2 = localStorage.getItem('cart');
+        const cart = JSON.parse(result2);
+        if(cart === null) await setCart([]);
+        else await setCart(cart);
     }, [])
 
     return (
@@ -36,6 +41,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
 
                 <button
                     onClick = {() => {
+                        console.log(cart);
                         const newCart = addProductToCart(cart, singleProd, 1);
                         console.log(newCart);
                         setCart(newCart);

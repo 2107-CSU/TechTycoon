@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {  removeProductFromCart} from "./functions";
-import { createOrder } from "../api";
+import { createOrder, addProductToOrder } from "../api";
 
 
 const Cart = ({token, cart, setCart}) => {
@@ -9,7 +9,8 @@ const Cart = ({token, cart, setCart}) => {
       const fetchData = async () => {
         const result = localStorage.getItem('cart');
         const cart = JSON.parse(result);
-        await setCart(cart);
+        if(cart === null) await setCart([]);
+        else await setCart(cart);
       }
       fetchData();
         
@@ -47,11 +48,12 @@ const Cart = ({token, cart, setCart}) => {
         onClick = {async () => {
           if(window.confirm("Order all objects in cart?"))
           {
-            // make order
-            const order = await createOrder(token);
-            // add products to order
-          setCart([]);
-          localStorage.setItem('cart', []);
+            const {order} = await createOrder(token);
+            console.log(cart);
+            console.log(order);
+            addProductToOrder(cart, token, order.id);
+            setCart([]);
+            localStorage.setItem('cart', []);
           }
         }}
        >Order Cart</button>
