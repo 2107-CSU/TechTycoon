@@ -1,28 +1,31 @@
 // code to build and initialize DB goes here
+const client = require('./client');
+
 const {
-  client,
-  addProduct,
   createUser,
-  createCategories,
-  getReviewsByProductId,
-  createReview,
+  makeUserAdmin,
+  deleteUser,
   getAllUsers,
-  editProduct,
-  getProductById,
   getAllProducts,
   addProductToOrder,
-  getProductsbyCategoryName,
-  removeProductById,
-  createOrder,
-  editOrderStatus,
-  getAllOrders,
-  getOrderByOrderId,
-  getAllOrdersByUser,
+  addProduct,
   destroyProductFromOrder,
   updateOrderProductQuantity,
+  getProductsbyCategoryName,
+  getUserById,
+  createCategories,
+  getProductById,
+  getReviewsByProductId,
+  getOrderByOrderId,
   getAllProductsByOrderId,
-  getCartByUser,
-
+  createOrder,
+  editOrderStatus,
+  editProduct,
+  removeProductById,
+  getOrdersByUser,
+  createReview,
+  getUser,
+  getAllOrders,
 } = require('./index');
 
 async function buildTables() {
@@ -41,6 +44,8 @@ async function buildTables() {
       DROP TABLE IF EXISTS products;
 
     `)
+
+    
     // build tables in correct order
     console.log("Building tables...")
     await client.query(`
@@ -108,7 +113,7 @@ async function createInitialUsers() {
       { username: 'sandra', password: 'sandra123', email: 'sandra@gmail.com', isAdmin: true},
       { username: 'glamgal', password: 'glamgal123', email: 'glamgal@gmail.com'},
     ]
-    const users = await Promise.all(usersToCreate.map(createUser));   // promise.all waits for everything in the array to reurn
+    const users = await Promise.all(usersToCreate.map(createUser) );   // promise.all waits for everything in the array to reurn
       console.log('Users created:');
       console.log(users);
       console.log('Finished creating users!');
@@ -170,7 +175,7 @@ async function createInitialOrders(){
     console.log("Order with id ", orderId, ": ", order);
 
     const userId = 1;
-    const userOrders = await getAllOrdersByUser(userId);
+    const userOrders = await getOrdersByUser(userId);
     console.log("User ", userId, "'s orders: ", userOrders);
 
   } catch(error){
@@ -180,16 +185,15 @@ async function createInitialOrders(){
   }
 }
 
-//============ create reviews================
+//============ reviews================
 async function createInitialReviews() {
   console.log('Starting to create reviews...');
   try {
     const reviewDataToCreate = [
-      { productId:5, userId:2, wouldRecommend: true, comments: 'this item is cool'}, 
-      { productId:5, userId:1, wouldRecommend: false, comments: 'dont buy this' },
-      { productId:3, userId:2, wouldRecommend: true, comments: 'this is a great product' },
+      { productId:5, userId:2, wouldRecommend: true, comments: 'This item works as expected'}, 
+      { productId:5, userId:1, wouldRecommend: false, comments: 'Dont buy this item, it doesnt match the product description' },
+      { productId:3, userId:2, wouldRecommend: true, comments: 'This is a great product' },
     ]
-
     const reviews = await Promise.all(reviewDataToCreate.map( (review) => { return createReview(review) } ));   
       console.log('Reviews created:');
       console.log(reviews);
@@ -227,9 +231,6 @@ async function createInitialOrderProducts() {
     const ProductsForOrder = await getAllProductsByOrderId(4);
     console.log("Products for order 4: ", ProductsForOrder);
 
-    const order = await getCartByUser(1);
-    const ProductsForCart = await getAllProductsByOrderId(order.id);
-    console.log("Products for user 1's cart: ", ProductsForCart);
 
 
 
