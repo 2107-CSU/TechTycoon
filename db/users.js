@@ -27,11 +27,14 @@ async function createUser({username, password, email}) {
 
   async function getUser({username, password}) { 
     try {
-      const user = getUserByUsername(username);
-      if (!user) throw Error('User could not be fetched!'); // verify that the username exists
+      const user = await getUserByUsername(username);
+
+      if (!user) throw Error('Your username or password is incorrect!'); // verify that the username exists
+
       // comparing the password sent in to the password of that username
       // we need bcrypt because the password is encrypted
       const passwordIsMatch = await bcrypt.compare(password, user.password); // verify passwords match
+
       if (passwordIsMatch) {   // if passwords match delete password and continue
         delete user.password;
         return user;  // populate user info which can be accessed by backend api
