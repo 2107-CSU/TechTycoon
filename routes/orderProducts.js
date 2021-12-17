@@ -21,8 +21,6 @@ orderProductsRouter.post('/', async (req, res, next) => {
         next(error);
     }
 })
-
-
 orderProductsRouter.delete('/:orderproductid', async (req, res, next) => {    // req.user just seees if you are logged in
     const orderProductId = req.params.orderProductId; // get the order product id
     try {
@@ -48,7 +46,6 @@ orderProductsRouter.patch('/:orderproductid', requireUser, async (req, res, next
     }
 })
 
-
 orderProductsRouter.get('/:orderId', requireUser, async (req, res, next) => {
     const orderId = req.params.orderId;
     try{
@@ -60,9 +57,6 @@ orderProductsRouter.get('/:orderId', requireUser, async (req, res, next) => {
         next(error);
     }
 })
-
-
-
 
 orderProductsRouter.patch('/:orderproductid', requireUser, async (req, res, next) => { // url variable is inside of params in req
     const id = req.params.orderProductId; 
