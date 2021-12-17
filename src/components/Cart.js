@@ -44,7 +44,7 @@ const Cart = ({token, cart, setCart}) => {
            >Remove product from Cart</button>
            </div>
        })}
-       <button
+       {token ? <button
         onClick = {async () => {
           if(window.confirm("Order all objects in cart?"))
           {
@@ -56,7 +56,7 @@ const Cart = ({token, cart, setCart}) => {
             localStorage.setItem('cart', []);
           }
         }}
-       >Order Cart</button>
+       >Order Cart</button>: null}
     </div>
     
 }
