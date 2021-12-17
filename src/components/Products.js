@@ -31,9 +31,11 @@ const Products = ({products, setProducts, cart, setCart}) => {
                                 <Card.Title>{product.name}</Card.Title>
                                 <Card.Text>{product.description}</Card.Text>
                                 <Card.Text>${product.price}</Card.Text>
-                                <div className='container'>
-                                    <Button href={`/products/${product.id}`}>See Details</Button>
-                                    <button 
+                                <Container>
+                                    <Row >
+                                    <Col md="auto"><Button href={`/products/${product.id}`}>See Details</Button></Col>
+                                    <Col xs={1}></Col>
+                                    <Col xs lg="2"><button 
                                         onClick = {() => {
                                             const newCart = addProductToCart(cart, product, 1);
                                             console.log(newCart);
@@ -42,8 +44,9 @@ const Products = ({products, setProducts, cart, setCart}) => {
                                         type="button" class="btn btn-outline-primary btn-circle btn-md"
                                     >
                                         <i class="fas fa-cart-plus fa-lg"></i>
-                                    </button>
-                                </div>
+                                    </button></Col>
+                                    </Row>
+                                </Container>
                             </Card.Body>
                         </Card>
                     </Col>
