@@ -36,9 +36,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
 
                 <button
                     onClick = {() => {
-                        console.log(cart);
                         const newCart = addProductToCart(cart, singleProd, 1);
-                        console.log(newCart);
                         setCart(newCart);
                     }}>Add product to Cart</button>
 
