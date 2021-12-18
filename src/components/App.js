@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {getSingleProduct, getSomething} from '../api'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import {Cart, Login, Profile, SingleProduct, Products, Navigation} from './'
+import {Cart, Login, Profile, SingleProduct, Products, Navigation, Admin} from './'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
