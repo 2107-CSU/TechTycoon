@@ -13,7 +13,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = localStorage.getItem('cart');
-      const cart = JSON.parse(result);
+      const cart = await JSON.parse(result);
       if(cart === null) await setCart([]);
       else await setCart(cart);
     }
