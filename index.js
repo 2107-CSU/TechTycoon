@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 // This is the Web Server
 const express = require('express');
 const server = express();
@@ -5,6 +7,10 @@ const server = express();
 // create logs for everything
 const morgan = require('morgan');
 server.use(morgan('dev'));
+
+// adding cors
+const cors = require('cors');
+server.use(cors());
 
 // handle application/json requests
 server.use(express.json());
@@ -23,6 +29,22 @@ server.use((req, res, next) => {
 
 // bring in the DB connection
 const { client } = require('./db');
+
+// 404 error route
+server.use('*', (req, res) => {
+  res.status(404);
+  res.send("404 error");
+})
+
+// 500 error route with error message
+server.use((error, req, res, next) => {
+  res.status(500);
+  console.log(error.message);
+  res.send({
+    error: 500,
+    message: error.message
+    });
+})
 
 // connect to the server
 const PORT = process.env.PORT || 5000;
