@@ -25,7 +25,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
             let result4 = await result3 !== -1;
             setInCart(result4);
         }
-       await fetchData();
+       fetchData();
 
     }, [])
 
