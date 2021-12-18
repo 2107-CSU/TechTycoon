@@ -9,20 +9,23 @@ const SingleProduct = ({match, history, cart, setCart}) => {
     const [cartIndx, setCartIndx] = useState(-1);
     const [inCart, setInCart] = useState(false);
     
-    useEffect(async () => {
-        const result = await getSingleProduct(match.params.productId);
-        setSingleProd(result);
+    useEffect(() => {
+        function fetchData()
+        {
+            const result = await getSingleProduct(match.params.productId);
+            setSingleProd(result);
 
-        const result2 = localStorage.getItem('cart');
-        const cart = JSON.parse(result2);
-        if(cart === null) await setCart([]);
-        else await setCart(cart);
+            const result2 = localStorage.getItem('cart');
+            const cart = JSON.parse(result2);
+            if(cart === null) cart = [];
 
-        let result3 = await cart.findIndex(cartItem => cartItem.productId === parseInt(match.params.productId));
-        setCartIndx(result3);
+            let result3 = await cart.findIndex(cartItem => cartItem.productId === parseInt(match.params.productId));
+            setCartIndx(result3);
 
-        let result4 = await result3 !== -1;
-        setInCart(result4);
+            let result4 = await result3 !== -1;
+            setInCart(result4);
+        }
+       fetchData();
 
     }, [])
 
