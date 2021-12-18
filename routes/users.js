@@ -10,7 +10,8 @@ const {requireAdmin, requireUser} = require('./utils')
 
 usersRouter.post('/register', async(req, res, next)=>{
     const MIN_PASSWORDLENGTH = 8;
-    const {username, password} = req.body;
+    const {username, password, email} = req.body;
+
     try {
         if(password.length < MIN_PASSWORDLENGTH) { //check the password length
             throw new Error("Password must be 8 or more characters");  //error if password is too short
@@ -19,6 +20,7 @@ usersRouter.post('/register', async(req, res, next)=>{
         if(userCheck) {
             throw new Error('A user by that name already exists');
         }
+        if(!email.includes('@')) throw new Error('email is not valid');
         const user = await createUser(req.body);  // save user in db
 
         const token = jwt.sign({id: user.id, username: user.username, isAdmin: user.isAdmin}, process.env.JWT_SECRET);
@@ -42,6 +44,7 @@ usersRouter.post('/login', async (req, res, next) => {
         }
 
         const user = await getUser(req.body);
+
         if (!user) throw Error('Your username or password is incorrect!');
 
         const token = jwt.sign({id: user.id, username: user.username, isAdmin: user.isAdmin}, process.env.JWT_SECRET);

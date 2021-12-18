@@ -15,7 +15,15 @@ const Navigation = ({token, setToken}) => {
                         <Nav.Link href='/cart' >Cart</Nav.Link>
                         <Nav.Link href='/products' >Products</Nav.Link>
                         {!!token ? 
-                        <Nav.Link href='/profile' >Profile</Nav.Link> : 
+                        <>
+                        <Nav.Link href='/profile' >Profile</Nav.Link>
+                        <Nav.Link href='/login' 
+                        onClick={() => {
+                            setToken('');
+                            localStorage.removeItem('token');
+                        }}>Logout</Nav.Link> 
+                        </>
+                        : 
                         <Nav.Link href='/login' >Login</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>
