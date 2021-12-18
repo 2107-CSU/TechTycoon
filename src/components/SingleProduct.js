@@ -10,7 +10,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
     const [inCart, setInCart] = useState(false);
     
     useEffect(() => {
-        function fetchData()
+        async function fetchData()
         {
             const result = await getSingleProduct(match.params.productId);
             setSingleProd(result);
@@ -25,7 +25,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
             let result4 = await result3 !== -1;
             setInCart(result4);
         }
-       fetchData();
+       await fetchData();
 
     }, [])
 
