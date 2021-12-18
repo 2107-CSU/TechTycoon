@@ -1,17 +1,11 @@
 import React, {useState, useEffect} from "react";
 import {  removeProductFromCart} from "./functions";
-import { createOrder } from "../api";
+import { createOrder, addProductToOrder } from "../api";
 
 
 const Cart = ({token, cart, setCart}) => {
 
     useEffect(() => {
-      const fetchData = async () => {
-        const result = localStorage.getItem('cart');
-        const cart = JSON.parse(result);
-        await setCart(cart);
-      }
-      fetchData();
         
     }, []);
     return <div>
@@ -43,18 +37,19 @@ const Cart = ({token, cart, setCart}) => {
            >Remove product from Cart</button>
            </div>
        })}
-       <button
+       {token && cart.length? <button
         onClick = {async () => {
           if(window.confirm("Order all objects in cart?"))
           {
-            // make order
-            const order = await createOrder(token);
-            // add products to order
-          setCart([]);
-          localStorage.setItem('cart', []);
+            const {order} = await createOrder(token);
+            console.log(cart);
+            console.log(order);
+            addProductToOrder(cart, token, order.id);
+            setCart([]);
+            localStorage.setItem('cart', []);
           }
         }}
-       >Order Cart</button>
+       >Order Cart</button>: null}
     </div>
     
 }

@@ -9,6 +9,7 @@ const {
   makeUserAdmin,
   deleteUser,
   getUserById,
+  getUserByUsername,
   getUser,
 } = require('./users');
 
@@ -85,4 +86,5 @@ module.exports = {
   getPhotoByProductId,
   getOrdersByUser,
   getPhotoByProductId,
+  getUserByUsername
 }

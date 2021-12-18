@@ -21,7 +21,15 @@ const Navigation = ({token, setToken}) => {
                             <NavDropdown.Item href="/products">All Products</NavDropdown.Item>
                         </NavDropdown>
                         {!!token ? 
-                        <Nav.Link href='/profile' >Profile</Nav.Link> : 
+                        <>
+                        <Nav.Link href='/profile' >Profile</Nav.Link>
+                        <Nav.Link href='/login' 
+                        onClick={() => {
+                            setToken('');
+                            localStorage.removeItem('token');
+                        }}>Logout</Nav.Link> 
+                        </>
+                        : 
                         <Nav.Link href='/login' >Login</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>
