@@ -6,13 +6,6 @@ import { createOrder, addProductToOrder } from "../api";
 const Cart = ({token, cart, setCart}) => {
 
     useEffect(() => {
-      const fetchData = async () => {
-        const result = localStorage.getItem('cart');
-        const cart = JSON.parse(result);
-        if(cart === null) await setCart([]);
-        else await setCart(cart);
-      }
-      fetchData();
         
     }, []);
     return <div>
@@ -44,7 +37,7 @@ const Cart = ({token, cart, setCart}) => {
            >Remove product from Cart</button>
            </div>
        })}
-       <button
+       {token && cart.length? <button
         onClick = {async () => {
           if(window.confirm("Order all objects in cart?"))
           {
@@ -56,7 +49,7 @@ const Cart = ({token, cart, setCart}) => {
             localStorage.setItem('cart', []);
           }
         }}
-       >Order Cart</button>
+       >Order Cart</button>: null}
     </div>
     
 }
