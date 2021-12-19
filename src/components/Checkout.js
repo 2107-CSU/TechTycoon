@@ -8,20 +8,21 @@ const Checkout = () => {
     const stripe = useStripe();
     const elements = useElements();
     const [message, setMessage] = useState("")
+    const [clientSecret, setClientSecret] = useState("")
     
-    // useEffect(() => {
-    //     const query = new URLSearchParams(window.location.search)
+    useEffect(() => {
+        const query = new URLSearchParams(window.location.search)
 
-    //     if(query.get("success")) {
-    //         setMessage("Order placed! You will receive an email confirmation.")
-    //     }
+        if(query.get("success")) {
+            setMessage("Order placed! You will receive an email confirmation.")
+        }
 
-    //     if(query.get("canceled")) {
-    //         setMessage(
-    //             "Order canceled -- continue to shop around and checkout when you're ready."
-    //         )
-    //     }
-    // }, [])
+        if(query.get("canceled")) {
+            setMessage(
+                "Order canceled -- continue to shop around and checkout when you're ready."
+            )
+        }
+    }, [])
 
     // const handleSubmit = async (event) => {
     //     event.preventDefault();

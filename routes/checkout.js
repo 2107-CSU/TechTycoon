@@ -1,6 +1,6 @@
 const express = require('express');
 const checkoutRouter = express.Router();
-const getAllProductsByOrderId = require('../db')
+const {getAllProductsByOrderId, getOrderTotal} = require('../db')
 const stripe = require('stripe')('sk_test_51K6JdyKsoRJpj5Ly0qKVmvtqcoYuX2UikVo2H5GuX72P04ATDEl6aPf1c50gQwcT5roqqY8oGCuGIPkVuosUXI0c00VkqpNK9P')
 
 checkoutRouter.post('/create-checkout-session', async (req, res, next) => {
@@ -33,12 +33,12 @@ checkoutRouter.post('/create-checkout-session', async (req, res, next) => {
     }
 })
 
-checkoutRouter.post("/create-payment-intent", async (req, res) => {
-    const { items } = req.body;
+checkoutRouter.post("/:orderId/create-payment-intent", async (req, res) => {
+    const orderId = req.params;
   
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: calculateOrderAmount(items),
+      amount: getOrderTotal(orderId),
       currency: "usd",
       automatic_payment_methods: {
         enabled: true,
