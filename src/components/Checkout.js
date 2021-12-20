@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { createCheckoutSession } from '../api/checkout';
+import { createCheckoutSession, createPaymentIntent } from '../api/checkout';
 
 
-const Checkout = () => {
+const Checkout = ({cart, clientSecret, setClientSecret}) => {
     const [isPaymentLoading, setPaymentLoading] = useState(false)
     const stripe = useStripe();
     const elements = useElements();
     const [message, setMessage] = useState("")
-    const [clientSecret, setClientSecret] = useState("")
     
     useEffect(() => {
+        const fetchPaymentIntent = async () => {
+          createPaymentIntent()
+        }
         const query = new URLSearchParams(window.location.search)
 
         if(query.get("success")) {

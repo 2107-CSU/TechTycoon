@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {getSingleProduct, getSomething} from '../api'
+import {getSingleProduct, getSomething, createPaymentIntent} from '../api'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import {Cart, Login, Profile, SingleProduct, Products, Navigation, Checkout} from './'
 import {loadStripe} from '@stripe/stripe-js';
@@ -12,6 +12,7 @@ const App = () => {
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [cart, setCart] = useState([]);
+  const [clientSecret, setClientSecret] = useState("")
 
   const options = {
     clientSecret: 'sk_test_51K6JdyKsoRJpj5Ly0qKVmvtqcoYuX2UikVo2H5GuX72P04ATDEl6aPf1c50gQwcT5roqqY8oGCuGIPkVuosUXI0c00VkqpNK9P'
@@ -37,9 +38,9 @@ const App = () => {
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} token = {token} />}></Route>
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
-      <Route path = '/checkout' render = {(routeProps) => (
+      <Route path = '/checkout/:orderId' render = {(routeProps) => (
         <Elements stripe={stripePromise} options={options}>
-          <Checkout {...routeProps} cart={cart}/>
+          <Checkout {...routeProps} cart={cart} clientSecret={clientSecret} setClientSecret={setClientSecret} />
         </Elements>
       )}></Route>
     </div>
