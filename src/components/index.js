@@ -5,8 +5,9 @@ import SingleProduct from './SingleProduct';
 import Products from './Products';
 import Navigation from './Navigation';
 import Checkout from './Checkout';
+import Category from './Category';
 
-export {Cart, Login, Profile, SingleProduct, Products, Navigation, Checkout};
+export {Cart, Login, Profile, SingleProduct, Products, Navigation, Category, Checkout};
 
 export { default as App } from './App';
 
