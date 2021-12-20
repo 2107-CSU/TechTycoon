@@ -4,8 +4,9 @@ import Profile from './Profile';
 import SingleProduct from './SingleProduct';
 import Products from './Products';
 import Navigation from './Navigation';
+import Category from './Category';
 
-export {Cart, Login, Profile, SingleProduct, Products, Navigation};
+export {Cart, Login, Profile, SingleProduct, Products, Navigation, Category};
 
 export { default as App } from './App';
 
