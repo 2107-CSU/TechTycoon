@@ -1,4 +1,5 @@
-const BaseUrl = "http://localhost:5000/";
+const {BaseUrl} = require('./constants');
+
 
 export async function createOrder(token) {
     try {
