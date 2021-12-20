@@ -14,7 +14,6 @@ const Checkout = ({cart, clientSecret, setClientSecret}) => {
         async function fetchPaymentIntent () {
           const token = localStorage.getItem('token')
           const userOrders = await getOrdersByUser(token)
-          setOrders(userOrders)
           console.log(userOrders)
           //createPaymentIntent()
         }
@@ -32,7 +31,7 @@ const Checkout = ({cart, clientSecret, setClientSecret}) => {
         //     )
         // }
     }, [])
-console.log(orders)
+
     // const handleSubmit = async (event) => {
     //     event.preventDefault();
 
