@@ -4,7 +4,7 @@ import { createOrder, addProductToOrder } from "../api";
 
 
 const Cart = ({token, cart, setCart}) => {
-
+  console.log(cart)
     useEffect(() => {
         
     }, []);

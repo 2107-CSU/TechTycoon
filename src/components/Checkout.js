@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { createCheckoutSession, createPaymentIntent } from '../api/checkout';
+import { getOrdersByUser } from '../api/orders'
 
 
 const Checkout = ({cart, clientSecret, setClientSecret}) => {
@@ -10,22 +11,28 @@ const Checkout = ({cart, clientSecret, setClientSecret}) => {
     const [message, setMessage] = useState("")
     
     useEffect(() => {
-        const fetchPaymentIntent = async () => {
-          createPaymentIntent()
+        async function fetchPaymentIntent () {
+          const token = localStorage.getItem('token')
+          const userOrders = await getOrdersByUser(token)
+          setOrders(userOrders)
+          console.log(userOrders)
+          //createPaymentIntent()
         }
-        const query = new URLSearchParams(window.location.search)
+        fetchPaymentIntent()
+        
+        // const query = new URLSearchParams(window.location.search)
 
-        if(query.get("success")) {
-            setMessage("Order placed! You will receive an email confirmation.")
-        }
+        // if(query.get("success")) {
+        //     setMessage("Order placed! You will receive an email confirmation.")
+        // }
 
-        if(query.get("canceled")) {
-            setMessage(
-                "Order canceled -- continue to shop around and checkout when you're ready."
-            )
-        }
+        // if(query.get("canceled")) {
+        //     setMessage(
+        //         "Order canceled -- continue to shop around and checkout when you're ready."
+        //     )
+        // }
     }, [])
-
+console.log(orders)
     // const handleSubmit = async (event) => {
     //     event.preventDefault();
 

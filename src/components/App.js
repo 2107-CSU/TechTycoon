@@ -40,7 +40,7 @@ const App = () => {
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} token = {token} />}></Route>
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
-      <Route path = '/checkout/:orderId' render = {(routeProps) => (
+      <Route path = '/checkout' render = {(routeProps) => (
         <Elements stripe={stripePromise} options={options}>
           <Checkout {...routeProps} cart={cart} clientSecret={clientSecret} setClientSecret={setClientSecret} />
         </Elements>
