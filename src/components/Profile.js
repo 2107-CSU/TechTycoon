@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { getOrdersByUser, getProductsByOrder } from "../api";
+import { calculateOrderPrice } from "./functions";
 
 const Profile = ({token}) => {
 
@@ -29,6 +30,7 @@ const Profile = ({token}) => {
                 {orders.map((order, indx) => {
                     return<div key = {indx}>
                         <h3>Order {indx} created {order.date}</h3>
+                        {orderProducts[indx] ? <p>Order Price: ${calculateOrderPrice(orderProducts[indx])}</p> : null}
                         <h4>Products: </h4>
                         {orderProducts.length === orders.length ? <div>
                         {orderProducts[indx].map((product, indx) => {
