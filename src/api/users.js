@@ -54,7 +54,7 @@ export async function getUser(token) {
             }
         });
 
-        const result = response.json();
+        const result = await response.json();
         console.log(result);
         return result;
     } catch (error) {
