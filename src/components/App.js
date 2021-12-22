@@ -13,9 +13,11 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = localStorage.getItem('cart');
-      const cart = await JSON.parse(result);
-      if(cart === null) await setCart([]);
-      else await setCart(cart);
+      if(result){
+        const cart = await JSON.parse(result);
+        await setCart(cart);
+      }
+      else await setCart([]);
     }
     fetchData();
   }, []);

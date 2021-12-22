@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from "react";
-import {  removeProductFromCart} from "./functions";
+import {  removeProductFromCart, calculateCartPrice} from "./functions";
 import { createOrder, addProductToOrder } from "../api";
 
 
 const Cart = ({token, cart, setCart}) => {
 
     useEffect(() => {
+      
         
     }, []);
     return <div>
@@ -37,6 +38,7 @@ const Cart = ({token, cart, setCart}) => {
            >Remove product from Cart</button>
            </div>
        })}
+       <p>Total Price: ${calculateCartPrice(cart)}</p>
        {token && cart.length? <button
         onClick = {async () => {
           if(window.confirm("Order all objects in cart?"))

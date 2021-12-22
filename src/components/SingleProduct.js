@@ -16,8 +16,10 @@ const SingleProduct = ({match, history, cart, setCart}) => {
             setSingleProd(result);
 
             const result2 = localStorage.getItem('cart');
-            let cart = JSON.parse(result2);
-            if(cart === null) cart = [];
+            let cart = [];
+            if(result2) {
+                cart = JSON.parse(result2);
+            }
 
             let result3 = await cart.findIndex(cartItem => cartItem.productId === parseInt(match.params.productId));
             setCartIndx(result3);
