@@ -33,12 +33,12 @@ checkoutRouter.post('/create-checkout-session', async (req, res, next) => {
     }
 })
 
-checkoutRouter.post("/:orderId/create-payment-intent", async (req, res) => {
+checkoutRouter.post("/create-payment-intent", async (req, res) => {
     const orderId = req.params;
   
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: getOrderTotal(orderId),
+      amount: 1400,
       currency: "usd",
       automatic_payment_methods: {
         enabled: true,

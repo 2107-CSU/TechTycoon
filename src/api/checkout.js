@@ -21,9 +21,9 @@ export async function createCheckoutSession(items) {
     }
 }
 
-export async function createPaymentIntent(orderId, items) {
+export async function createPaymentIntent(items) {
     try {
-        const response = await fetch(`${BaseUrl}${orderId}/create-payment-intent`, {
+        const response = await fetch(`${BaseUrl}/create-payment-intent`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'

@@ -12,10 +12,9 @@ const Checkout = ({cart, clientSecret, setClientSecret}) => {
     
     useEffect(() => {
         async function fetchPaymentIntent () {
-          const token = localStorage.getItem('token')
-          const userOrders = await getOrdersByUser(token)
+          const userOrders = await getOrdersByUser(localStorage.getItem('token'))
           console.log(userOrders)
-          //createPaymentIntent()
+          createPaymentIntent(cart)
         }
         fetchPaymentIntent()
         
