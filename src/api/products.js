@@ -1,6 +1,6 @@
 import axios from 'axios';  // makes calls to the api, api reuqests
 
-const BaseUrl = "http://localhost:5000/";
+const {BaseUrl} = require('./constants');
 
 
 export async function getProducts()
