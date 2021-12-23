@@ -12,7 +12,7 @@ const Cart = ({token, cart, setCart}) => {
         
     }, []);
     return <div>
-       <h1> Cart </h1> 
+       <h1 className = "title"> Cart </h1> 
        <Row xs={1} md={2} className="g-4">
        {cart.map((productObj, indx) => {
          const {product, quantity} = productObj;

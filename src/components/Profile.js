@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 
-const Profile = ({token}) => {
+const Profile = ({token, username, setUserName}) => {
 
     const [orders, setOrders] = useState([]);
     const [orderProducts, setOrderProducts] = useState([]);
@@ -20,14 +20,16 @@ const Profile = ({token}) => {
             const allOrderProducts = await Promise.all(orders.map(order => getProductsByOrder(token, order.id)));
             console.log(allOrderProducts);
             setOrderProducts(allOrderProducts);
+            const result2 = localStorage.getItem('username')
+            if(result2) setUserName(result2);
           }
         }
         fetchData();
           
-      }, []);
+      }, [username]);
     
     return <div>
-            <h1> Profile </h1>
+           { token? <h1 className = "title">{username}'s Profile </h1>: <h1>You are not logged in.</h1>}
             {token ? 
             <div>
                 <h2>Order History: </h2>
