@@ -28,13 +28,12 @@ const Profile = ({token}) => {
     
     return <div>
             <h1> Profile </h1>
-            <Row xs={1} md={2} className="g-4">
             {token ? 
             <div>
                 <h2>Order History: </h2>
                 {orders.map((order, indx) => {
                     return<Col key = {indx}>
-                        <Card className = "orderCard">
+                        <Card className = "orderCard border-dark bg-light">
                         <Card.Title>Order {orders.length - indx}</Card.Title>
                         <Card.Subtitle>Created {convertDate(order.date)}</Card.Subtitle>
                         {orderProducts[indx] ? <Card.Text>Order Price: ${calculateOrderPrice(orderProducts[indx])}</Card.Text> : null}
@@ -42,9 +41,9 @@ const Profile = ({token}) => {
                         <ListGroup className="list-group-flush">
                         {orderProducts.length === orders.length ? <div>
                         {orderProducts[indx].map((product, indx) => {
-                            return<ListGroupItem key = {indx}>
+                            return<ListGroupItem key = {indx} className = "bg-light">
                                 <Card.Title>{product.name}</Card.Title>
-                                <Card.Text>Quantity: {product.quantity}</Card.Text>
+                                <Card.Text>Quantity: {product.quantity} x Price: ${product.price} = ${Math.round(product.price * product.quantity * 100) / 100}</Card.Text>
                             </ListGroupItem>
                         })} </div> : null}
                         </ListGroup>
@@ -52,7 +51,6 @@ const Profile = ({token}) => {
                     </Col>
                 })}
             </div>:null}
-            </Row>
         </div>
 }
 
