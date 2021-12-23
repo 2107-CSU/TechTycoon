@@ -12,7 +12,7 @@ export async function createCheckoutSession(items) {
             })
         })
 
-        const checkoutSession = response.json()
+        const checkoutSession = await response.json()
         console.log(checkoutSession)
         return checkoutSession
     } catch (error) {
@@ -33,7 +33,7 @@ export async function createPaymentIntent(items) {
             })
         })
 
-        const paymentIntent = response.json();
+        const paymentIntent = await response.json();
         console.log(paymentIntent);
         return paymentIntent;
     } catch (error) {

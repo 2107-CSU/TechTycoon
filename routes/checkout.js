@@ -34,7 +34,6 @@ checkoutRouter.post('/create-checkout-session', async (req, res, next) => {
 })
 
 checkoutRouter.post("/create-payment-intent", async (req, res) => {
-    const orderId = req.params;
   
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
@@ -44,7 +43,7 @@ checkoutRouter.post("/create-payment-intent", async (req, res) => {
         enabled: true,
       },
     });
-  
+    console.log(paymentIntent)
     res.send({
       clientSecret: paymentIntent.client_secret,
     });

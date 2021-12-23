@@ -11,13 +11,6 @@ const Checkout = ({cart, clientSecret, setClientSecret}) => {
     const [message, setMessage] = useState("")
     
     useEffect(() => {
-        async function fetchPaymentIntent () {
-          const userOrders = await getOrdersByUser(localStorage.getItem('token'))
-          console.log(userOrders)
-          createPaymentIntent(cart)
-        }
-        fetchPaymentIntent()
-        
         // const query = new URLSearchParams(window.location.search)
 
         // if(query.get("success")) {

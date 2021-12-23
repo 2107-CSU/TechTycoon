@@ -15,8 +15,12 @@ const App = () => {
   const [cart, setCart] = useState([]);
   const [clientSecret, setClientSecret] = useState("")
 
+  const appearance = {
+    theme: 'stripe',
+  };
   const options = {
-    clientSecret: 'sk_test_51K6JdyKsoRJpj5Ly0qKVmvtqcoYuX2UikVo2H5GuX72P04ATDEl6aPf1c50gQwcT5roqqY8oGCuGIPkVuosUXI0c00VkqpNK9P'
+    clientSecret: 'sk_test_51K6JdyKsoRJpj5Ly0qKVmvtqcoYuX2UikVo2H5GuX72P04ATDEl6aPf1c50gQwcT5roqqY8oGCuGIPkVuosUXI0c00VkqpNK9P',
+    appearance
   }
 
   useEffect(() => {
@@ -29,6 +33,14 @@ const App = () => {
       else await setCart([]);
     }
     fetchData();
+    
+    fetch("/create-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+    })
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret));
   }, []);
 
   return (
@@ -43,9 +55,13 @@ const App = () => {
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
       <Route path = '/checkout' render = {(routeProps) => (
-        <Elements stripe={stripePromise} options={options}>
-          <Checkout {...routeProps} cart={cart} clientSecret={clientSecret} setClientSecret={setClientSecret} />
-        </Elements>
+        <div className="App">
+          {clientSecret && (
+            <Elements options={options} stripe={stripePromise}>
+              <Checkout />
+            </Elements>
+          )}
+        </div>
       )}></Route>
     </div>
   </Router>
