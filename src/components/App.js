@@ -33,14 +33,8 @@ const App = () => {
       else await setCart([]);
     }
     fetchData();
-    
-    fetch("/create-payment-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
+
+    createPaymentIntent()
   }, []);
 
   return (
@@ -54,7 +48,7 @@ const App = () => {
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} token = {token} />}></Route>
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
-      <Route path = '/checkout' render = {(routeProps) => (
+      <Route path = '/checkout' render = {() => (
         <div className="App">
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
