@@ -1,6 +1,10 @@
 import React, {useState, useEffect} from "react";
 import { getOrdersByUser, getProductsByOrder } from "../api";
-import { calculateOrderPrice } from "./functions";
+import { calculateOrderPrice, convertDate } from "./functions";
+import Card from 'react-bootstrap/Card';
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 
 const Profile = ({token}) => {
 
@@ -12,7 +16,7 @@ const Profile = ({token}) => {
           if(token){
             const orders = await getOrdersByUser(token);
             console.log(orders);
-            await setOrders(orders);
+            await setOrders(orders.reverse());
             const allOrderProducts = await Promise.all(orders.map(order => getProductsByOrder(token, order.id)));
             console.log(allOrderProducts);
             setOrderProducts(allOrderProducts);
@@ -24,24 +28,31 @@ const Profile = ({token}) => {
     
     return <div>
             <h1> Profile </h1>
+            <Row xs={1} md={2} className="g-4">
             {token ? 
             <div>
-                <h2>Orders: </h2>
+                <h2>Order History: </h2>
                 {orders.map((order, indx) => {
-                    return<div key = {indx}>
-                        <h3>Order {indx} created {order.date}</h3>
-                        {orderProducts[indx] ? <p>Order Price: ${calculateOrderPrice(orderProducts[indx])}</p> : null}
-                        <h4>Products: </h4>
+                    return<Col key = {indx}>
+                        <Card className = "orderCard">
+                        <Card.Title>Order {orders.length - indx}</Card.Title>
+                        <Card.Subtitle>Created {convertDate(order.date)}</Card.Subtitle>
+                        {orderProducts[indx] ? <Card.Text>Order Price: ${calculateOrderPrice(orderProducts[indx])}</Card.Text> : null}
+                        <Card.Text>Products: </Card.Text>
+                        <ListGroup className="list-group-flush">
                         {orderProducts.length === orders.length ? <div>
                         {orderProducts[indx].map((product, indx) => {
-                            return<div key = {indx}>
-                                <h5>{product.name}</h5>
-                                <p>Quantity: {product.quantity}</p>
-                            </div>
+                            return<ListGroupItem key = {indx}>
+                                <Card.Title>{product.name}</Card.Title>
+                                <Card.Text>Quantity: {product.quantity}</Card.Text>
+                            </ListGroupItem>
                         })} </div> : null}
-                    </div>
+                        </ListGroup>
+                        </Card>
+                    </Col>
                 })}
             </div>:null}
+            </Row>
         </div>
 }
 

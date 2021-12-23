@@ -37,3 +37,8 @@
     font-size: 12px;
     text-align: center;
 }
+
+.orderCard {
+    margin: 10px;
+    border: 5px solid black;
+}
