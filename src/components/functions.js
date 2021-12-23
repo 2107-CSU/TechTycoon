@@ -20,3 +20,17 @@ export function removeProductFromCart(cart, indx)
     localStorage.setItem('cart', JSON.stringify(cartCopy));
     return cartCopy;
 }
+
+export function calculateCartPrice(cart)
+{
+  let total = 0;
+  cart.forEach(cartItem => total += (cartItem.product.price * cartItem.quantity));
+  return(total);
+}
+
+export function calculateOrderPrice(order)
+{
+  let total = 0;
+  order.forEach(orderProduct => total += (orderProduct.price * orderProduct.quantity));
+  return total;
+}
