@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {  removeProductFromCart, calculateCartPrice} from "./functions";
+import {  removeProductFromCart, calculateCartPrice, isPosInt, allPosInts} from "./functions";
 import { createOrder, addProductToOrder } from "../api";
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row'
@@ -7,7 +7,6 @@ import Col from 'react-bootstrap/Col'
 
 
 const Cart = ({token, cart, setCart}) => {
-
     useEffect(() => {
       
         
@@ -24,12 +23,14 @@ const Cart = ({token, cart, setCart}) => {
                 <Card.Body>
                   <Card.Title>{product.name}</Card.Title>
                   <Card.Text>{product.description}</Card.Text>
-                  <Card.Text>price: {product.price}</Card.Text>
-                  <Card.Text>quantity: {quantity}</Card.Text>
-                </Card.Body>
+                  <Card.Text>price: ${product.price} x </Card.Text>
+                  <div class = "flex">
+                  <Card.Text>quantity:  </Card.Text>
            <form>
-             <input type = "text" 
-             placeholder= "New Quantity"
+             <input type = "text"
+             className = "focus"
+             value = {quantity}
+             size = {2}
              onChange = {(event) => {
               const cartCopy = [...cart];
               cartCopy[indx].quantity = event.target.value;
@@ -37,6 +38,10 @@ const Cart = ({token, cart, setCart}) => {
               localStorage.setItem('cart', JSON.stringify(cartCopy));
              }}/>
            </form>
+           <Card.Text> = ${Math.round(product.price * quantity * 100) / 100}</Card.Text>
+              </div>
+          {isPosInt(quantity) ? null : <div className = "warning"> Quantity must be a positive integer to order!</div>}
+           </Card.Body>
            <button
             onClick = {() => {
              const newCart = removeProductFromCart(cart, indx);
@@ -50,7 +55,7 @@ const Cart = ({token, cart, setCart}) => {
        })}
        </Row>
        <p>Total Price: ${calculateCartPrice(cart)}</p>
-       {token && cart.length? <button
+       {token && cart.length && allPosInts(cart)? <button
         onClick = {async () => {
           if(window.confirm("Order all objects in cart?"))
           {
