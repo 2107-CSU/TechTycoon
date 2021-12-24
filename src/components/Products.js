@@ -21,6 +21,7 @@ const Products = ({products, setProducts, cart, setCart}) => {
 
     return (
         <div>
+            <h1 className = "title">Products</h1>
             <Row xs={1} md={2} className="g-4">
                 {products.map((product, indx )=> (
                     <Col key = {indx}>
@@ -41,9 +42,9 @@ const Products = ({products, setProducts, cart, setCart}) => {
                                             console.log(newCart);
                                             setCart(newCart);
                                         }}
-                                        type="button" class="btn btn-outline-primary btn-circle btn-md"
+                                        type="button" className ="btn btn-outline-primary btn-circle btn-md"
                                     >
-                                        <i class="fas fa-cart-plus fa-lg"></i>
+                                        <i className ="fas fa-cart-plus fa-lg"></i>
                                     </button></Col>
                                     </Row>
                                 </Container>

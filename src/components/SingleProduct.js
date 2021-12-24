@@ -34,8 +34,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
     return (
         <div>
             
-                <p>name</p>
-                <h1>{singleProd.name}</h1>
+                <h1 className = "title"> {singleProd.name}</h1>
 
                 <p>description</p>
                 <p>{singleProd.description}</p>
