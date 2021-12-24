@@ -3,10 +3,19 @@ import { getProducts, getPhotos } from '../api/products';
 import { addProductToCart } from './functions';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Image from 'react-bootstrap/Image'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import Container from 'react-bootstrap/esm/Container';
+
+const Search = () => {
+   return <nav className ="navbar navbar-light bg-light">
+  <form class="form-inline">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+</nav>
+}
 
 
 const Products = ({products, setProducts, cart, setCart}) => {  
