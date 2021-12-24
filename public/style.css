@@ -37,3 +37,28 @@
     font-size: 12px;
     text-align: center;
 }
+
+.orderCard {
+    margin: 10px;
+}
+
+.flex {
+    display: flex;
+
+}
+
+.focus {
+    /* border: 1px solid lightblue; */
+    border-radius: 20%;
+    background-color: rgb(234, 238, 240);
+}
+
+.warning{
+    color:red;
+}
+
+.title{
+    display:flex;
+    justify-content: center;
+    background-color: lightblue;
+}
