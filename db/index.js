@@ -17,6 +17,7 @@ const {
   createCategories,
   getReviewsByProductId,
   createReview,
+  getAllCategories,
 
 } = require('./categoriesAndReviews');
 
@@ -86,5 +87,6 @@ module.exports = {
   getPhotoByProductId,
   getOrdersByUser,
   getPhotoByProductId,
-  getUserByUsername
+  getUserByUsername,
+  getAllCategories,
 }
