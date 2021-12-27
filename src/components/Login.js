@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import { Link } from 'react-router-dom';
-import {login, register, getUser} from '../api/index';
+import {login, register, getUser, checkUser} from '../api/index';
 
 const Login = ({match, history, setToken, setUserName}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [available, setAvailable] = useState('false');
 
     return (
         <>
@@ -59,8 +60,10 @@ const Login = ({match, history, setToken, setUserName}) => {
                 <input 
                 value={username}
                 placeholder='username'
-                onChange={(event) => {
-                    setUsername(event.target.value);
+                onChange={async (event) => {
+                    const value = event.target.value;
+                    setUsername(value);
+                    if(value !== "") setAvailable(!await checkUser(value));
                 }} />
                 <input 
                 value={password}
@@ -85,6 +88,7 @@ const Login = ({match, history, setToken, setUserName}) => {
                         onChange={(event) => {
                             setEmail(event.target.value);
                         }} />
+
                     </>
                     :
                     null
@@ -96,6 +100,7 @@ const Login = ({match, history, setToken, setUserName}) => {
                         :
                         <Link to='/register'>Don't have an account?</Link>
                 }
+                { username.length && match.url === '/register'? <>{available? <p className = "green">This username is available</p>: <p className = "warning">This username is taken!</p>}</>:null}
             </form>
         </>
     )

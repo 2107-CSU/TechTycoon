@@ -1,5 +1,5 @@
 import axios from 'axios';  // makes calls to the api, api reuqests
-import {register, login, getUser, makeAdmin, deleteUser} from './users';
+import {register, login, getUser, makeAdmin, deleteUser, checkUser} from './users';
 import { createOrder, getSingleOrder, getOrdersByUser, changeOrderStatus } from './orders';
 import { getProductsByCategory } from './product_categories';
 import { getProductsByOrder, addProductToOrder } from './order_products';
@@ -38,4 +38,5 @@ export {
   editProduct, 
   deleteProduct,
   getCategories,
+  checkUser,
 }

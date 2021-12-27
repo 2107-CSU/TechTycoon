@@ -62,6 +62,22 @@ export async function getUser(token) {
     }
 }
 
+export async function checkUser(username) {
+    try {
+        const response = await fetch(`${BaseUrl}api/users/check/${username}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 // ADMIN FUNCTIONS ------------------------------------------
 
 export async function makeAdmin(token, userId) {

@@ -8,6 +8,17 @@ const {requireAdmin, requireUser} = require('./utils')
 
 // POST REQUESTS
 
+usersRouter.get('/check/:username', async (req, res, next) => {
+    try{
+        const {username} = req.params;
+        console.log(username);
+        const user = await getUserByUsername(username);
+        res.send(!!user);
+    } catch(error){
+        next(error);
+    }
+})
+
 usersRouter.post('/register', async(req, res, next)=>{
     const MIN_PASSWORDLENGTH = 8;
     const {username, password, email} = req.body;
