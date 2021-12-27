@@ -2,7 +2,7 @@ const BaseUrl = "http://localhost:5000/";
 
 export async function createCheckoutSession(items) {
     try {
-        const response = await fetch(`${BaseUrl}create-checkout-session`, {
+        const response = await fetch(`${BaseUrl}api/checkout/create-checkout-session`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -23,7 +23,7 @@ export async function createCheckoutSession(items) {
 
 export async function createPaymentIntent() {
     try {
-        const response = await fetch('/create-payment-intent', {
+        const response = await fetch(`${BaseUrl}api/checkout/create-payment-intent`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             // body: JSON.stringify({

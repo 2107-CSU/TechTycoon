@@ -3,6 +3,13 @@ import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { createCheckoutSession, createPaymentIntent } from '../api/checkout';
 import { getOrdersByUser } from '../api/orders'
 
+{/* <div className="App">
+          {clientSecret && (
+            <Elements options={options} stripe={stripePromise}>
+              <Checkout />
+            </Elements>
+          )}
+        </div> */}
 
 const Checkout = ({cart, clientSecret, setClientSecret}) => {
     const [isPaymentLoading, setPaymentLoading] = useState(false)

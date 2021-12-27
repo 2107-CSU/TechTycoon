@@ -19,7 +19,7 @@ const App = () => {
     theme: 'stripe',
   };
   const options = {
-    clientSecret: 'sk_test_51K6JdyKsoRJpj5Ly0qKVmvtqcoYuX2UikVo2H5GuX72P04ATDEl6aPf1c50gQwcT5roqqY8oGCuGIPkVuosUXI0c00VkqpNK9P',
+    clientSecret,
     appearance
   }
 
@@ -31,10 +31,13 @@ const App = () => {
         await setCart(cart);
       }
       else await setCart([]);
+
+      const {clientSecret} = await createPaymentIntent();
+      setClientSecret(clientSecret);
     }
     fetchData();
 
-    createPaymentIntent()
+    
   }, []);
 
   return (
@@ -49,14 +52,14 @@ const App = () => {
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
       <Route path = '/checkout' render = {() => (
-        <div className="App">
+      <div className="App">
+        {console.log(clientSecret)}
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
               <Checkout />
             </Elements>
           )}
-        </div>
-      )}></Route>
+        </div> )}></Route>
     </div>
   </Router>
   );
