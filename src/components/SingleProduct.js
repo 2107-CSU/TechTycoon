@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Accordion, Button } from 'react-bootstrap';
 import { getSingleProduct, getReviews } from '../api';
 import { addProductToCart, removeProductFromCart } from './functions';
 
 const SingleProduct = ({match, history, cart, setCart}) => {
 
-    //which state?
     const [singleProd, setSingleProd]= useState({});
     const [cartIndx, setCartIndx] = useState(-1);
     const [inCart, setInCart] = useState(false);
@@ -30,10 +29,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
             setInCart(result4);
 
             const result5 = await getReviews(match.params.productId);
-            console.log("use effect reviews", result5);
-            console.log("the match.params.product", match.params.productId);
-            if (result5 ){
-                setReviews(result5) };
+            if (result5) setReviews(result5);
         }
        fetchData();
 
@@ -41,55 +37,61 @@ const SingleProduct = ({match, history, cart, setCart}) => {
 
     return (
         <div>
-            
-                <h1 className = "title"> {singleProd.name}</h1>
+            <Card style={{ width: '100%' }}>
+                <Card.Body>
+                    <Card.Title>{singleProd.name}</Card.Title>
+                    <Card.Text>${singleProd.price}</Card.Text>
+                </Card.Body>
+                <Card.Img src={`/photos/${singleProd.photo}.jpg`}/>
+                <Card.Text>{singleProd.description}</Card.Text>
 
-                <p>description</p>
-                <p>{singleProd.description}</p>
-
-                <p>price</p>
-                <p>{singleProd.price}</p>
-            <Card.Img src={`photos/${singleProd.photo}.jpg`}/>
-                <Card.Title>photo</Card.Title>
-                <p>{singleProd.photo}</p>
-                <p>availability</p>
-                <p>{singleProd.availability}</p>
-
-                <p>quantity</p>
-                <p>{singleProd.quantity}</p>
-                {console.log(reviews)}
-                <p>reviews</p>
-                <p>{reviews.map( (review) => <div><p>{review.comments}</p>
-                                                        <p>{review.date}</p></div> )}</p>
-
-
-
-                <button
-                    disabled = {inCart}
-                    onClick = {() => {
-                        const newCart = addProductToCart(cart, singleProd, 1);
-                        setCart(newCart);
-                        setCartIndx(newCart.length -1);
-                        setInCart(true);
-                    }}>Add product to Cart</button>
-
-                {inCart? <button
-                onClick = {() => {
-                    const newCart = removeProductFromCart(cart, cartIndx);
-                    setCart(newCart);
-                    setInCart(false);
-                }}>
-                    Remove From Cart
-                </button>: null}
-                <button               // button to go back?
-                    onClick={() => {
-                        history.push('/products');  // not sure if this url works
-                    }}>
-                    Go Back To Products
-                </button>
+                <Accordion>
+                    <Accordion.Item>
+                        <Accordion.Header>Reviews</Accordion.Header>
+                        <Accordion.Body>{reviews.map((review) => (
+                            <Card>
+                                <Card.Title>{review.date}</Card.Title>
+                                <Card.Text>{review.comments}</Card.Text>
+                            </Card>
+                        ))}</Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
 
                 
-            
+                <div className="d-grid gap-2">
+                    {inCart ? 
+                        <Button
+                            onClick = {() => {
+                                const newCart = removeProductFromCart(cart, cartIndx);
+                                setCart(newCart);
+                                setInCart(false);
+                            }}>
+                                Remove From Cart
+                        </Button>
+                    : 
+                        <Button 
+                            variant="primary"
+                            onClick = {() => {
+                                const newCart = addProductToCart(cart, singleProd, 1);
+                                setCart(newCart);
+                                setCartIndx(newCart.length -1);
+                                setInCart(true);
+                            }}
+                        >
+                                Add to cart
+                        </Button>
+                    }
+
+                    <Button
+                        variant="secondary"
+                        onClick={() => {
+                            history.push('/products'); 
+                        }}
+                    >
+                        Back to Products
+                    </Button>
+                </div>
+            </Card>
         </div>
     )
 }

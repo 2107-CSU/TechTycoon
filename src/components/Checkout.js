@@ -64,12 +64,7 @@ const Checkout = ({cart, clientSecret, setClientSecret}) => {
       // }
   
       // setIsLoading(false);
-          const {order} = await createOrder(token);
-          console.log(cart);
-          console.log(order);
-          addProductToOrder(cart, token, order.id);
-          setCart([]);
-          localStorage.setItem('cart', []);
+          
     };
 
     
