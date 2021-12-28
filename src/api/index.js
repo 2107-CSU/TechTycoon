@@ -38,6 +38,6 @@ export {
   updateProductAmount, 
   editProduct, 
   deleteProduct,
-  createPaymentIntent
+  createPaymentIntent,
   getCategories,
 }
