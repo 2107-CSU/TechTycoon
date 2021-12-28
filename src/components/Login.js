@@ -11,9 +11,9 @@ const Login = ({match, history, setToken, setUserName}) => {
     return (
         <>
             {match.url === '/login'?
-                <h1>Login</h1>
+                <h1 className = "title" >Login</h1>
                 :
-                <h1>Register</h1>
+                <h1 className = "title">Register</h1>
             }
             <form 
             onSubmit={async (event) => {
@@ -64,6 +64,7 @@ const Login = ({match, history, setToken, setUserName}) => {
                 }} />
                 <input 
                 value={password}
+                type = "password"
                 placeholder='password'
                 onChange={(event) => {
                     setPassword(event.target.value);
@@ -72,12 +73,14 @@ const Login = ({match, history, setToken, setUserName}) => {
                     <>
                         <input 
                         value={confirmPassword}
+                        type = "password"
                         placeholder='confirm password'
                         onChange={(event) => {
                             setConfirmPassword(event.target.value);
                         }} />
 
                         <input 
+                        type='email'
                         value={email}
                         placeholder='email'
                         onChange={(event) => {

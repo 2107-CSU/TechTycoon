@@ -7,7 +7,6 @@ import Col from 'react-bootstrap/Col'
 
 
 const Cart = ({token, cart, setCart}) => {
-  console.log(cart)
     useEffect(() => {
       
         
@@ -25,7 +24,7 @@ const Cart = ({token, cart, setCart}) => {
                   <Card.Title>{product.name}</Card.Title>
                   <Card.Text>{product.description}</Card.Text>
                   <Card.Text>price: ${product.price} x </Card.Text>
-                  <div class = "flex">
+                  <div className = "flex">
                   <Card.Text>quantity:  </Card.Text>
            <form>
              <input type = "text"
@@ -55,7 +54,7 @@ const Cart = ({token, cart, setCart}) => {
            </Col>
        })}
        </Row>
-       <p>Total Price: ${calculateCartPrice(cart)}</p>
+       {cart.length? <p><b>Total Price: </b>${calculateCartPrice(cart)}</p>: <h4 className = "flex margin">Your cart is Empty.</h4>}
        {token && cart.length && allPosInts(cart)? <button
         onClick = {async () => {
           if(window.confirm("Order all objects in cart?"))

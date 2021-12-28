@@ -62,3 +62,13 @@
     justify-content: center;
     background-color: lightblue;
 }
+
+.margin{
+    margin:20px;
+    justify-content: center;
+}
+
+.long{
+    width:200px;
+}
+

@@ -57,4 +57,7 @@ apiRouter.use('/orders', ordersRouter);
 const checkoutRouter = require('./checkout');
 apiRouter.use('/checkout', checkoutRouter)
 
+const categoriesRouter = require('./categories');
+apiRouter.use('/categories', categoriesRouter);
+
 module.exports = apiRouter;
