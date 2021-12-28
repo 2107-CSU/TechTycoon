@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 
 
-const Navigation = ({token, setToken}) => {
+const Navigation = ({token, setToken, isAdmin}) => {
     return (
         <Navbar bg="light" expand="lg">
             <Container>
@@ -17,6 +17,11 @@ const Navigation = ({token, setToken}) => {
                         {!!token ? 
                         <>
                         <Nav.Link href='/profile' >Profile</Nav.Link>
+                            {isAdmin?
+                                <Nav.Link href='/admin'>Admin</Nav.Link>
+                                :
+                                null
+                            }
                         <Nav.Link href='/login' 
                         onClick={() => {
                             setToken('');
