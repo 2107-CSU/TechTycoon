@@ -41,7 +41,7 @@ export async function getSingleProduct(productId) {
 }
 
 // ADMIN FUNCTIONS ----------------------------------------------
-export async function addProduct(token, name, description, price, photoName, availability, quantity) {
+export async function addProduct(token, name, description, price, photoName, availability, quantity, categories) {
   try {
     const response = await fetch(`${BaseUrl}api/products`, {
       method: "POST",
@@ -55,7 +55,8 @@ export async function addProduct(token, name, description, price, photoName, ava
         price,
         photo: photoName,
         availability,
-        quantity
+        quantity,
+        categories
       })
     });
 
@@ -88,7 +89,7 @@ export async function updateProductAmount(token, productId, quantity) {
   }
 }
 
-export async function editProduct(token, productId, name, description, price, photoName, availability, quantity) {
+export async function editProduct(token, productId, name, description, price, photoName, availability, quantity, categories) {
   try {
     const response = await fetch(`${BaseUrl}api/products/${productId}/edit`, {
       method: "PATCH",
@@ -102,7 +103,8 @@ export async function editProduct(token, productId, name, description, price, ph
         price,
         photo: photoName,
         availability,
-        quantity
+        quantity,
+        categories
       })
     });
 
