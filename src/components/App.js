@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
-import {getSingleProduct, getSomething} from '../api'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import {Cart, Login, Profile, SingleProduct, Products, Navigation, Category} from './'
-=======
 import {getSingleProduct, getSomething, getUser, createPaymentIntent} from '../api'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import {Cart, Login, Profile, SingleProduct, Products, Navigation, Admin, Category, Checkout} from './'
 import {loadStripe} from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
->>>>>>> fd87623e101ef6d8e361ed0bf1c460713a47b02e
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
