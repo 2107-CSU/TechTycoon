@@ -7,7 +7,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { getCategories, getProductsByCategory } from '../api';
 import Container from 'react-bootstrap/esm/Container';
-// import { Dropdown, InputGroup, FormControl, DropdownButton } from 'react-bootstrap';
 
 
 const Search = ({setProducts, getProducts}) => {
@@ -89,7 +88,6 @@ const Products = ({products, setProducts, cart, setCart}) => {
                                     <Col xs lg="2"><button 
                                         onClick = {() => {
                                             const newCart = addProductToCart(cart, product, 1);
-                                            console.log(newCart);
                                             setCart(newCart);
                                         }}
                                         type="button" className ="btn btn-outline-primary btn-circle btn-md"

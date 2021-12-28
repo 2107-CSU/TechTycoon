@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { PaymentElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
 import { createCheckoutSession, createPaymentIntent } from '../api/checkout';
-import { getOrdersByUser } from '../api/orders'
+import { createOrder, addProductToOrder } from "../api";
 
-
-const Checkout = ({cart, clientSecret, setClientSecret}) => {
+const Checkout = ({cart, clientSecret, setClientSecret, token, setCart}) => {
     const [isPaymentLoading, setPaymentLoading] = useState(false)
     const stripe = useStripe();
     const elements = useElements();
@@ -74,7 +73,18 @@ const Checkout = ({cart, clientSecret, setClientSecret}) => {
       }}>
         
         <PaymentElement id="payment-element" />
-        <button disabled={isLoading || !stripe || !elements} id="submit">
+        <button disabled={isLoading || !stripe || !elements} id="submit" onClick = {async () => {
+          /* Payment function here */
+          if(window.confirm("Order all objects in cart?"))
+          {
+            const {order} = await createOrder(token);
+            console.log(cart);
+            console.log(order);
+            addProductToOrder(cart, token, order.id);
+            setCart([]);
+            localStorage.setItem('cart', []);
+          }
+        }}>
           <span id="button-text">
             {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
           </span>

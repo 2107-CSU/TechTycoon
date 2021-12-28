@@ -56,7 +56,7 @@ const App = () => {
         {console.log(clientSecret)}
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
-              <Checkout />
+              <Checkout token = {token} setCart = {setCart}/>
             </Elements>
           )}
         </div> )}></Route>

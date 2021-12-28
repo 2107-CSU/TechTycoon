@@ -5,6 +5,16 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
+// if(window.confirm("Order all objects in cart?"))
+//           {
+//             const {order} = await createOrder(token);
+//             console.log(cart);
+//             console.log(order);
+//             addProductToOrder(cart, token, order.id);
+//             setCart([]);
+//             localStorage.setItem('cart', []);
+//           }
+
 
 const Cart = ({token, cart, setCart}) => {
 
@@ -56,19 +66,8 @@ const Cart = ({token, cart, setCart}) => {
        })}
        </Row>
        {cart.length? <p><b>Total Price: </b>${calculateCartPrice(cart)}</p>: <h4 className = "flex margin">Your cart is Empty.</h4>}
-       {token && cart.length && allPosInts(cart)? <button
-        onClick = {async () => {
-          if(window.confirm("Order all objects in cart?"))
-          {
-            const {order} = await createOrder(token);
-            console.log(cart);
-            console.log(order);
-            addProductToOrder(cart, token, order.id);
-            setCart([]);
-            localStorage.setItem('cart', []);
-          }
-        }}
-       >Order Cart</button>: null}
+       {token && cart.length && allPosInts(cart)?
+       <a href={`/checkout`}><button>Checkout Cart</button></a> : null}
     </div>
     
 }
