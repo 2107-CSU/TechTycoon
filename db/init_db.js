@@ -27,6 +27,7 @@ const {
   getUser,
   getAllOrders,
 } = require('./index');
+const { getOrderTotal } = require('./orders');
 
 async function buildTables() {
   try {
@@ -231,8 +232,8 @@ async function createInitialOrderProducts() {
     const ProductsForOrder = await getAllProductsByOrderId(4);
     console.log("Products for order 4: ", ProductsForOrder);
 
-
-
+    const OrderTotal = await getOrderTotal(4)
+    console.log("Order total is ", OrderTotal)
 
   } catch(error) {
     console.log(error);

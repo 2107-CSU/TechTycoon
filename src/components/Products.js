@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getProducts, getPhotos } from '../api/products';
+import { getProducts } from '../api/products';
 import { addProductToCart } from './functions';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
