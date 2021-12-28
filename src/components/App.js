@@ -1,26 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {getSingleProduct, getSomething, createPaymentIntent} from '../api'
+import {getSingleProduct, getSomething} from '../api'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import {Cart, Login, Profile, SingleProduct, Products, Navigation, Category, Checkout} from './'
-import {loadStripe} from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
+import {Cart, Login, Profile, SingleProduct, Products, Navigation, Category} from './'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-const stripePromise = loadStripe('pk_test_51K6JdyKsoRJpj5LyBuDfgXdryocGnfkLuxrRm12ZQhsPuWAjlcnpGJPPimIgVfwDeZ0Nl4WfX5970NH6dgI4whq600h4VIo3dH');
 
 const App = () => {
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [cart, setCart] = useState([]);
-  const [clientSecret, setClientSecret] = useState("")
-
-  const appearance = {
-    theme: 'stripe',
-  };
-  const options = {
-    clientSecret,
-    appearance
-  }
+  const [username, setUserName] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,17 +17,11 @@ const App = () => {
         const cart = await JSON.parse(result);
         await setCart(cart);
       }
-      else await setCart([]);
-
-      const {clientSecret} = await createPaymentIntent();
-      setClientSecret(clientSecret);
 
       const result2 = localStorage.getItem('username')
       if(result2) setUserName(result2);
     }
     fetchData();
-
-    
   }, []);
 
   return (
@@ -53,15 +35,7 @@ const App = () => {
       <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} token = {token} username = {username} setUserName = {setUserName}/>}></Route>
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken} setUsername = {setUserName}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
-      <Route path = '/checkout' render = {() => (
-      <div className="App">
-        {console.log(clientSecret)}
-          {clientSecret && (
-            <Elements options={options} stripe={stripePromise}>
-              <Checkout />
-            </Elements>
-          )}
-        </div> )}></Route>
+      
     </div>
   </Router>
   );
