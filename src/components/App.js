@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const stripePromise = loadStripe('pk_test_51K6JdyKsoRJpj5LyBuDfgXdryocGnfkLuxrRm12ZQhsPuWAjlcnpGJPPimIgVfwDeZ0Nl4WfX5970NH6dgI4whq600h4VIo3dH');
 
 const App = () => {
-  const [message, setMessage] = useState('');
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [cart, setCart] = useState([]);

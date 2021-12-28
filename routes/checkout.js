@@ -9,7 +9,7 @@ checkoutRouter.post('/create-checkout-session', async (req, res, next) => {
 
     try {
         const session = await stripe.checkout.sessions.create({
-           // payment_method_types: ['card'],
+           payment_method_types: ['card'],
             line_items: products.map(item => {
                 return {
                     price_data: {
@@ -33,9 +33,9 @@ checkoutRouter.post('/create-checkout-session', async (req, res, next) => {
     }
 })
 
+// can I use calculateOrderPrice here?
 checkoutRouter.post("/create-payment-intent", async (req, res) => {
   
-    // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
       amount: 1400,
       currency: "usd",
@@ -43,7 +43,7 @@ checkoutRouter.post("/create-payment-intent", async (req, res) => {
         enabled: true,
       },
     });
-    console.log(paymentIntent)
+    
     res.send({
       clientSecret: paymentIntent.client_secret,
     });
