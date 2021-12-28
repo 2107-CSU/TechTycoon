@@ -22,8 +22,8 @@ const Products = ({products, setProducts, cart, setCart}) => {
     return (
         <div>
             <Row xs={1} md={2} className="g-4">
-                {products.map(product => (
-                    <Col>
+                {products.map((product, indx )=> (
+                    <Col key = {indx}>
                         <Card style={{ width: '18rem' }}>
                             <Card.Header>{product.categories}</Card.Header>
                             <Card.Img src={`photos/${product.photo}.jpg`} variant='top'/>

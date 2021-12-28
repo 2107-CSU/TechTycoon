@@ -6,6 +6,7 @@ import { getProductsByOrder, addProductToOrder } from './order_products';
 import { getProducts, getSingleProduct, addProduct, updateProductAmount, editProduct, deleteProduct } from './products';
 import { createPaymentIntent } from './checkout'
 
+import { getReviews } from './reviews';
 
 export async function getSomething() {
   try {
@@ -37,5 +38,6 @@ export {
   updateProductAmount, 
   editProduct, 
   deleteProduct,
-  createPaymentIntent
+  createPaymentIntent,
+  getReviews
 }

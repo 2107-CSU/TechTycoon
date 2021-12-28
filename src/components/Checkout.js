@@ -44,26 +44,32 @@ const Checkout = ({cart, clientSecret, setClientSecret}) => {
 
     const handleSubmit = async (e) => {
   
-      if (!stripe || !elements) {
-        return;
-      }
+      // if (!stripe || !elements) {
+      //   return;
+      // }
   
-      setIsLoading(true);
+      // setIsLoading(true);
   
-      const { error } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: '/cart',
-        },
-      });
+      // const { error } = await stripe.confirmPayment({
+      //   elements,
+      //   confirmParams: {
+      //     return_url: '/cart',
+      //   },
+      // });
   
-      if (error.type === "card_error" || error.type === "validation_error") {
-        setMessage(error.message);
-      } else {
-        setMessage("An unexpected error occured.");
-      }
+      // if (error.type === "card_error" || error.type === "validation_error") {
+      //   setMessage(error.message);
+      // } else {
+      //   setMessage("An unexpected error occured.");
+      // }
   
-      setIsLoading(false);
+      // setIsLoading(false);
+          const {order} = await createOrder(token);
+          console.log(cart);
+          console.log(order);
+          addProductToOrder(cart, token, order.id);
+          setCart([]);
+          localStorage.setItem('cart', []);
     };
 
     

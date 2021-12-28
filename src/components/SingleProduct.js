@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getSingleProduct } from '../api';
+import { Card } from 'react-bootstrap';
+import { getSingleProduct, getReviews } from '../api';
 import { addProductToCart, removeProductFromCart } from './functions';
 
 const SingleProduct = ({match, history, cart, setCart}) => {
@@ -8,7 +9,8 @@ const SingleProduct = ({match, history, cart, setCart}) => {
     const [singleProd, setSingleProd]= useState({});
     const [cartIndx, setCartIndx] = useState(-1);
     const [inCart, setInCart] = useState(false);
-    
+    const [reviews, setReviews] = useState([]);
+
     useEffect(() => {
         async function fetchData()
         {
@@ -26,6 +28,12 @@ const SingleProduct = ({match, history, cart, setCart}) => {
 
             let result4 = await result3 !== -1;
             setInCart(result4);
+
+            const result5 = await getReviews(match.params.productId);
+            console.log("use effect reviews", result5);
+            console.log("the match.params.product", match.params.productId);
+            if (result5 ){
+                setReviews(result5) };
         }
        fetchData();
 
@@ -34,7 +42,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
     return (
         <div>
             
-                <p>name</p>
+                <p className='title'>name</p>
                 <h1>{singleProd.name}</h1>
 
                 <p>description</p>
@@ -42,15 +50,20 @@ const SingleProduct = ({match, history, cart, setCart}) => {
 
                 <p>price</p>
                 <p>{singleProd.price}</p>
-
-                <p>photo</p>
-                <p>{singleProd.price}</p>
-
+            <Card.Img src={`photos/${singleProd.photo}.jpg`}/>
+                <Card.Title>photo</Card.Title>
+                <p>{singleProd.photo}</p>
                 <p>availability</p>
                 <p>{singleProd.availability}</p>
 
                 <p>quantity</p>
                 <p>{singleProd.quantity}</p>
+                {console.log(reviews)}
+                <p>reviews</p>
+                <p>{reviews.map( (review) => <div><p>{review.comments}</p>
+                                                        <p>{review.date}</p></div> )}</p>
+
+
 
                 <button
                     disabled = {inCart}
@@ -71,7 +84,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
                 </button>: null}
                 <button               // button to go back?
                     onClick={() => {
-                        history.push('/products');  // not sure what url is?
+                        history.push('/products');  // not sure if this url works
                     }}>
                     Go Back To Products
                 </button>

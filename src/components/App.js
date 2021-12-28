@@ -33,6 +33,9 @@ const App = () => {
 
       const {clientSecret} = await createPaymentIntent();
       setClientSecret(clientSecret);
+
+      const result2 = localStorage.getItem('username')
+      if(result2) setUserName(result2);
     }
     fetchData();
 
@@ -42,13 +45,13 @@ const App = () => {
   return (
   <Router>
     <div>
-      <Navigation token = {token} setToken={setToken}/>
+      <Navigation token = {token} setToken={setToken} username = {username}/>
       <Route path = '/cart' render = {(routeProps) => <Cart {...routeProps} token = {token} cart = {cart} setCart = {setCart}/>}></Route>
       <Route exact path = '/products' render = {(routeProps) => <Products {...routeProps} products={products} setProducts={setProducts} cart={cart} setCart={setCart} />}></Route>
       <Route path = '/products/:productId' render = {(routeProps) => <SingleProduct {...routeProps} cart = {cart} setCart = {setCart}/>}></Route>
       <Route exact path = '/products/:category' render = {(routeProps) => <Category {...routeProps}/>}></Route>
-      <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} token = {token} />}></Route>
-      <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
+      <Route path = '/profile' render = {(routeProps) => <Profile {...routeProps} token = {token} username = {username} setUserName = {setUserName}/>}></Route>
+      <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken} setUsername = {setUserName}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
       <Route path = '/checkout' render = {() => (
       <div className="App">
