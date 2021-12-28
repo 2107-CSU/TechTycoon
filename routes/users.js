@@ -2,7 +2,7 @@ const express= require('express');
 const jwt = require('jsonwebtoken')
 const usersRouter = express.Router();
 
-const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser, getUserByUsername} = require('../db/index');
+const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser, getUserByUsername, getUserById} = require('../db/index');
 const {requireAdmin, requireUser} = require('./utils')
 
 
@@ -61,7 +61,7 @@ usersRouter.post('/login', async (req, res, next) => {
 usersRouter.get('/me', requireUser, async (req, res, next) => {
     const {id} = req.user; // user id should be stored in req (comes from the user)
     try {
-        const user = await getUserById({id});
+        const user = await getUserById(id);
         res.send(user);    // populate routine information
     }
     catch (error) {
