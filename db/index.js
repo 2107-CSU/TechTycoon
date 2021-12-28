@@ -17,6 +17,7 @@ const {
   createCategories,
   getReviewsByProductId,
   createReview,
+  getAllCategories,
 
 } = require('./categoriesAndReviews');
 
@@ -26,6 +27,7 @@ const {
   getAllOrders,
   getOrdersByUser,
   getOrderByOrderId,
+  getOrderTotal
 } = require('./orders');
 
 const {
@@ -80,11 +82,13 @@ module.exports = {
   editProduct,
   removeProductById,
   getOrdersByUser,
+  getOrderTotal,
   createReview,
   getUser,
   getAllOrders,
   getPhotoByProductId,
   getOrdersByUser,
   getPhotoByProductId,
-  getUserByUsername
+  getUserByUsername,
+  getAllCategories,
 }

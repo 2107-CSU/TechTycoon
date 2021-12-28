@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import { Link } from 'react-router-dom';
-import {login, register, createOrder} from '../api/index';
+import {login, register, getUser} from '../api/index';
 
-const Login = ({match, history, setToken}) => {
+const Login = ({match, history, setToken, setUserName}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -11,9 +11,9 @@ const Login = ({match, history, setToken}) => {
     return (
         <>
             {match.url === '/login'?
-                <h1>Login</h1>
+                <h1 className = "title" >Login</h1>
                 :
-                <h1>Register</h1>
+                <h1 className = "title">Register</h1>
             }
             <form 
             onSubmit={async (event) => {
@@ -32,8 +32,6 @@ const Login = ({match, history, setToken}) => {
                     // lets the user know if their password is too short
                     if (result.error) alert(result.message);
                     else {
-                        // making an initial order for the user
-                        await createOrder(result.token);
 
                         // notify user of successful login and bring them to the login page
                         alert('registered successfully please login to continue');
@@ -49,6 +47,9 @@ const Login = ({match, history, setToken}) => {
                         setToken(result.token);
                         console.log(result);
                         localStorage.setItem('token', result.token);
+                        const {username} = await getUser(result.token);
+                        await setUsername(username);
+                        await localStorage.setItem('username', username)
                         alert(result.message);
 
                         history.push('/profile');
@@ -63,6 +64,7 @@ const Login = ({match, history, setToken}) => {
                 }} />
                 <input 
                 value={password}
+                type = "password"
                 placeholder='password'
                 onChange={(event) => {
                     setPassword(event.target.value);
@@ -71,6 +73,7 @@ const Login = ({match, history, setToken}) => {
                     <>
                         <input 
                         value={confirmPassword}
+                        type = "password"
                         placeholder='confirm password'
                         onChange={(event) => {
                             setConfirmPassword(event.target.value);

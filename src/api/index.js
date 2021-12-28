@@ -4,6 +4,8 @@ import { createOrder, getSingleOrder, getOrdersByUser, changeOrderStatus } from 
 import { getProductsByCategory } from './product_categories';
 import { getProductsByOrder, addProductToOrder } from './order_products';
 import { getProducts, getSingleProduct, addProduct, updateProductAmount, editProduct, deleteProduct } from './products';
+import { createPaymentIntent } from './checkout'
+import { getCategories } from './categories';
 
 
 export async function getSomething() {
@@ -36,5 +38,7 @@ export {
   updateProductAmount, 
   editProduct, 
   deleteProduct,
-  getAllUsers
+  getAllUsers,
+  createPaymentIntent,
+  getCategories,
 }

@@ -88,6 +88,29 @@ async function getOrderByOrderId(orderId){
   }
 }
 
+async function getOrderTotal(orderId){
+  try {
+    const {rows} = await client.query(`
+      SELECT "productId", order_products.quantity, price
+      FROM order_products
+      JOIN products ON products.id = order_products."productId"
+      WHERE order_products."orderId" = $1;
+    `, [orderId])
+
+    console.log(rows)
+
+    const orderTotal = rows.map((product) => {
+      let runningTotal = (product.quantity * product.price)
+      return runningTotal
+    }).reduce((a, b) => a + b)
+
+    return orderTotal;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 
   module.exports = {
     
@@ -96,4 +119,5 @@ async function getOrderByOrderId(orderId){
     getOrdersByUser,
     getAllOrders,
     getOrderByOrderId,
+    getOrderTotal
   }

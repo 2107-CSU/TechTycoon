@@ -213,6 +213,8 @@ async function destroyProductFromOrder(id){ // takes product id
   }
 }
 
+
+
 module.exports = {
   
   getAllProducts,
