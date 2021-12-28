@@ -86,14 +86,15 @@ async function getUserByUsername(username) {
 
   // ---------- make a user into an admin ---------------------
 
-  async function makeUserAdmin({id}){ // why is the id an object?
+  async function makeUserAdmin(id){
     try {
-      const {rows} = await client.query(`
+      const {rows: [user]} = await client.query(`
         UPDATE users
-        SET isAdmin=true
-        WHERE id=$1;
+        SET "isAdmin"=true
+        WHERE id=$1
+        RETURNING *;
       `, [id])
-      return rows;     // why return all rows?
+      return user;
     } catch (error) {
       throw error;
     }
@@ -103,11 +104,12 @@ async function getUserByUsername(username) {
 
 async function getAllUsers(){ // select all the users
     try {
-      const {rows} = await client.query(`
+      const {rows: users} = await client.query(`
         SELECT *
-        FROM users;
+        FROM users
+        WHERE "isActive"=true;
       `);
-      return rows;   // return all the users
+      return users;   // return all the users
     } catch (error) {
       throw error;
     }
@@ -116,16 +118,18 @@ async function getAllUsers(){ // select all the users
 // --------- delete a user -------------------------------------
 
 async function deleteUser(userId){
-    try { // delete from users and orders
-      await client.query(`
-        DELETE FROM users
-        WHERE id=$1;
-      `, [userId]);
-      await client.query(`
-        DELETE FROM orders
-        WHERE "userId"=$1;
+    try {
+
+      const {rows: [user]} = await client.query(`
+        UPDATE users
+        SET "isActive"=false
+        WHERE id=$1
+        RETURNING *;
       `, [userId]);   
-    } catch (error) { // do we need to return anything?
+
+      return user;
+    } catch (error) {
+      console.log(error);
       throw error;
     }
   }
