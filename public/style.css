@@ -57,6 +57,10 @@
     color:red;
 }
 
+.green{
+    color:green;
+}
+
 .title{
     display:flex;
     justify-content: center;
