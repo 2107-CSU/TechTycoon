@@ -34,7 +34,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
        fetchData();
 
     }, [])
-
+console.log(reviews)
     return (
         <div>
             <Card style={{ width: '100%' }}>
@@ -50,7 +50,12 @@ const SingleProduct = ({match, history, cart, setCart}) => {
                         <Accordion.Header>Reviews</Accordion.Header>
                         <Accordion.Body>{reviews.map((review) => (
                             <Card>
-                                <Card.Title>{review.date}</Card.Title>
+                                {review.wouldRecommend ?
+                                    <Card.Title>Would Recommend</Card.Title>
+                                    :
+                                    <Card.Title>Would Not Recommend</Card.Title>
+                                }
+                                <Card.Text>{review.date}</Card.Text>
                                 <Card.Text>{review.comments}</Card.Text>
                             </Card>
                         ))}</Accordion.Body>
