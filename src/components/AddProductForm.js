@@ -50,6 +50,13 @@ const AddProductForm = ({token, userChange, setUserChange}) => {
                     <option value={true}>yes</option>
                     <option value={false}>no</option>
                 </select>
+                <div>
+                    <div>
+                    <p className = "inline">Categories: </p>
+                    {categories.map((category, indx) => {
+                        return <p key = {indx} className = "inline"> {category} </p>
+                    })}
+                    </div>
                     <input 
                     id='category'
                     value={category}
@@ -66,6 +73,7 @@ const AddProductForm = ({token, userChange, setUserChange}) => {
                     onClick={() => {
                         setCategories([]);
                     }} >Reset Categories</button>
+                    </div>
                 <input type='submit' />
             </form>
         </div>
