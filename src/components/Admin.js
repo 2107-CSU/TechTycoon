@@ -3,8 +3,10 @@ import AddProductForm from './AddProductForm';
 import EditProductForm from './EditProductForm';
 import { makeAdmin, deleteUser, getAllUsers, updateProductAmount, getProducts, deleteProduct } from '../api';
 // Bootstrap react component imports
-import DropdownButton from 'react-bootstrap/DropdownButton'
-import Dropdown from 'react-bootstrap/Dropdown'
+//import DropdownButton from 'react-bootstrap/DropdownButton'
+//import Dropdown from 'react-bootstrap/Dropdown'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
 
 const ChangeQuantityForm = ({token, products, userChange, setUserChange}) => {
     const [quantity, setQuantity] = useState(products[0].quantity);
@@ -100,6 +102,7 @@ const Admin = ({token}) => {
     const [userChange, setUserChange] = useState(false);
     const [deleteUserId, setDeleteUserId] = useState(null);
     const [products, setProducts] = useState([]);
+    const [showEditForm, setShowEditForm] = useState(false);
 
     useEffect( () => {
         const fetchData = async () => {
@@ -184,7 +187,11 @@ const Admin = ({token}) => {
         {products.length?
             <>
             <ChangeQuantityForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} />
-            <EditProductForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} />
+            <Button variant="primary" onClick={() => setShowEditForm(true)}>
+            Edit a Product
+            </Button>
+            
+            <EditProductForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} showEditForm={showEditForm} setShowEditForm={setShowEditForm} />
             <DeleteProductForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} />
             </>
             :
