@@ -18,3 +18,25 @@ export async function getReviews(productId){
     throw error;
   } 
 }
+
+export async function createReview(comments, productId, userId, wouldRecommend, token){
+  try {
+    const response = await fetch(BaseUrl + 'api/productreviews/' + productId, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        comments,
+        userId,
+        wouldRecommend
+      })
+    })
+
+    const newReview = await response.json();
+    return newReview;
+  } catch (error) {
+    throw error;
+  }
+}

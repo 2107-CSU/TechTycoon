@@ -1,6 +1,6 @@
 const express = require('express');
 const productReviewsRouter = express.Router();
-const{getReviewsByProductId} = require('../db');
+const{getReviewsByProductId, createReview} = require('../db');
 
 productReviewsRouter.get('/:productId', async (req, res, next) => {
     const productId = req.params.productId;
@@ -11,6 +11,22 @@ productReviewsRouter.get('/:productId', async (req, res, next) => {
 
     } catch(error) { 
         next(error);
+    }
+})
+
+productReviewsRouter.post('/:productId', async(req, res, next) => {
+    const productId = req.params.productId;
+    const {comments, userId, wouldRecommend} = req.body;
+
+    try {
+        const newReview = await addProduct({comments, productId, userId, wouldRecommend})
+        
+        res.send({
+            "message": "success",
+            "product": newReview
+        });
+    } catch (error) {
+        next(error)
     }
 })
 
