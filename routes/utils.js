@@ -10,8 +10,8 @@ function requireUser(req, res, next) {
 }
 
 const requireAdmin = (req, res, next) => {
-    if(req.isAdmin) next()
-    else next(error)
+    if(req.user.isAdmin) next()
+    else throw new Error('not admin')
 }
 
 module.exports = {requireUser, requireAdmin};

@@ -27,6 +27,7 @@ const {
   getUser,
   getAllOrders,
 } = require('./index');
+const { getOrderTotal } = require('./orders');
 
 async function buildTables() {
   try {
@@ -74,7 +75,8 @@ async function buildTables() {
         username VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
-        "isAdmin" BOOLEAN DEFAULT false
+        "isAdmin" BOOLEAN DEFAULT false,
+        "isActive" BOOLEAN DEFAULT true
       );
       CREATE TABLE reviews(
         id SERIAL PRIMARY KEY,
@@ -231,8 +233,8 @@ async function createInitialOrderProducts() {
     const ProductsForOrder = await getAllProductsByOrderId(4);
     console.log("Products for order 4: ", ProductsForOrder);
 
-
-
+    const OrderTotal = await getOrderTotal(4)
+    console.log("Order total is ", OrderTotal)
 
   } catch(error) {
     console.log(error);

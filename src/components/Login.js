@@ -83,6 +83,7 @@ const Login = ({match, history, setToken, setUserName}) => {
                         }} />
 
                         <input 
+                        type='email'
                         value={email}
                         placeholder='email'
                         onChange={(event) => {

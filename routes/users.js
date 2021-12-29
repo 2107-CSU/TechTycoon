@@ -1,8 +1,7 @@
 const express= require('express');
 const jwt = require('jsonwebtoken')
 const usersRouter = express.Router();
-
-const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser, getUserByUsername, getUserById} = require('../db/index');
+const {createUser, makeUserAdmin, getAllOrdersByUser, deleteUser, getUser, getUserByUsername, getUserById, getAllUsers} = require('../db/index');
 const {requireAdmin, requireUser} = require('./utils')
 
 
@@ -58,6 +57,7 @@ usersRouter.post('/login', async (req, res, next) => {
 
         if (!user) throw Error('Your username or password is incorrect!');
 
+        if (!user.isActive) throw Error('account has been removed for failure to abide by site rules!')
         const token = jwt.sign({id: user.id, username: user.username, isAdmin: user.isAdmin}, process.env.JWT_SECRET);
 
         res.send({
@@ -68,6 +68,14 @@ usersRouter.post('/login', async (req, res, next) => {
     }
 })
 // GET REQUESTS
+usersRouter.get('/all', requireAdmin, async (req, res , next) => {
+    try {
+        const users = await getAllUsers();
+        res.send(users);
+    } catch (error) {
+        next(error)
+    } 
+})
 
 usersRouter.get('/me', requireUser, async (req, res, next) => {
     const {id} = req.user; // user id should be stored in req (comes from the user)
@@ -79,6 +87,7 @@ usersRouter.get('/me', requireUser, async (req, res, next) => {
         next(error);
     }
 } )
+
 
 // sends the orders of the matching userId
 // PROBABLY A DUPLICATE
@@ -112,12 +121,15 @@ usersRouter.patch('/admin/:userId', requireAdmin, async(req, res, next) => {
 
 // DELETE REQUEST
 
-usersRouter.delete('/admin/:userId', requireAdmin, async(req, res, next) => {
+usersRouter.patch('/admin/delete/:userId', requireAdmin, async (req, res, next) => {
     const {userId} = req.params;
 
     try {
         const deletedUser = await deleteUser(userId);
-        res.send(deletedUser);
+        res.send({
+            "message": 'success',
+            "user": deletedUser
+    });
     } catch (error) {
         next(error);
     }
