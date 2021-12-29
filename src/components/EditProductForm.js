@@ -78,6 +78,12 @@ const EditProductForm = ({token, products, userChange, setUserChange}) => {
                 <option value={true}>yes</option>
                 <option value={false}>no</option>
             </select>
+            <div>
+                <p className = "inline">Categories: </p>
+                {categories.map((category, indx) => {
+                    return<p className = "inline" key = {indx}> {category} </p>
+                })}
+            </div>
             <input 
             id='category'
             value={category}
