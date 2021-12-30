@@ -5,8 +5,12 @@ import { makeAdmin, deleteUser, getAllUsers, updateProductAmount, getProducts, d
 // Bootstrap react component imports
 //import DropdownButton from 'react-bootstrap/DropdownButton'
 //import Dropdown from 'react-bootstrap/Dropdown'
-import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import Accordion from 'react-bootstrap/Accordion'
+import Form from 'react-bootstrap/Form'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 const ChangeQuantityForm = ({token, products, userChange, setUserChange}) => {
     const [quantity, setQuantity] = useState(products[0].quantity);
@@ -16,7 +20,7 @@ const ChangeQuantityForm = ({token, products, userChange, setUserChange}) => {
 
     }, [])
     return (
-        <form onSubmit={ async (event) => {
+        <Form onSubmit={ async (event) => {
             event.preventDefault();
 
             const result = await updateProductAmount(token, productId, quantity);
@@ -25,32 +29,41 @@ const ChangeQuantityForm = ({token, products, userChange, setUserChange}) => {
                 setUserChange(!userChange);
             }
         }}>
-            <h3>Change Quantity of Product</h3>
-            <select onChange={(event) => {
-                setProductId(products[event.target.value].id)
-                setQuantity(products[event.target.value].quantity);
-                }}>
-                {products.length?
-                    products.map((product, idx) => {
-                        return (
-                            <option 
-                            key={idx}
-                            value={idx} >
-                                {product.name}
-                            </option>
-                        )
-                    })
-                    :
-                    null
-                }
-            </select>
-            <input 
-            type='number'
-            placeholder='quantity'
-            value={quantity}
-            onChange={(event) => setQuantity(event.target.value)} />
-            <input type='submit' />
-        </form>
+            <Row>
+                <Form.Group as={Col} controlId="fromGridSelectQuantityProduct">
+                    <Form.Select onChange={(event) => {
+                    setProductId(products[event.target.value].id)
+                    setQuantity(products[event.target.value].quantity);
+                    }}>
+                    {products.length?
+                        products.map((product, idx) => {
+                            return (
+                                <option 
+                                key={idx}
+                                value={idx} >
+                                    {product.name}
+                                </option>
+                            )
+                        })
+                        :
+                        null
+                    }
+                    </Form.Select>
+                </Form.Group>
+                <Form.Group as={Col} controlId="fromGridInputQuantityProduct">
+                    <Form.Control 
+                    type='number'
+                    placeholder='quantity'
+                    value={quantity}
+                    onChange={(event) => setQuantity(event.target.value)} />
+                </Form.Group>
+                <Form.Group as={Col} controlId="fromGridSubmitQuantityProduct">
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Form.Group>
+            </Row>   
+        </Form>
     )
 }
 
@@ -63,7 +76,7 @@ const DeleteProductForm = ({token, products, userChange, setUserChange}) => {
 
     }, [products])
     return (
-        <form onSubmit={ async (event) => {
+        <Form onSubmit={ async (event) => {
             event.preventDefault();
 
             const result = await deleteProduct(token, productId);
@@ -73,26 +86,33 @@ const DeleteProductForm = ({token, products, userChange, setUserChange}) => {
             }
 
         }} >
-            <h3>Delete a Product</h3>
-            <select onChange={(event) => {
-                setProductId(products[event.target.value].id);
-                }}>
-                {products.length?
-                    products.map((product, idx) => {
-                        return (
-                            <option 
-                            key={idx}
-                            value={idx} >
-                                {product.name}
-                            </option>
-                        )
-                    })
-                    :
-                    null
-                }
-            </select>
-            <input type='submit' />
-        </form>
+            <Row>
+                <Form.Group as={Col} controlId="fromGridSelectProductDelete">
+                    <Form.Select onChange={(event) => {
+                    setProductId(products[event.target.value].id);
+                    }}>
+                    {products.length?
+                        products.map((product, idx) => {
+                            return (
+                                <option 
+                                key={idx}
+                                value={idx} >
+                                    {product.name}
+                                </option>
+                            )
+                        })
+                        :
+                        null
+                    }
+                    </Form.Select>
+                </Form.Group>
+                <Form.Group as={Col} controlId="fromGridSubmitProductDelete">
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Form.Group>
+            </Row>
+        </Form>
     )
 }
 
@@ -103,6 +123,7 @@ const Admin = ({token}) => {
     const [deleteUserId, setDeleteUserId] = useState(null);
     const [products, setProducts] = useState([]);
     const [showEditForm, setShowEditForm] = useState(false);
+    const [showAddForm, setShowAddForm] = useState(false);
 
     useEffect( () => {
         const fetchData = async () => {
@@ -122,82 +143,123 @@ const Admin = ({token}) => {
     }, [userChange])
 
     return (
-        <>
-            <div>
-                <h3>Make user admin</h3>
-                <form onSubmit={async (event) => {
-                    event.preventDefault();
-                    
-                    const result = await makeAdmin(token, editUserId);
-                    if(result.isAdmin) {
-                        setUserChange(!userChange);
-                        alert(`user ${result.username} is now an admin.`);
-                    }
-                }}>
-                    <label htmlFor='users'>Choose User:</label>
-                    <select id='users' onChange={(event) => setEditUserId(event.target.value)}>
-                        {users?
-                            users.map((user, index) => {
-                                return (
-                                    !user.isAdmin?
-                                    <option 
-                                    key={index}
-                                    value={user.id} >{user.username}</option>
-                                    :
-                                    null
-                                )
-                            })
-                            :
-                            null
+        <div className='center'>
+            <Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header>Make A User an Admin</Accordion.Header>
+                    <Accordion.Body>
+                        <Form onSubmit={async (event) => {
+                        event.preventDefault();
+                        
+                        const result = await makeAdmin(token, editUserId);
+                        if(result.isAdmin) {
+                            setUserChange(!userChange);
+                            alert(`user ${result.username} is now an admin.`);
                         }
-                    </select>
-                    <input type='submit'/>
-                </form>
-            </div>
-            <div>
-            <h3>Delete User</h3>
-            <form onSubmit={async (event) => {
-                event.preventDefault();
-                
-                const result = await deleteUser(token, deleteUserId);
-                console.log(result);
-                if (result.message === 'success') {
-                    setUserChange(!userChange);
-                    alert(`user ${result.user.username} was deleted successfully!`);
+                        }}>
+                            <Row>
+                                <Form.Group as={Col} controlId='formGridSelectUserAdmin' >
+                                    <Form.Select id='users' onChange={(event) => setEditUserId(event.target.value)}>
+                                        {users?
+                                            users.map((user, index) => {
+                                                return (
+                                                    !user.isAdmin?
+                                                    <option 
+                                                    key={index}
+                                                    value={user.id} >{user.username}</option>
+                                                    :
+                                                    null
+                                                )
+                                            })
+                                            :
+                                            null
+                                        }
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group as={Col} controlId='formGridSubmitUserAdmin' >
+                                    <Button variant="primary" type="submit">
+                                        Submit
+                                    </Button>
+                                </Form.Group>
+                            </Row>
+                        </Form>
+                    </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="1">
+                    <Accordion.Header>Delete A User</Accordion.Header>
+                    <Accordion.Body>
+                        <Form onSubmit={async (event) => {
+                        event.preventDefault();
+                        
+                        const result = await deleteUser(token, deleteUserId);
+                        console.log(result);
+                        if (result.message === 'success') {
+                            setUserChange(!userChange);
+                            alert(`user ${result.user.username} was deleted successfully!`);
+                        }
+                        }}>
+                            <Row>
+                                <Form.Group as={Col} controlId='formGridSelectUserDelete'>
+                                    <Form.Select id='users' onChange={(event) => setDeleteUserId(event.target.value)}>
+                                        {users?
+                                            users.map((user, index) => {
+                                                return (
+                                                    <option 
+                                                    key={index}
+                                                    value={user.id} >{user.username}</option>
+                                                )
+                                            })
+                                            :
+                                            null
+                                        }
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group as={Col} controlId='formGridSubmitUserDelete'>
+                                    <Button variant="primary" type="submit">
+                                        Submit
+                                    </Button>
+                                </Form.Group>
+                            </Row>  
+                        </Form>
+                    </Accordion.Body>
+                </Accordion.Item>
+                {products.length?
+                    <>
+                        <Accordion.Item eventKey="2">
+                            <Accordion.Header>Change A Products Quantitiy</Accordion.Header>
+                            <Accordion.Body>
+                                <ChangeQuantityForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} />
+                            </Accordion.Body>
+                        </Accordion.Item>
+                        <Accordion.Item eventKey="3">
+                            <Accordion.Header>Delete A Product</Accordion.Header>
+                            <Accordion.Body>
+                                <DeleteProductForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} />
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </>
+                    :
+                    null
                 }
-            }}>
-                <label htmlFor='users'>Choose User:</label>
-                <select id='users' onChange={(event) => setDeleteUserId(event.target.value)}>
-                    {users?
-                        users.map((user, index) => {
-                            return (
-                                <option 
-                                key={index}
-                                value={user.id} >{user.username}</option>
-                            )
-                        })
-                        :
-                        null
-                    }
-                </select>
-                <input type='submit'/>
-            </form>
-        </div>
-        <AddProductForm token={token} setUserChange={setUserChange} userChange={userChange}/>
+            </Accordion>           
         {products.length?
             <>
-            <ChangeQuantityForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} />
-            <Button variant="primary" onClick={() => setShowEditForm(true)}>
-            Edit a Product
-            </Button>
-            
+            <div className='center'>
+                <Button className='admin-buttons' size="lg" variant="primary" onClick={() => setShowAddForm(true)}>
+                Add a Product
+                </Button>
+                <Button className='admin-buttons' size="lg" variant="primary" onClick={() => setShowEditForm(true)}>
+                Edit a Product
+                </Button>
+            </div>                       
+            <AddProductForm token={token} setUserChange={setUserChange} userChange={userChange} showAddForm={showAddForm} setShowAddForm={setShowAddForm} />
             <EditProductForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} showEditForm={showEditForm} setShowEditForm={setShowEditForm} />
-            <DeleteProductForm token={token} products={products} setUserChange={setUserChange} userChange={userChange} />
+            
             </>
             :
             null
         }
-    </>
+    </div>
     )
 }
 
