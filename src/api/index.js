@@ -7,7 +7,7 @@ import { getProducts, getSingleProduct, addProduct, updateProductAmount, editPro
 import { createPaymentIntent } from './checkout'
 import { getCategories } from './categories';
 
-import { getReviews } from './reviews';
+import { getReviews, createReview } from './reviews';
 
 export async function getSomething() {
   try {
@@ -43,4 +43,5 @@ export {
   getAllUsers,
   createPaymentIntent,
   getCategories,
+  createReview
 }

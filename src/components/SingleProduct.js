@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Accordion, Button } from 'react-bootstrap';
-import { getSingleProduct, getReviews } from '../api';
+import { Card, Accordion, Button, InputGroup, FormControl, Form } from 'react-bootstrap';
+import { getSingleProduct, getReviews, createReview } from '../api';
 import { addProductToCart, removeProductFromCart } from './functions';
 
 const SingleProduct = ({match, history, cart, setCart}) => {
@@ -46,7 +46,7 @@ console.log(reviews)
                 <Card.Text>{singleProd.description}</Card.Text>
 
                 <Accordion>
-                    <Accordion.Item>
+                    <Accordion.Item eventKey='0'>
                         <Accordion.Header>Reviews</Accordion.Header>
                         <Accordion.Body>{reviews.map((review) => (
                             <Card>
@@ -59,6 +59,31 @@ console.log(reviews)
                                 <Card.Text>{review.comments}</Card.Text>
                             </Card>
                         ))}</Accordion.Body>
+                    </Accordion.Item>
+
+                    <Accordion.Item eventKey='1'>
+                        <Accordion.Header>Write a Review</Accordion.Header>
+                        <Accordion.Body>
+                            <Form
+                                onSubmit={(e) => {
+                                    createReview(comments, productId, userId, wouldRecommend, token);
+                                }}
+                            >
+                                {['checkbox'].map((type) => (
+                                    <div key={`default-${type}`} className='mb-3'>
+                                        <Form.Check
+                                            type={type}
+                                            id={`default-${type}`}
+                                            label='Would Recommend'
+                                        />
+                                    </div>
+                                ))}
+                                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                                    <Form.Label>Comments</Form.Label>
+                                    <Form.Control as="textarea" rows={3} />
+                                </Form.Group>
+                            </Form>
+                        </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
 
