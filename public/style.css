@@ -80,3 +80,12 @@
     display:inline;
 }
 
+.center {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+  }
+
+.admin-buttons {
+    margin: 10px 10px;
+}
