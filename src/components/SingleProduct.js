@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Accordion, Button, InputGroup, FormControl, Form } from 'react-bootstrap';
-import { getSingleProduct, getReviews, createReview } from '../api';
+import { getSingleProduct, getReviews, createReview, getAllUsers } from '../api';
 import { addProductToCart, removeProductFromCart } from './functions';
 
-const SingleProduct = ({match, history, cart, setCart}) => {
+const SingleProduct = ({match, history, cart, setCart, token, username}) => {
 
     const [singleProd, setSingleProd]= useState({});
     const [cartIndx, setCartIndx] = useState(-1);
     const [inCart, setInCart] = useState(false);
     const [reviews, setReviews] = useState([]);
+        const [comment, setComment] = useState("")
+        const [recommendation, setRecommendation] = useState(false)
 
     useEffect(() => {
         async function fetchData()
@@ -34,7 +36,7 @@ const SingleProduct = ({match, history, cart, setCart}) => {
        fetchData();
 
     }, [])
-console.log(reviews)
+
     return (
         <div>
             <Card style={{ width: '100%' }}>
@@ -66,7 +68,7 @@ console.log(reviews)
                         <Accordion.Body>
                             <Form
                                 onSubmit={(e) => {
-                                    createReview(comments, productId, userId, wouldRecommend, token);
+                                    createReview(comment, singleProd.id, 1, recommendation, token);
                                 }}
                             >
                                 {['checkbox'].map((type) => (
@@ -75,13 +77,21 @@ console.log(reviews)
                                             type={type}
                                             id={`default-${type}`}
                                             label='Would Recommend'
+                                            value={recommendation}
+                                            onChange={(e) => {setRecommendation(e.target.value)}}
                                         />
                                     </div>
                                 ))}
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                                     <Form.Label>Comments</Form.Label>
-                                    <Form.Control as="textarea" rows={3} />
+                                    <Form.Control 
+                                        as="textarea" 
+                                        rows={3}
+                                        value={comment}
+                                        onChange={(e) => {setComment(e.target.value)}} 
+                                    />
                                 </Form.Group>
+                                <Button type='submit'>Submit</Button>
                             </Form>
                         </Accordion.Body>
                     </Accordion.Item>
