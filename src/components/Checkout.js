@@ -3,12 +3,13 @@ import { PaymentElement, useStripe, useElements, Elements } from '@stripe/react-
 import { createCheckoutSession, createPaymentIntent } from '../api/checkout';
 import { createOrder, addProductToOrder } from "../api";
 
-const Checkout = ({cart, token, setCart, history}) => {
+const Checkout = ({ token, history}) => {
     const [isPaymentLoading, setPaymentLoading] = useState(false)
     const stripe = useStripe();
     const elements = useElements();
     const [message, setMessage] = useState(null)
     const [isLoading, setIsLoading] = useState(false);
+    const [cart, setCart] = useState([]);
     
     useEffect(() => {
       if (!stripe) {
@@ -40,6 +41,17 @@ const Checkout = ({cart, token, setCart, history}) => {
         }
       });
     }, [stripe])
+
+    useEffect(() => {
+      async function setVars(){
+        const result = localStorage.getItem('cart');
+        if(result){
+          const cart = await JSON.parse(result);
+          await setCart(cart);
+        }
+      }
+      setVars();
+    }, [cart])
 
     const handleSubmit = async (e) => {
   

@@ -5,15 +5,6 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-// if(window.confirm("Order all objects in cart?"))
-//           {
-//             const {order} = await createOrder(token);
-//             console.log(cart);
-//             console.log(order);
-//             addProductToOrder(cart, token, order.id);
-//             setCart([]);
-//             localStorage.setItem('cart', []);
-//           }
 
 
 const Cart = ({token, cart, setCart}) => {
