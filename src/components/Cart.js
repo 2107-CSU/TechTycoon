@@ -7,7 +7,6 @@ import Col from 'react-bootstrap/Col'
 
 
 const Cart = ({token, cart, setCart}) => {
-
     useEffect(() => {
       
         
