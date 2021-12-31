@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, ListGroup, Button } from 'react-bootstrap';
 import { getSingleProduct, getReviews } from '../api';
 import { addProductToCart, removeProductFromCart } from './functions';
 
@@ -40,54 +40,63 @@ const SingleProduct = ({match, history, cart, setCart}) => {
     }, [])
 
     return (
-        <div>
-            
-                <p className='title'>name</p>
-                <h1>{singleProd.name}</h1>
+        <div> {"the single product", console.log(singleProd)}
+            <Card>
+                <Card.Img variant="top" src={`/photos/${singleProd.photo}.jpg`}/>
 
-                <p>description</p>
-                <p>{singleProd.description}</p>
+                <Card.Body>
+                    <Card.Title>Photo</Card.Title>
 
-                <p>price</p>
-                <p>{singleProd.price}</p>
-            <Card.Img src={`photos/${singleProd.photo}.jpg`}/>
-                <Card.Title>photo</Card.Title>
-                <p>{singleProd.photo}</p>
-                <p>availability</p>
-                <p>{singleProd.availability}</p>
+                    <Card.Text>Description
+                    <p>{singleProd.description}</p></Card.Text>
+                </Card.Body>
+                
+                <ListGroup className='list-group-flush'>
+                    <h1>{singleProd.name}</h1>
 
-                <p>quantity</p>
-                <p>{singleProd.quantity}</p>
-                {console.log(reviews)}
-                <p>reviews</p>
-                <p>{reviews.map( (review) => <div><p>{review.comments}</p>
-                                                        <p>{review.date}</p></div> )}</p>
+                    <p>price</p>
+                    <p>{singleProd.price}</p>
+                
+                    <p>availability</p>
+                    <p>{singleProd.availability}</p>
+
+                    <p>quantity</p>
+                    <p>{singleProd.quantity}</p>
+                </ListGroup>
+                
+                <Card.Body>
+                    {console.log(reviews)}
+                    <p>reviews</p>
+                    <p>{reviews.map( (review) => <div><p>{review.comments}</p>
+                                                            <p>{review.date}</p></div> )}</p>
+                </Card.Body>
+            </Card>
 
 
-
-                <button
+                <Button variant='success'
                     disabled = {inCart}
                     onClick = {() => {
                         const newCart = addProductToCart(cart, singleProd, 1);
                         setCart(newCart);
                         setCartIndx(newCart.length -1);
                         setInCart(true);
-                    }}>Add product to Cart</button>
+                    }}>Add product to Cart</Button>
 
-                {inCart? <button
+                {inCart? <Button variant='danger'
                 onClick = {() => {
                     const newCart = removeProductFromCart(cart, cartIndx);
                     setCart(newCart);
                     setInCart(false);
                 }}>
                     Remove From Cart
-                </button>: null}
-                <button               // button to go back?
+                </Button>: null}
+
+                <Button variant='primary'              // button to go back?
                     onClick={() => {
                         history.push('/products');  // not sure if this url works
                     }}>
-                    Go Back To Products
-                </button>
+                    Go Back To Products List
+                </Button>
 
                 
             
