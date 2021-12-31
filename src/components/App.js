@@ -33,8 +33,6 @@ const App = () => {
       }
       const result2 = localStorage.getItem('username')
       if(result2) setUserName(result2);
-      const {clientSecret} = await createPaymentIntent();
-      setClientSecret(clientSecret);
       
       if (token) {
         const user = await getUser(token);
@@ -45,6 +43,18 @@ const App = () => {
 
     
   }, [token]);
+
+  useEffect(() => {
+    async function fetchData(){
+      const {clientSecret} = await createPaymentIntent(cart);
+      setClientSecret(clientSecret);
+      
+    }
+    fetchData();
+
+    
+  }, [cart]);
+
 
   return (
   <Router>
@@ -58,12 +68,12 @@ const App = () => {
       <Route path = '/login' render = {(routeProps) => <Login {...routeProps} setToken={setToken} setUsername = {setUserName}/>}></Route>
       <Route path = '/register' render = {(routeProps) => <Login {...routeProps} />}></Route>
       <Route path = '/admin' render = {(routeProps) => <Admin {...routeProps} token={token}/>}></Route>
-      <Route path = '/checkout' render = {() => (
+      <Route path = '/checkout' render = {(routeProps) => (
       <div className="App">
         {console.log(clientSecret)}
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
-              <Checkout token = {token} setCart = {setCart}/>
+              <Checkout token = {token} setCart = {setCart} {...routeProps}/>
             </Elements>
           )}
         </div> )}></Route>

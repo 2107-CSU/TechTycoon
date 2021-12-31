@@ -3,7 +3,7 @@ import { PaymentElement, useStripe, useElements, Elements } from '@stripe/react-
 import { createCheckoutSession, createPaymentIntent } from '../api/checkout';
 import { createOrder, addProductToOrder } from "../api";
 
-const Checkout = ({cart, clientSecret, setClientSecret, token, setCart}) => {
+const Checkout = ({cart, token, setCart, history}) => {
     const [isPaymentLoading, setPaymentLoading] = useState(false)
     const stripe = useStripe();
     const elements = useElements();
@@ -75,6 +75,7 @@ const Checkout = ({cart, clientSecret, setClientSecret, token, setCart}) => {
         <PaymentElement id="payment-element" />
         <button disabled={isLoading || !stripe || !elements} id="submit" onClick = {async () => {
           /* Payment function here */
+
           if(window.confirm("Order all objects in cart?"))
           {
             const {order} = await createOrder(token);
@@ -83,7 +84,9 @@ const Checkout = ({cart, clientSecret, setClientSecret, token, setCart}) => {
             addProductToOrder(cart, token, order.id);
             setCart([]);
             localStorage.setItem('cart', []);
+            history.push('/profile')
           }
+          
         }}>
           <span id="button-text">
             {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
