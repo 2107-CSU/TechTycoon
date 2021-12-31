@@ -37,3 +37,61 @@
     font-size: 12px;
     text-align: center;
 }
+
+.orderCard {
+    margin: 10px;
+}
+
+.flex {
+    display: flex;
+
+}
+
+.focus {
+    /* border: 1px solid lightblue; */
+    border-radius: 20%;
+    background-color: rgb(234, 238, 240);
+}
+
+.warning{
+    color:red;
+}
+
+.green{
+    color:green;
+}
+
+.title{
+    display:flex;
+    justify-content: center;
+    background-color: lightblue;
+}
+
+.margin{
+    margin:20px;
+    justify-content: center;
+}
+
+.long{
+    width:200px;
+}
+
+.inline{
+    display:inline;
+}
+
+.center-login {
+    margin: auto;
+    width: 80%;
+    padding: 10px;
+  }
+
+.center {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+  }
+
+.admin-buttons {
+    margin: 10px 10px;
+}

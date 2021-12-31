@@ -5,7 +5,8 @@ import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 
 
-const Navigation = ({token, setToken}) => {
+
+const Navigation = ({token, setToken, username, isAdmin}) => {
     return (
         <Navbar bg="light" expand="lg">
             <Container>
@@ -23,11 +24,17 @@ const Navigation = ({token, setToken}) => {
                         {!!token ? 
                         <>
                         <Nav.Link href='/profile' >Profile</Nav.Link>
+                            {isAdmin?
+                                <Nav.Link href='/admin'>Admin</Nav.Link>
+                                :
+                                null
+                            }
                         <Nav.Link href='/login' 
                         onClick={() => {
                             setToken('');
                             localStorage.removeItem('token');
-                        }}>Logout</Nav.Link> 
+                            localStorage.removeItem('username');
+                        }}>Logout </Nav.Link> 
                         </>
                         : 
                         <Nav.Link href='/login' >Login</Nav.Link>}

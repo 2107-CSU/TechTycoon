@@ -54,13 +54,29 @@ export async function getUser(token) {
             }
         });
 
-        const result = response.json();
+        const result = await response.json();
         console.log(result);
         return result;
     } catch (error) {
         throw error;
     }
 }
+
+export async function checkUser(username) {
+    try {
+        const response = await fetch(`${BaseUrl}api/users/check/${username}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 // ADMIN FUNCTIONS ------------------------------------------
 
@@ -74,7 +90,7 @@ export async function makeAdmin(token, userId) {
             }
         });
 
-        const result = response.json();
+        const result = await response.json();
         console.log(result);
         return result;
     } catch(error) {
@@ -84,15 +100,32 @@ export async function makeAdmin(token, userId) {
 
 export async function deleteUser(token, userId) {
     try {
-        const response = await fetch(`${BaseUrl}api/users/admin/${userId}`, {
-            method: 'DELETE',
+        const response = await fetch(`${BaseUrl}api/users/admin/delete/${userId}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         });
 
-        const result = response.json();
+        const result = await response.json();
+        console.log(result);
+        return result;
+    } catch(error) {
+        throw error;
+    }
+}
+
+export async function getAllUsers(token) {
+    try {
+        const response = await fetch(`${BaseUrl}api/users/all`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const result = await response.json();
         console.log(result);
         return result;
     } catch(error) {
