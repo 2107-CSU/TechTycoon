@@ -1,4 +1,4 @@
-const BaseUrl = "http://localhost:5000/";
+const {BaseUrl} = require('./constants');
 
 export async function createCheckoutSession(items) {
     try {
@@ -21,15 +21,12 @@ export async function createCheckoutSession(items) {
     }
 }
 
-export async function createPaymentIntent() {
+export async function createPaymentIntent(cart) {
     try {
         const response = await fetch(`${BaseUrl}api/checkout/create-payment-intent`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            // body: JSON.stringify({
-            //     items
-            // })
-            body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+            body: JSON.stringify({ items: cart}),
             
         })
 
